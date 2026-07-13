@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './App.css';
 
 // Tạm thời dùng mock data, bạn có thể thay thế bằng API data sau
@@ -20,7 +20,7 @@ const mockCerts = [
 ];
 
 function App() {
-  const [certs, setCerts] = useState(mockCerts);
+  const [certs] = useState(mockCerts);
 
   return (
     <div className="app-container">
