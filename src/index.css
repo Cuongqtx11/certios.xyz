@@ -36,10 +36,7 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  box-shadow: 0 0 50px rgba(0,0,0,0.5);
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent;
 }
 
 * {
