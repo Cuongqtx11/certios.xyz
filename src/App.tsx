@@ -26,6 +26,17 @@ const t = {
     prem2: "Không lo bị thu hồi",
     prem3: "UDID riêng biệt",
     prem4: "Cài thoải mái, bền vững",
+    faqTitle: "Câu hỏi thường gặp (FAQ)",
+    faqQ1: "Ứng dụng ESign để làm gì?",
+    faqA1: "ESign cho phép bạn ký và cài đặt trực tiếp các tệp IPA (ứng dụng iOS) lên iPhone hoặc iPad mà không cần qua App Store.",
+    faqQ2: "Ứng dụng này có dùng được lâu không?",
+    faqA2_1: "Các chứng chỉ doanh nghiệp miễn phí thường không ổn định và có thể bị Apple thu hồi bất cứ lúc nào. Để có trải nghiệm ổn định và lâu dài, bạn nên tham khảo giải pháp chứng chỉ cá nhân tại ",
+    faqQ3: "Tại sao ứng dụng bị thu hồi?",
+    faqA3: "Apple thường xuyên quét và thu hồi các chứng chỉ doanh nghiệp bị lạm dụng. Khi chứng chỉ bị thu hồi, mọi ứng dụng ký bằng chứng chỉ đó sẽ ngừng hoạt động.",
+    faqQ4: "Có cần jailbreak để sử dụng không?",
+    faqA4: "Hoàn toàn không. ESign và các chứng chỉ mà chúng tôi cung cấp hoạt động trên thiết bị nguyên bản, không yêu cầu jailbreak, đảm bảo an toàn cho thiết bị của bạn.",
+    faqQ5: "Làm sao để hạn chế bị thu hồi?",
+    faqA5: "Bạn có thể sử dụng DNS chặn thu hồi (có trong mục \"DNS và Công Cụ Tiện Ích\") để giảm thiểu rủi ro. Tuy nhiên, cách triệt để nhất là chuyển sang sử dụng chứng chỉ cá nhân riêng biệt, đảm bảo không bị ảnh hưởng bởi các đợt quét của Apple."
   },
   en: {
     subtitle: "Free Enterprise Certificates",
@@ -50,6 +61,17 @@ const t = {
     prem2: "No revoke worries",
     prem3: "Dedicated UDID",
     prem4: "Install freely, durable",
+    faqTitle: "Frequently Asked Questions (FAQ)",
+    faqQ1: "What is the ESign app for?",
+    faqA1: "ESign allows you to sign and directly install IPA files (iOS apps) on your iPhone or iPad without going through the App Store.",
+    faqQ2: "How long can I use this app?",
+    faqA2_1: "Free enterprise certificates are typically unstable and can be revoked by Apple at any time. For a stable and long-term experience, you should consider a personal certificate solution at ",
+    faqQ3: "Why do apps get revoked?",
+    faqA3: "Apple regularly scans and revokes abused enterprise certificates. Once revoked, all apps signed with that certificate will stop working.",
+    faqQ4: "Do I need to jailbreak to use this?",
+    faqA4: "Absolutely not. ESign and the certificates we provide work on non-jailbroken devices, ensuring your device's safety.",
+    faqQ5: "How can I prevent revokes?",
+    faqA5: "You can use the Anti-Revoke DNS (found in the \"Anti-Revoke DNS\" section) to minimize risks. However, the ultimate solution is to switch to a dedicated personal certificate, ensuring immunity from Apple's scans."
   }
 };
 
@@ -305,31 +327,31 @@ function App() {
         
         {/* FAQ Section */}
         <div className="faq-section glass">
-          <h3 className="faq-title">Câu hỏi thường gặp (FAQ)</h3>
+          <h3 className="faq-title">{t[lang].faqTitle}</h3>
           
           <div className={`faq-item ${openFaqIndex === 0 ? 'open' : ''}`}>
-            <button className="faq-question" onClick={() => toggleFaq(0)}>Ứng dụng ESign để làm gì? <i className="fas fa-chevron-down"></i></button>
-            <div className="faq-answer">ESign cho phép bạn ký và cài đặt trực tiếp các tệp IPA (ứng dụng iOS) lên iPhone hoặc iPad mà không cần qua App Store.</div>
+            <button className="faq-question" onClick={() => toggleFaq(0)}>{t[lang].faqQ1} <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">{t[lang].faqA1}</div>
           </div>
           
           <div className={`faq-item ${openFaqIndex === 1 ? 'open' : ''}`}>
-            <button className="faq-question" onClick={() => toggleFaq(1)}>Ứng dụng này có dùng được lâu không? <i className="fas fa-chevron-down"></i></button>
-            <div className="faq-answer">Các chứng chỉ doanh nghiệp miễn phí thường không ổn định và có thể bị Apple thu hồi bất cứ lúc nào. Để có trải nghiệm ổn định và lâu dài, bạn nên tham khảo giải pháp chứng chỉ cá nhân tại <a href="https://cuios.shop" target="_blank" rel="noopener noreferrer">cuios.shop</a>.</div>
+            <button className="faq-question" onClick={() => toggleFaq(1)}>{t[lang].faqQ2} <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">{t[lang].faqA2_1}<a href="https://cuios.shop" target="_blank" rel="noopener noreferrer">cuios.shop</a>.</div>
           </div>
           
           <div className={`faq-item ${openFaqIndex === 2 ? 'open' : ''}`}>
-            <button className="faq-question" onClick={() => toggleFaq(2)}>Tại sao ứng dụng bị thu hồi? <i className="fas fa-chevron-down"></i></button>
-            <div className="faq-answer">Apple thường xuyên quét và thu hồi các chứng chỉ doanh nghiệp bị lạm dụng. Khi chứng chỉ bị thu hồi, mọi ứng dụng ký bằng chứng chỉ đó sẽ ngừng hoạt động.</div>
+            <button className="faq-question" onClick={() => toggleFaq(2)}>{t[lang].faqQ3} <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">{t[lang].faqA3}</div>
           </div>
           
           <div className={`faq-item ${openFaqIndex === 3 ? 'open' : ''}`}>
-            <button className="faq-question" onClick={() => toggleFaq(3)}>Có cần jailbreak để sử dụng không? <i className="fas fa-chevron-down"></i></button>
-            <div className="faq-answer">Hoàn toàn không. ESign và các chứng chỉ mà chúng tôi cung cấp hoạt động trên thiết bị nguyên bản, không yêu cầu jailbreak, đảm bảo an toàn cho thiết bị của bạn.</div>
+            <button className="faq-question" onClick={() => toggleFaq(3)}>{t[lang].faqQ4} <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">{t[lang].faqA4}</div>
           </div>
           
           <div className={`faq-item ${openFaqIndex === 4 ? 'open' : ''}`}>
-            <button className="faq-question" onClick={() => toggleFaq(4)}>Làm sao để hạn chế bị thu hồi? <i className="fas fa-chevron-down"></i></button>
-            <div className="faq-answer">Bạn có thể sử dụng DNS chặn thu hồi (có trong mục "DNS và Công Cụ Tiện Ích") để giảm thiểu rủi ro. Tuy nhiên, cách triệt để nhất là chuyển sang sử dụng chứng chỉ cá nhân riêng biệt, đảm bảo không bị ảnh hưởng bởi các đợt quét của Apple.</div>
+            <button className="faq-question" onClick={() => toggleFaq(4)}>{t[lang].faqQ5} <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">{t[lang].faqA5}</div>
           </div>
         </div>
 
