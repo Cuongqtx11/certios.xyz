@@ -3,7 +3,7 @@
     {
       "id": "esign_1784029135972",
       "name": "ESign",
-      "developer": "iPhone Distribution: Aramco Services Company",
+      "developer": "Aramco Services Company",
       "status": "active",
       "size": "17.0 MB",
       "version": "VIP",
@@ -52,7 +52,7 @@
   "cert": [
     {
       "id": "cert_1784029135972",
-      "name": "iPhone Distribution: Aramco Services Company",
+      "name": "Aramco Services Company",
       "description": "Mật khẩu: certios",
       "size": "11.4 KB",
       "status": "active",
