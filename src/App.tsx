@@ -280,7 +280,7 @@ function App() {
         </div>
 
         {/* DNS Banner */}
-        <a href="#" className="dns-banner glass" onClick={(e) => { e.preventDefault(); alert("Link tải file cấu hình chặn thu hồi"); }}>
+        <a href="/dns-anti-revoke.mobileconfig" className="dns-banner glass">
           <div className="dns-info">
             <div className="dns-icon">
               <i className="fas fa-shield-alt"></i>
