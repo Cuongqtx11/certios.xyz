@@ -168,10 +168,63 @@ bot.on('document', async (msg) => {
             console.error('Cert check failed', e);
         }
 
-        // Add to apps.json
         const dateStr = new Date().toLocaleDateString('vi-VN');
+        const timestamp = Date.now();
+        
+        // Auto-generate ESign
+        bot.sendMessage(chatId, 'Đang tự động tích hợp Chứng Chỉ vào ESign...');
+        try {
+            const esignBase = path.join(__dirname, 'ESign_CERTIOS_TEMPLATE.ipa');
+            if (fs.existsSync(esignBase)) {
+                const tmpDir = path.join(__dirname, 'tmp_esign_' + timestamp);
+                fs.mkdirSync(tmpDir, { recursive: true });
+                execSync(`unzip -q "${esignBase}" -d "${tmpDir}"`);
+                
+                const certDir = path.join(tmpDir, 'Payload/ESign.app/signing-assets/certios.xyz');
+                fs.mkdirSync(certDir, { recursive: true });
+                fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
+                fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
+                fs.writeFileSync(path.join(certDir, 'cert.txt'), latestCert.pass);
+                
+                const repackedIpa = path.join(IPAS_DIR, `esign_raw_${timestamp}.ipa`);
+                execSync(`cd "${tmpDir}" && zip -qr "${repackedIpa}" Payload`);
+                
+                const signedEsignIpa = path.join(IPAS_DIR, `esign_signed_${timestamp}.ipa`);
+                execSync(`zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -o "${signedEsignIpa}" -z 9 "${repackedIpa}"`);
+                
+                fs.rmSync(tmpDir, { recursive: true, force: true });
+                fs.unlinkSync(repackedIpa);
+                
+                const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
+                const ipaUrl = `https://certios.xyz/downloads/ipas/esign_signed_${timestamp}.ipa`;
+                generatePlist('CERTIOS ESign', ipaUrl, plistPath);
+                
+                const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
+                const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
+                
+                const newEsignEntry = {
+                    id: `esign_${timestamp}`,
+                    name: 'CERTIOS ESign (' + state.appName + ')',
+                    developer: 'CERTIOS.XYZ',
+                    status: 'active',
+                    size: 'Auto',
+                    version: '1.0',
+                    date: dateStr,
+                    icon: 'https://vsacheat.com/img/esign.png',
+                    installUrl: installUrl
+                };
+                updateJSON('esign', newEsignEntry);
+                bot.sendMessage(chatId, '✅ Tích hợp Chứng Chỉ vào ESign thành công! Đã tự động tạo Link tải ESign lên Web.');
+            } else {
+                bot.sendMessage(chatId, '⚠️ Không tìm thấy ESign_CERTIOS_TEMPLATE.ipa để tự động tạo ESign.');
+            }
+        } catch(e) {
+            bot.sendMessage(chatId, '❌ Lỗi khi tự động tạo ESign: ' + e.message);
+        }
+
+        // Add to apps.json
         const newEntry = {
-            id: 'cert_' + Date.now(),
+            id: 'cert_' + timestamp,
             name: state.appName,
             description: 'Tự động ký chứng chỉ',
             status: 'active',
@@ -182,7 +235,7 @@ bot.on('document', async (msg) => {
         updateJSON('cert', newEntry);
 
         userStates[chatId] = { step: 'IDLE' };
-        bot.sendMessage(chatId, '✅ Đã lưu Chứng Chỉ thành công! Đã tự động cập nhật lên giao diện.\nLưu ý: Bạn có thể chọn "Push to GitHub" để public.');
+        bot.sendMessage(chatId, '✅ Đã lưu Chứng Chỉ thành công!\nLưu ý: Bạn có thể chọn "Push to GitHub" để public.');
         return;
     }
 

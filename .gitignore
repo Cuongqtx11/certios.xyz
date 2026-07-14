@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+CERTIOS.XYZ_NOTES.md
+server/node_modules/
