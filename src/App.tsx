@@ -118,9 +118,9 @@ function App() {
   const renderAppCard = (app: any) => (
     <div key={app.id} className="app-card glass">
       <div className="app-header">
-        <div className="app-icon">
-          {activeTab === 'esign' && <i className="fas fa-signature"></i>}
-          {activeTab === 'cert' && <i className="fas fa-certificate"></i>}
+        <div className="app-icon" style={{ background: (activeTab === 'esign' || activeTab === 'cert') ? 'transparent' : 'var(--gradient-2)', boxShadow: (activeTab === 'esign' || activeTab === 'cert') ? 'none' : '0 4px 12px var(--primary-glow)' }}>
+          {activeTab === 'esign' && <img src="https://vsacheat.com/img/esign.png" alt="ESign" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
+          {activeTab === 'cert' && <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10" alt="Cert" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
           {activeTab === 'mods' && <i className="fas fa-gamepad"></i>}
         </div>
         <div className="app-info">
