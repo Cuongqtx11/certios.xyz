@@ -156,14 +156,26 @@ function App() {
           </div>
         </div>
       </div>
-      <button 
-        className="btn-get" 
-        onClick={() => handleDownload(app)}
-        style={{ opacity: (app.status === 'active' || app.status === 'Signed') ? 1 : 0.5 }}
-        disabled={(app.status !== 'active' && app.status !== 'Signed')}
-      >
-        <i className="fas fa-download"></i> {t[lang].get}
-      </button>
+      <div className="card-actions" style={{ display: 'flex', gap: '8px' }}>
+        <button 
+          className="btn-get" 
+          onClick={() => handleDownload(app)}
+          style={{ flex: 1, opacity: (app.status === 'active' || app.status === 'Signed') ? 1 : 0.5 }}
+          disabled={(app.status !== 'active' && app.status !== 'Signed')}
+        >
+          <i className="fas fa-download"></i> {t[lang].get}
+        </button>
+        {app.ipaUrl && (
+          <button 
+            className="btn-get" 
+            onClick={() => window.location.href = app.ipaUrl}
+            style={{ flex: 1, background: 'var(--gradient-2)', opacity: (app.status === 'active' || app.status === 'Signed') ? 1 : 0.5 }}
+            disabled={(app.status !== 'active' && app.status !== 'Signed')}
+          >
+            <i className="fas fa-file-archive"></i> IPA
+          </button>
+        )}
+      </div>
     </div>
   );
 

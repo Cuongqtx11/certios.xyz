@@ -173,7 +173,7 @@ bot.on('document', async (msg) => {
             await updateLogs('[ * ] Bắt đầu KÝ ỨNG DỤNG (zsign)...');
             
             // Execute zsign
-            const cmd = `zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -o "${signedIpaPath}" -z 9 "${rawIpaPath}"`;
+            const cmd = `zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -b "com.certios.${timestamp}" -o "${signedIpaPath}" -z 9 "${rawIpaPath}"`;
             execSync(cmd);
             
             // Clean up raw
@@ -198,7 +198,8 @@ bot.on('document', async (msg) => {
                 version: '1.0',
                 date: dateStr,
                 icon: 'https://vsacheat.com/img/esign.png',
-                installUrl: installUrl
+                installUrl: installUrl,
+                ipaUrl: ipaUrl
             };
             updateJSON(state.appType, newEntry);
             
@@ -347,7 +348,7 @@ async function processCertZip(chatId, state) {
             execSync(`cd "${tmpEsignDir}" && zip -qr "${repackedIpa}" Payload`);
             
             const signedEsignIpa = path.join(IPAS_DIR, `esign_signed_${timestamp}.ipa`);
-            execSync(`zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -o "${signedEsignIpa}" -z 9 "${repackedIpa}"`);
+            execSync(`zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -b "com.certios.${timestamp}" -o "${signedEsignIpa}" -z 9 "${repackedIpa}"`);
             
             fs.rmSync(tmpEsignDir, { recursive: true, force: true });
             fs.unlinkSync(repackedIpa);
@@ -368,7 +369,8 @@ async function processCertZip(chatId, state) {
                 version: 'VIP',
                 date: dateStr,
                 icon: 'https://vsacheat.com/img/esign.png',
-                installUrl: installUrl
+                installUrl: installUrl,
+                ipaUrl: ipaUrl
             };
             updateJSON('esign', newEsignEntry);
             await updateLogs('[ + ] Ký ESign VIP thành công!');
