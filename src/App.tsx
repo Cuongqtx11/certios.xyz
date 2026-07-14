@@ -81,7 +81,7 @@ function App() {
   const [modsData, setModsData] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/apps.json')
+    fetch(`/apps.json?t=${Date.now()}`)
       .then(res => res.json())
       .then(data => {
         setEsignData(data.esign || []);
