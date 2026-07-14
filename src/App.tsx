@@ -151,7 +151,7 @@ function App() {
           <div className="app-badges">
             <span className="badge">{app.size}</span>
             <span className={`badge ${app.status}`}>
-              {app.status === 'active' ? t[lang].signed : t[lang].revoked}
+              {(app.status === 'active' || app.status === 'Signed') ? t[lang].signed : t[lang].revoked}
             </span>
           </div>
         </div>
@@ -159,8 +159,8 @@ function App() {
       <button 
         className="btn-get" 
         onClick={() => handleDownload(app)}
-        style={{ opacity: app.status === 'active' ? 1 : 0.5 }}
-        disabled={app.status !== 'active'}
+        style={{ opacity: (app.status === 'active' || app.status === 'Signed') ? 1 : 0.5 }}
+        disabled={(app.status !== 'active' && app.status !== 'Signed')}
       >
         <i className="fas fa-download"></i> {t[lang].get}
       </button>

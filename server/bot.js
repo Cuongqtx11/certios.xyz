@@ -8,6 +8,10 @@ const https = require('https');
 const token = '8565117060:AAEHcP73S-K7hvD7HZj4DnCV6-mjKOdWfhM';
 const bot = new TelegramBot(token, { polling: true });
 
+bot.on('polling_error', (error) => {
+    console.log('Polling error:', error.code || error.message);
+});
+
 const APPS_JSON_PATH = path.join(__dirname, '../public/apps.json');
 const CERTS_DIR = path.join(__dirname, 'certs');
 const IPAS_DIR = path.join(__dirname, '../public/downloads/ipas');
@@ -96,17 +100,17 @@ bot.on('message', async (msg) => {
     // Text inputs for names / passwords
     if (state.step === 'WAITING_CERT_NAME') {
         state.appName = text;
-        state.step = 'WAITING_P12';
+        state.step = 'WAITING_CERT_ZIP';
         userStates[chatId] = state;
-        bot.sendMessage(chatId, `Tên chứng chỉ: ${text}\nBây giờ hãy gửi file .p12 cho mình.`);
+        bot.sendMessage(chatId, `Tên chứng chỉ: ${text}\nBây giờ hãy gửi file .zip chứa chứng chỉ (.p12 và .mobileprovision).`);
         return;
     }
     
-    if (state.step === 'WAITING_P12_PASS') {
+    if (state.step === 'WAITING_CERT_ZIP_PASS') {
         state.certPass = text === 'none' ? '' : text;
-        state.step = 'WAITING_PROV';
+        state.step = 'IDLE';
         userStates[chatId] = state;
-        bot.sendMessage(chatId, `Đã ghi nhận mật khẩu.\nTiếp theo, hãy gửi file .mobileprovision cho mình.`);
+        processCertZip(chatId, state);
         return;
     }
 
@@ -136,111 +140,20 @@ bot.on('document', async (msg) => {
     const fileName = document.file_name;
     const state = userStates[chatId] || { step: 'IDLE' };
 
-    if (state.step === 'WAITING_P12' && fileName.endsWith('.p12')) {
-        bot.sendMessage(chatId, 'Đang tải p12...');
+    if (state.step === 'WAITING_CERT_ZIP' && fileName.endsWith('.zip')) {
+        bot.sendMessage(chatId, 'Đang tải file ZIP...');
         const fileLink = await bot.getFileLink(document.file_id);
-        const p12Path = path.join(CERTS_DIR, `cert_${Date.now()}.p12`);
-        await downloadFile(fileLink, p12Path);
-        state.p12Path = p12Path;
-        state.step = 'WAITING_P12_PASS';
+        const zipPath = path.join(CERTS_DIR, `cert_${Date.now()}.zip`);
+        await downloadFile(fileLink, zipPath);
+        state.zipPath = zipPath;
+        state.step = 'WAITING_CERT_ZIP_PASS';
         userStates[chatId] = state;
-        bot.sendMessage(chatId, '✅ Đã tải xong p12. Hãy gửi MẬT KHẨU của p12 (Nếu không có, gõ "none").');
-        return;
-    }
-
-    if (state.step === 'WAITING_PROV' && fileName.endsWith('.mobileprovision')) {
-        bot.sendMessage(chatId, 'Đang tải mobileprovision...');
-        const fileLink = await bot.getFileLink(document.file_id);
-        const provPath = path.join(CERTS_DIR, `prov_${Date.now()}.mobileprovision`);
-        await downloadFile(fileLink, provPath);
-        
-        // Setup Cert
-        latestCert = { p12: state.p12Path, prov: provPath, pass: state.certPass };
-        
-        // Check validity with zsign
-        try {
-            const checkCmd = `zsign -C -k "${latestCert.p12}" -p "${latestCert.pass}"`;
-            const out = execSync(checkCmd).toString();
-            if (out.includes('Expired')) {
-                bot.sendMessage(chatId, '⚠️ Chứng chỉ này có vẻ đã hết hạn hoặc không hợp lệ.');
-            }
-        } catch (e) {
-            console.error('Cert check failed', e);
-        }
-
-        const dateStr = new Date().toLocaleDateString('vi-VN');
-        const timestamp = Date.now();
-        
-        // Auto-generate ESign
-        bot.sendMessage(chatId, 'Đang tự động tích hợp Chứng Chỉ vào ESign...');
-        try {
-            const esignBase = path.join(__dirname, 'ESign_CERTIOS_TEMPLATE.ipa');
-            if (fs.existsSync(esignBase)) {
-                const tmpDir = path.join(__dirname, 'tmp_esign_' + timestamp);
-                fs.mkdirSync(tmpDir, { recursive: true });
-                execSync(`unzip -q "${esignBase}" -d "${tmpDir}"`);
-                
-                const certDir = path.join(tmpDir, 'Payload/ESign.app/signing-assets/certios.xyz');
-                fs.mkdirSync(certDir, { recursive: true });
-                fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
-                fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
-                fs.writeFileSync(path.join(certDir, 'cert.txt'), latestCert.pass);
-                
-                const repackedIpa = path.join(IPAS_DIR, `esign_raw_${timestamp}.ipa`);
-                execSync(`cd "${tmpDir}" && zip -qr "${repackedIpa}" Payload`);
-                
-                const signedEsignIpa = path.join(IPAS_DIR, `esign_signed_${timestamp}.ipa`);
-                execSync(`zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -o "${signedEsignIpa}" -z 9 "${repackedIpa}"`);
-                
-                fs.rmSync(tmpDir, { recursive: true, force: true });
-                fs.unlinkSync(repackedIpa);
-                
-                const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
-                const ipaUrl = `https://certios.xyz/downloads/ipas/esign_signed_${timestamp}.ipa`;
-                generatePlist('CERTIOS ESign', ipaUrl, plistPath);
-                
-                const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
-                const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
-                
-                const newEsignEntry = {
-                    id: `esign_${timestamp}`,
-                    name: 'CERTIOS ESign (' + state.appName + ')',
-                    developer: 'CERTIOS.XYZ',
-                    status: 'active',
-                    size: 'Auto',
-                    version: '1.0',
-                    date: dateStr,
-                    icon: 'https://vsacheat.com/img/esign.png',
-                    installUrl: installUrl
-                };
-                updateJSON('esign', newEsignEntry);
-                bot.sendMessage(chatId, '✅ Tích hợp Chứng Chỉ vào ESign thành công! Đã tự động tạo Link tải ESign lên Web.');
-            } else {
-                bot.sendMessage(chatId, '⚠️ Không tìm thấy ESign_CERTIOS_TEMPLATE.ipa để tự động tạo ESign.');
-            }
-        } catch(e) {
-            bot.sendMessage(chatId, '❌ Lỗi khi tự động tạo ESign: ' + e.message);
-        }
-
-        // Add to apps.json
-        const newEntry = {
-            id: 'cert_' + timestamp,
-            name: state.appName,
-            description: 'Tự động ký chứng chỉ',
-            status: 'active',
-            version: 'Vĩnh viễn',
-            date: dateStr,
-            icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10'
-        };
-        updateJSON('cert', newEntry);
-
-        userStates[chatId] = { step: 'IDLE' };
-        bot.sendMessage(chatId, '✅ Đã lưu Chứng Chỉ thành công!\nLưu ý: Bạn có thể chọn "Push to GitHub" để public.');
+        bot.sendMessage(chatId, '✅ Đã tải xong ZIP. Hãy gửi MẬT KHẨU của p12 (Nếu không có, gõ "none").');
         return;
     }
 
     if (state.step === 'WAITING_IPA' && fileName.endsWith('.ipa')) {
-        bot.sendMessage(chatId, 'Đang tải IPA... Vui lòng chờ (tùy dung lượng mạng).');
+        let msg = await bot.sendMessage(chatId, '```\n[ * ] Đang tải IPA...\n```', { parse_mode: 'Markdown' });
         const fileLink = await bot.getFileLink(document.file_id);
         
         const timestamp = Date.now();
@@ -248,9 +161,16 @@ bot.on('document', async (msg) => {
         const signedIpaPath = path.join(IPAS_DIR, `signed_${timestamp}.ipa`);
         const plistPath = path.join(PLISTS_DIR, `install_${timestamp}.plist`);
         
+        let logs = ['[ * ] Đang tải IPA...'];
+        const updateLogs = async (line) => {
+            logs.push(line);
+            try { await bot.editMessageText('```\n' + logs.join('\n') + '\n```', { chat_id: chatId, message_id: msg.message_id, parse_mode: 'Markdown' }); } catch(e){}
+        };
+
         try {
             await downloadFile(fileLink, rawIpaPath);
-            bot.sendMessage(chatId, '📥 Đã tải xong IPA. Đang tiến hành KÝ ỨNG DỤNG (zsign)...');
+            await updateLogs('[ * ] Đã tải xong IPA.');
+            await updateLogs('[ * ] Bắt đầu KÝ ỨNG DỤNG (zsign)...');
             
             // Execute zsign
             const cmd = `zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -o "${signedIpaPath}" -z 9 "${rawIpaPath}"`;
@@ -258,6 +178,7 @@ bot.on('document', async (msg) => {
             
             // Clean up raw
             fs.unlinkSync(rawIpaPath);
+            await updateLogs('[ + ] Ký ứng dụng thành công!');
             
             // Generate Plist
             const ipaUrl = `https://certios.xyz/downloads/ipas/signed_${timestamp}.ipa`;
@@ -282,10 +203,19 @@ bot.on('document', async (msg) => {
             updateJSON(state.appType, newEntry);
             
             userStates[chatId] = { step: 'IDLE' };
-            bot.sendMessage(chatId, `✅ Ký ứng dụng thành công!\nỨng dụng [${state.appName}] đã được thêm vào trang Web.\nChọn "Push to GitHub" để xuất bản lên web.`);
+            await updateLogs('[ + ] Đã thêm lên Web!');
+            
+            try {
+                execSync('git add . && git commit -m "Auto update apps" && git push', { cwd: path.join(__dirname, '..') });
+                await updateLogs('[ + ] Đã Push lên GitHub thành công!');
+            } catch (err) {
+                await updateLogs('[ - ] Lỗi Push GitHub: ' + err.message);
+            }
+
+            bot.sendMessage(chatId, `✅ Ký ứng dụng thành công!\nỨng dụng [${state.appName}] đã được thêm vào trang Web.\nCài đặt: ${installUrl}`);
 
         } catch (e) {
-            bot.sendMessage(chatId, '❌ Lỗi xử lý IPA: ' + e.message);
+            await updateLogs('[ - ] Lỗi xử lý IPA: ' + e.message);
         }
         return;
     }
@@ -339,4 +269,122 @@ function generatePlist(appName, ipaUrl, dest) {
 </dict>
 </plist>`;
     fs.writeFileSync(dest, plist);
+}
+
+
+async function processCertZip(chatId, state) {
+    let msg = await bot.sendMessage(chatId, '```\n[ * ] Bắt đầu xử lý ZIP...\n```', { parse_mode: 'Markdown' });
+    let logs = ['[ * ] Bắt đầu xử lý ZIP...'];
+    const updateLogs = async (line) => {
+        logs.push(line);
+        try { await bot.editMessageText('```\n' + logs.join('\n') + '\n```', { chat_id: chatId, message_id: msg.message_id, parse_mode: 'Markdown' }); } catch(e){}
+    };
+
+    try {
+        const timestamp = Date.now();
+        const tmpDir = path.join(CERTS_DIR, `tmp_zip_${timestamp}`);
+        fs.mkdirSync(tmpDir, { recursive: true });
+        
+        await updateLogs('[ * ] Đang giải nén ZIP...');
+        execSync(`unzip -q "${state.zipPath}" -d "${tmpDir}"`);
+        
+        // Find p12 and mobileprovision
+        const p12File = execSync(`find "${tmpDir}" -type f -name "*.p12" -not -path "*/__MACOSX/*" | head -n 1`).toString().trim();
+        const provFile = execSync(`find "${tmpDir}" -type f -name "*.mobileprovision" -not -path "*/__MACOSX/*" | head -n 1`).toString().trim();
+        
+        if (!p12File || !provFile) {
+            throw new Error("Không tìm thấy file .p12 hoặc .mobileprovision trong ZIP!");
+        }
+        
+        await updateLogs('[ * ] Đang đổi mật khẩu p12 thành "certios"...');
+        const tmpPem = path.join(tmpDir, 'temp.pem');
+        const newP12Path = path.join(CERTS_DIR, `cert_${timestamp}.p12`);
+        const newProvPath = path.join(CERTS_DIR, `prov_${timestamp}.mobileprovision`);
+        
+        // Change password
+        execSync(`openssl pkcs12 -legacy -in "${p12File}" -passin "pass:${state.certPass}" -nodes -out "${tmpPem}"`);
+        execSync(`openssl pkcs12 -export -in "${tmpPem}" -passout "pass:certios" -out "${newP12Path}"`);
+        
+        fs.copyFileSync(provFile, newProvPath);
+        
+        // Cleanup ZIP and tmpDir
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+        fs.unlinkSync(state.zipPath);
+        
+        latestCert = { p12: newP12Path, prov: newProvPath, pass: 'certios' };
+        await updateLogs('[ + ] Mật khẩu đổi thành công!');
+        
+        const dateStr = new Date().toLocaleDateString('vi-VN');
+        
+        // Display Cert on Web
+        const newCertEntry = {
+            id: 'cert_' + timestamp,
+            name: state.appName,
+            description: 'Tự động ký chứng chỉ',
+            status: 'active',
+            version: 'Vĩnh viễn',
+            date: dateStr,
+            icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10'
+        };
+        updateJSON('cert', newCertEntry);
+        await updateLogs('[ + ] Đã hiển thị Chứng Chỉ lên web!');
+        
+        // Auto sign ESign VIP
+        await updateLogs('[ * ] Đang Ký ESign VIP...');
+        const esignBase = path.join(__dirname, 'ESign_CERTIOS_TEMPLATE.ipa');
+        if (fs.existsSync(esignBase)) {
+            const tmpEsignDir = path.join(__dirname, 'tmp_esign_' + timestamp);
+            fs.mkdirSync(tmpEsignDir, { recursive: true });
+            execSync(`unzip -q "${esignBase}" -d "${tmpEsignDir}"`);
+            
+            const certDir = path.join(tmpEsignDir, 'Payload/ESign.app/signing-assets/certios.xyz');
+            fs.mkdirSync(certDir, { recursive: true });
+            fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
+            fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
+            fs.writeFileSync(path.join(certDir, 'cert.txt'), latestCert.pass);
+            
+            const repackedIpa = path.join(IPAS_DIR, `esign_raw_${timestamp}.ipa`);
+            execSync(`cd "${tmpEsignDir}" && zip -qr "${repackedIpa}" Payload`);
+            
+            const signedEsignIpa = path.join(IPAS_DIR, `esign_signed_${timestamp}.ipa`);
+            execSync(`zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -o "${signedEsignIpa}" -z 9 "${repackedIpa}"`);
+            
+            fs.rmSync(tmpEsignDir, { recursive: true, force: true });
+            fs.unlinkSync(repackedIpa);
+            
+            const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
+            const ipaUrl = `https://certios.xyz/downloads/ipas/esign_signed_${timestamp}.ipa`;
+            generatePlist('CERTIOS ESign', ipaUrl, plistPath);
+            
+            const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
+            const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
+            
+            const newEsignEntry = {
+                id: `esign_${timestamp}`,
+                name: 'CERTIOS ESign VIP (' + state.appName + ')',
+                developer: 'CERTIOS.XYZ',
+                status: 'active',
+                size: 'Auto',
+                version: 'VIP',
+                date: dateStr,
+                icon: 'https://vsacheat.com/img/esign.png',
+                installUrl: installUrl
+            };
+            updateJSON('esign', newEsignEntry);
+            await updateLogs('[ + ] Ký ESign VIP thành công!');
+            
+            try {
+                execSync('git add . && git commit -m "Auto update apps" && git push', { cwd: path.join(__dirname, '..') });
+                await updateLogs('[ + ] Đã Push lên GitHub thành công!');
+            } catch (err) {
+                await updateLogs('[ - ] Lỗi Push GitHub: ' + err.message);
+            }
+
+            bot.sendMessage(chatId, `✅ Hoàn tất toàn bộ quy trình!\nLink cài ESign VIP: ${installUrl}`);
+        } else {
+            await updateLogs('[ - ] Lỗi: Không tìm thấy ESign_CERTIOS_TEMPLATE.ipa');
+        }
+    } catch(e) {
+        await updateLogs('[ - ] Lỗi: ' + e.message);
+    }
 }
