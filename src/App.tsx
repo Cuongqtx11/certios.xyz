@@ -334,7 +334,6 @@ function App() {
 
         {/* Footer */}
         <footer>
-          <p>{t[lang].footerWait}</p>
           <p>&copy; 2026 CERTIOS.XYZ</p>
         </footer>
       </div>
