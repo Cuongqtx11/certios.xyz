@@ -155,7 +155,7 @@ function App() {
       <div className="app-container">
         {/* Top Header */}
         <div className="top-header">
-          <a href="#" className="logo-text">CERTIOS.XYZ</a>
+          <a href="https://cuios.shop" target="_blank" rel="noopener noreferrer" className="logo-text">CERTIOS.XYZ</a>
           <div className="header-controls">
             <div className="lang-switcher">
               <button 
