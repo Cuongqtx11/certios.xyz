@@ -42,6 +42,7 @@ body {
   position: relative;
   overflow-x: hidden;
   background: transparent;
+  zoom: 0.85;
 }
 
 * {
