@@ -23,18 +23,6 @@
       "icon": "https://vsacheat.com/img/esign.png",
       "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784021999805.plist",
       "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021999805.ipa"
-    },
-    {
-      "id": "esign_1784021038888",
-      "name": "ESign",
-      "developer": "CERTIOS.XYZ",
-      "status": "active",
-      "size": "Auto",
-      "version": "VIP",
-      "date": "14/7/2026",
-      "icon": "https://vsacheat.com/img/esign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784021038888.plist",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021038888.ipa"
     }
   ],
   "cert": [
