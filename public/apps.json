@@ -3,7 +3,7 @@
     {
       "id": "esign_1784026722657",
       "name": "ESign",
-      "developer": "iPhone Distribution: China Telecom Corporation Limited",
+      "developer": "China Telecom Corporation Limited",
       "status": "active",
       "size": "17.0 MB",
       "version": "VIP",
@@ -40,7 +40,7 @@
   "cert": [
     {
       "id": "cert_1784026722657",
-      "name": "iPhone Distribution: China Telecom Corporation Limited",
+      "name": "China Telecom Corporation Limited",
       "description": "Mật khẩu: certios",
       "size": "11.6 KB",
       "status": "active",
