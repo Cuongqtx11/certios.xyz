@@ -75,59 +75,22 @@ const t = {
   }
 };
 
-// Mock data based on tabs
-const esignData = [
-  {
-    id: 'e1',
-    name: 'ESign 5.0.2',
-    developer: 'China Academy of Railway Sciences',
-    size: '11.05 MB',
-    status: 'active',
-  },
-  {
-    id: 'e2',
-    name: 'ESign 5.0.0 (No Logs)',
-    developer: 'Hubei Bank Corporation',
-    size: '10.2 MB',
-    status: 'revoked',
-  }
-];
-
-const certData = [
-  {
-    id: 'c1',
-    name: 'China Mobile Group',
-    developer: 'com.chinamobile.group',
-    size: 'P12 Certificate',
-    status: 'active',
-  },
-  {
-    id: 'c2',
-    name: 'Hubei Bank Corporation',
-    developer: 'com.hubeibank.ios',
-    size: 'P12 Certificate',
-    status: 'revoked',
-  }
-];
-
-const modsData = [
-  {
-    id: 'm1',
-    name: 'Spotify++',
-    developer: 'Premium Unlocked',
-    size: '150.2 MB',
-    status: 'active',
-  },
-  {
-    id: 'm2',
-    name: 'TikTok Dark',
-    developer: 'No Watermark + Region Unlocked',
-    size: '230.5 MB',
-    status: 'active',
-  }
-];
-
 function App() {
+  const [esignData, setEsignData] = useState<any[]>([]);
+  const [certData, setCertData] = useState<any[]>([]);
+  const [modsData, setModsData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/apps.json')
+      .then(res => res.json())
+      .then(data => {
+        setEsignData(data.esign || []);
+        setCertData(data.cert || []);
+        setModsData(data.mods || []);
+      })
+      .catch(err => console.error('Error fetching apps.json:', err));
+  }, []);
+
   const [activeTab, setActiveTab] = useState<'esign' | 'cert' | 'mods'>('esign');
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -166,8 +129,12 @@ function App() {
     }, 500); // Wait for slide-in to cover screen
   };
 
-  const handleDownload = (appName: string) => {
-    alert(`${t[lang].alertMsg} [${appName}] chưa được tích hợp.`);
+  const handleDownload = (app: any) => {
+    if (app.installUrl) {
+      window.location.href = app.installUrl;
+    } else {
+      alert(`${t[lang].alertMsg} [${app.name}] chưa được tích hợp.`);
+    }
   };
 
   const renderAppCard = (app: any) => (
@@ -191,7 +158,7 @@ function App() {
       </div>
       <button 
         className="btn-get" 
-        onClick={() => handleDownload(app.name)}
+        onClick={() => handleDownload(app)}
         style={{ opacity: app.status === 'active' ? 1 : 0.5 }}
         disabled={app.status !== 'active'}
       >
@@ -320,9 +287,9 @@ function App() {
 
         {/* List Content */}
         <main className="app-grid">
-          {activeTab === 'esign' && esignData.map(renderAppCard)}
-          {activeTab === 'cert' && certData.map(renderAppCard)}
-          {activeTab === 'mods' && modsData.map(renderAppCard)}
+          {activeTab === 'esign' && esignData.slice(0, 12).map(renderAppCard)}
+          {activeTab === 'cert' && certData.slice(0, 12).map(renderAppCard)}
+          {activeTab === 'mods' && modsData.slice(0, 12).map(renderAppCard)}
         </main>
         
         {/* FAQ Section */}
