@@ -138,7 +138,13 @@ bot.on('document', async (msg) => {
 
     if (state.step === 'WAITING_CERT_ZIP' && fileName.endsWith('.zip')) {
         bot.sendMessage(chatId, 'Đang tải file ZIP...');
-        const fileLink = await bot.getFileLink(document.file_id);
+        let fileLink;
+        try {
+            fileLink = await bot.getFileLink(document.file_id);
+        } catch (e) {
+            bot.sendMessage(chatId, '❌ Lỗi tải file: File quá lớn hoặc lỗi kết nối. Vui lòng thử lại.');
+            return;
+        }
         const zipPath = path.join(CERTS_DIR, `cert_${Date.now()}.zip`);
         await downloadFile(fileLink, zipPath);
         state.zipPath = zipPath;
@@ -150,7 +156,13 @@ bot.on('document', async (msg) => {
 
     if (state.step === 'WAITING_IPA' && fileName.endsWith('.ipa')) {
         let msg = await bot.sendMessage(chatId, '```\n[ * ] Đang tải IPA...\n```', { parse_mode: 'Markdown' });
-        const fileLink = await bot.getFileLink(document.file_id);
+        let fileLink;
+        try {
+            fileLink = await bot.getFileLink(document.file_id);
+        } catch (e) {
+            await bot.editMessageText('❌ Lỗi: File quá lớn (Telegram giới hạn 20MB) hoặc mạng lỗi. Hãy dùng chức năng chia nhỏ hoặc lấy link trực tiếp.', { chat_id: chatId, message_id: msg.message_id });
+            return;
+        }
         
         const timestamp = Date.now();
         const rawIpaPath = path.join(MODS_DIR, `raw_${timestamp}.ipa`);
