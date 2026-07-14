@@ -346,7 +346,7 @@ async function processCertZip(chatId, state) {
             fs.mkdirSync(tmpEsignDir, { recursive: true });
             execSync(`unzip -q "${esignBase}" -d "${tmpEsignDir}"`);
             
-            const certDir = path.join(tmpEsignDir, 'Payload/ESign.app/signing-assets/cuios.shop');
+            const certDir = path.join(tmpEsignDir, 'Payload/ESign.app/signing-assets/certios.xyz');
             fs.mkdirSync(certDir, { recursive: true });
             fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
             fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
