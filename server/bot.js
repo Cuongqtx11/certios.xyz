@@ -135,6 +135,45 @@ bot.on('message', async (msg) => {
         return;
     }
     
+    
+    if (state.step === 'WAITING_RENAME_CERT' && text) {
+        const itemId = state.itemId;
+        const newName = text;
+        
+        let appsData = { esign: [], cert: [], mods: [] };
+        if (fs.existsSync(APPS_JSON_PATH)) {
+            appsData = JSON.parse(fs.readFileSync(APPS_JSON_PATH));
+        }
+        
+        const certItem = appsData.cert.find(i => i.id === itemId);
+        if (certItem) {
+            certItem.name = newName;
+            
+            // Also update corresponding esign's developer field
+            const timestamp = itemId.split('_')[1];
+            const esignId = 'esign_' + timestamp;
+            const esignItem = appsData.esign.find(i => i.id === esignId);
+            if (esignItem) {
+                esignItem.developer = newName;
+            }
+            
+            // If this is the most recently added cert, update latestCert.name in memory so new mods get the new name
+            if (appsData.cert.length > 0 && appsData.cert[0].id === itemId && latestCert) {
+                latestCert.name = newName;
+            }
+            
+            fs.writeFileSync(APPS_JSON_PATH, JSON.stringify(appsData, null, 2));
+            
+            bot.sendMessage(chatId, `✅ Đổi tên thành công thành: ${newName}`);
+            userStates[chatId] = { step: 'IDLE' };
+            
+            try {
+                execSync('git add . && git commit -m "Auto rename cert" && git push', { cwd: path.join(__dirname, '..') });
+            } catch (err) {}
+        }
+        return;
+    }
+
     if (state.step === 'WAITING_MOD_NAME') {
         state.appName = text;
         state.appType = 'mods';
@@ -570,18 +609,39 @@ bot.on('callback_query', async (query) => {
         const category = parts[2];
         const itemId = parts.slice(3).join('_'); // In case ID has underscores
         
-        bot.editMessageText(`Bạn muốn làm gì với ứng dụng này?`, {
+        
+        const kb = [];
+        kb.push([{ text: '❌ Xoá ứng dụng này', callback_data: `mgr_del_${category}_${itemId}` }]);
+        if (category === 'cert') {
+            kb.push([{ text: '✏️ Đổi tên hiển thị', callback_data: `mgr_ren_${category}_${itemId}` }]);
+        }
+        kb.push([{ text: '🔙 Quay lại danh sách', callback_data: `mgr_cat_${category}` }]);
+
+        bot.editMessageText(`Bạn muốn làm gì với ${category === 'cert' ? 'chứng chỉ' : 'ứng dụng'} này?`, {
+            chat_id: chatId,
+            message_id: messageId,
+            reply_markup: {
+                inline_keyboard: kb
+            }
+        });
+
+    }
+    
+    
+    if (data.startsWith('mgr_ren_cert_')) {
+        const itemId = data.substring('mgr_ren_cert_'.length);
+        userStates[chatId] = { step: 'WAITING_RENAME_CERT', itemId: itemId, messageId: messageId };
+        bot.editMessageText('Nhập TÊN HIỂN THỊ MỚI cho chứng chỉ này:', {
             chat_id: chatId,
             message_id: messageId,
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: '❌ Xoá ứng dụng này', callback_data: `mgr_del_${category}_${itemId}` }],
-                    [{ text: '🔙 Quay lại danh sách', callback_data: `mgr_cat_${category}` }]
+                    [{ text: '❌ Huỷ', callback_data: `mgr_cat_cert` }]
                 ]
             }
         });
     }
-    
+
     if (data.startsWith('mgr_del_')) {
         const parts = data.split('_');
         const category = parts[2];
