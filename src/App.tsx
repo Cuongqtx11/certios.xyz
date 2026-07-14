@@ -109,6 +109,11 @@ function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [curtainClass, setCurtainClass] = useState('');
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  const toggleFaq = (index: number) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  };
 
   // Handle Theme Toggle
   useEffect(() => {
@@ -295,6 +300,36 @@ function App() {
           {activeTab === 'mods' && modsData.map(renderAppCard)}
         </main>
         
+        {/* FAQ Section */}
+        <div className="faq-section glass">
+          <h3 className="faq-title">Câu hỏi thường gặp (FAQ)</h3>
+          
+          <div className={`faq-item ${openFaqIndex === 0 ? 'open' : ''}`}>
+            <button className="faq-question" onClick={() => toggleFaq(0)}>Ứng dụng ESign để làm gì? <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">ESign cho phép bạn ký và cài đặt trực tiếp các tệp IPA (ứng dụng iOS) lên iPhone hoặc iPad mà không cần qua App Store.</div>
+          </div>
+          
+          <div className={`faq-item ${openFaqIndex === 1 ? 'open' : ''}`}>
+            <button className="faq-question" onClick={() => toggleFaq(1)}>Ứng dụng này có dùng được lâu không? <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">Các chứng chỉ doanh nghiệp miễn phí thường không ổn định và có thể bị Apple thu hồi bất cứ lúc nào. Để có trải nghiệm ổn định và lâu dài, bạn nên tham khảo giải pháp chứng chỉ cá nhân tại <a href="https://cuios.shop" target="_blank" rel="noopener noreferrer">cuios.shop</a>.</div>
+          </div>
+          
+          <div className={`faq-item ${openFaqIndex === 2 ? 'open' : ''}`}>
+            <button className="faq-question" onClick={() => toggleFaq(2)}>Tại sao ứng dụng bị thu hồi? <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">Apple thường xuyên quét và thu hồi các chứng chỉ doanh nghiệp bị lạm dụng. Khi chứng chỉ bị thu hồi, mọi ứng dụng ký bằng chứng chỉ đó sẽ ngừng hoạt động.</div>
+          </div>
+          
+          <div className={`faq-item ${openFaqIndex === 3 ? 'open' : ''}`}>
+            <button className="faq-question" onClick={() => toggleFaq(3)}>Có cần jailbreak để sử dụng không? <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">Hoàn toàn không. ESign và các chứng chỉ mà chúng tôi cung cấp hoạt động trên thiết bị nguyên bản, không yêu cầu jailbreak, đảm bảo an toàn cho thiết bị của bạn.</div>
+          </div>
+          
+          <div className={`faq-item ${openFaqIndex === 4 ? 'open' : ''}`}>
+            <button className="faq-question" onClick={() => toggleFaq(4)}>Làm sao để hạn chế bị thu hồi? <i className="fas fa-chevron-down"></i></button>
+            <div className="faq-answer">Bạn có thể sử dụng DNS chặn thu hồi (có trong mục "DNS và Công Cụ Tiện Ích") để giảm thiểu rủi ro. Tuy nhiên, cách triệt để nhất là chuyển sang sử dụng chứng chỉ cá nhân riêng biệt, đảm bảo không bị ảnh hưởng bởi các đợt quét của Apple.</div>
+          </div>
+        </div>
+
         {/* Footer */}
         <footer>
           <p>{t[lang].footerWait}</p>
