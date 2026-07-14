@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ESign User Agreement</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --heading-color: #111111;
+            --accent-color: #007aff;
+            --border-color: #eeeeee;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-color: #dddddd;
+                --text-secondary: #aaaaaa;
+                --heading-color: #ffffff;
+                --accent-color: #0a84ff;
+                --border-color: #333333;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 20px 48px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--heading-color);
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--heading-color);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+
+        .intro {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 24px;
+            background-color: rgba(128, 128, 128, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .container[lang] { display: none; }
+
+        /* iPad and larger screens adjustments
+         * 与 TG 设置页风格对齐：协议文字直接平铺，去掉旧版在 iPad 上加的
+         * box-shadow + border-radius + container 背景色（视觉上像一个"实体卡片"），
+         * 保留与正文字号 / 行距相关的可读性调整。
+         */
+        @media screen and (min-width: 768px) {
+            .container {
+                padding: 24px 40px 48px;
+                margin-top: 0;
+                margin-bottom: 0;
+                border-radius: 0;
+                box-shadow: none;
+                background-color: transparent;
+            }
+
+            h1 {
+                font-size: 28px;
+                margin-bottom: 32px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-top: 40px;
+            }
+
+            p {
+                font-size: 16px;
+                line-height: 1.7;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" lang="zh">
+        <h1>用户服务协议</h1>
+        <div class="intro">请在使用ESign应用服务前，仔细阅读并充分理解以下内容及条款：</div>
+
+        <div class="section">
+            <h2>1. 关于本产品</h2>
+            <p>1.1 本产品是一款为开发者提供ipa签名并进行测试的工具软件，仅供您在合法的前提下测试应用程序。请您在使用时，切勿利用本工具软件侵害第三方的合法权利或用于其他非法用途。</p>
+        </div>
+
+        <div class="section">
+            <h2>2. 用户行为</h2>
+            <p>在任何情况下，您不得使用或利用本产品制作、复制、发布、传播含有以下内容的信息或程序或实施具有下列情形的行为：</p>
+            <p>2.1 反对宪法所确定的基本原则的；</p>
+            <p>2.2 危害国家安全，泄露国家机密，颠覆国家政权，破坏国家统一的；</p>
+            <p>2.3 损害国家荣誉和利益的；</p>
+            <p>2.4 煽动民族仇恨、民族歧视，破坏民族团结的；</p>
+            <p>2.5 破坏国家宗教政策，宣扬邪教和封建迷信的；</p>
+            <p>2.6 散布谣言，扰乱社会秩序，破坏社会稳定的；</p>
+            <p>2.7 散布淫秽、赌博、暴力、恐怖或教唆犯罪的；</p>
+            <p>2.8 侮辱或者诽谤他人的；</p>
+            <p>2.9 侵犯他人知识产权或其他合法权益的；</p>
+            <p>2.10 违反国家法律、法规规定的。</p>
+        </div>
+
+        <div class="section">
+            <h2>3. 使用规范</h2>
+            <p>3.1 您知晓并同意，您并不会将ESign所提供的任何一项服务用于违反任何国家相关法律的用途，否则，由此而出现的所有法律后果，将由您自行全部承担；</p>
+            <p>3.2 您知晓并同意，您不会添加任何含有违法内容、侵犯版权等的软件源。添加软件源属于个人行为，与本App无关，否则，所产生的任何法律风险和后果将由您自行全部承担；</p>
+            <p>3.3 您知晓并同意，您不会签名任何含有违法内容、侵犯版权等的ipa包。签名ipa包属于个人行为，与本App无关，否则，所产生的任何法律风险和后果将由您自行全部承担；</p>
+            <p>3.4 您知晓并同意，您不会安装任何含有违法内容、侵犯版权等的ipa包。安装ipa包属于个人行为，与本App无关，否则，所产生的任何法律风险和后果将由您自行全部承担；</p>
+            <p>3.5 您知晓并同意，您不会下载任何含有违法内容、侵犯版权等的视频。下载视频属于个人行为，与本App无关，否则，所产生的任何法律风险和后果将由您自行全部承担；</p>
+            <p>3.6 您知晓并同意，您没有向ESign提交任何的虚假信息或材料，也没有故意隐瞒您的App中可能存在的违法内容。否则，由此出现的所有后果，将由您自行全部承担；</p>
+            <p>3.7 您知晓并同意，由于ESign技术原因可能导致签名后app闪退、不能正常使用，ESign不承担该风险以及该风险导致的后续一切损失；</p>
+            <p>3.8 您知晓并同意，我们提供的App（手机应用程序）拥有完整独立的知识产权，包括但不限于外观设计、著作权、文本，图形，徽标，按钮图标，图像，音频剪辑，且不会被用于未经许可的任何有关产品或服务；</p>
+            <p>3.9 您知晓并同意，我们在需要时通过技术手段合法收集和使用有关您及您提供的App（手机应用程序）所使用本服务的技术性或诊断性信息，收集到的信息将用于改进我们的服务内容，提升我们的服务品质。我们不会将您设备的信息分享或出售给其他的组织；</p>
+            <p>3.10 未经开发团队同意，您不得将本产品授权或许可第三方使用。</p>
+        </div>
+
+        <div class="section">
+            <h2>4. 免责声明</h2>
+            <p>4.1 本产品是基于现状且可获得而提供。开发团队不承诺本产品的任何服务或功能无任何错误或不中断，不承诺任何瑕疵将被纠正，或者您对本产品的使用将产生特定结果。</p>
+            <p>4.2 对产品所适用的软件或使用本产品所产生或可能产生的任何结果，开发团队不承担任何责任。</p>
+            <p>4.3 您合法地自行选择本产品的使用方式和适用对象。在任何情况下，将由您对使用本产品及其使用结果及风险承担全部责任。若您使用本产品侵害了任何第三方的合法权益的，所产生的全部法律责任将由您承担。</p>
+        </div>
+
+        <div class="section">
+            <h2>5. 责任限制</h2>
+            <p>5.1 除法律另有规定外，在任何情形下，开发团队对任何间接、衍生、惩戒、附带或惩罚性损害，包括利益损失等，概不承担责任。</p>
+        </div>
+    </div>
+
+    <div class="container" lang="en">
+        <h1>User Service Agreement</h1>
+        <div class="intro">Please read and fully understand the following terms and conditions before using the ESign application:</div>
+
+        <div class="section">
+            <h2>1. About This Product</h2>
+            <p>1.1 This product is a development tool that provides IPA signing and testing capabilities. It is intended solely for lawful application testing. You must not use this tool to infringe upon any third party's rights or for any illegal purposes.</p>
+        </div>
+
+        <div class="section">
+            <h2>2. User Conduct</h2>
+            <p>Under no circumstances shall you use this product to create, copy, publish, or distribute information, programs, or conduct that:</p>
+            <p>2.1 Opposes the fundamental principles established by the constitution;</p>
+            <p>2.2 Endangers national security, leaks state secrets, subverts state power, or undermines national unity;</p>
+            <p>2.3 Damages national honor and interests;</p>
+            <p>2.4 Incites ethnic hatred, ethnic discrimination, or undermines ethnic solidarity;</p>
+            <p>2.5 Undermines national religious policies, promotes cults, or feudal superstitions;</p>
+            <p>2.6 Spreads rumors, disrupts social order, or undermines social stability;</p>
+            <p>2.7 Spreads obscenity, gambling, violence, terror, or incites crime;</p>
+            <p>2.8 Insults or defames others;</p>
+            <p>2.9 Infringes upon the intellectual property or other lawful rights of others;</p>
+            <p>2.10 Violates national laws and regulations.</p>
+        </div>
+
+        <div class="section">
+            <h2>3. Usage Guidelines</h2>
+            <p>3.1 You acknowledge and agree that you will not use any service provided by ESign for purposes that violate any applicable laws. You shall bear all legal consequences arising from any such violations;</p>
+            <p>3.2 You acknowledge and agree that you will not add any software sources containing illegal content or copyright infringement. Adding software sources is a personal action unrelated to this App, and you shall bear all legal risks and consequences;</p>
+            <p>3.3 You acknowledge and agree that you will not sign any IPA packages containing illegal content or copyright infringement. Signing IPA packages is a personal action unrelated to this App, and you shall bear all legal risks and consequences;</p>
+            <p>3.4 You acknowledge and agree that you will not install any IPA packages containing illegal content or copyright infringement. Installing IPA packages is a personal action unrelated to this App, and you shall bear all legal risks and consequences;</p>
+            <p>3.5 You acknowledge and agree that you will not download any videos containing illegal content or copyright infringement. Downloading videos is a personal action unrelated to this App, and you shall bear all legal risks and consequences;</p>
+            <p>3.6 You acknowledge and agree that you have not submitted any false information or materials to ESign, nor intentionally concealed any potentially illegal content in your App. You shall bear all consequences arising from any such actions;</p>
+            <p>3.7 You acknowledge and agree that due to technical limitations, ESign may cause signed apps to crash or malfunction. ESign shall not be liable for such risks or any resulting losses;</p>
+            <p>3.8 You acknowledge and agree that our App possesses complete and independent intellectual property rights, including but not limited to design, copyright, text, graphics, logos, button icons, images, and audio clips, which shall not be used for any unauthorized products or services;</p>
+            <p>3.9 You acknowledge and agree that we may lawfully collect and use technical or diagnostic information related to your use of this service when necessary. The collected information will be used to improve our service content and quality. We will not share or sell your device information to other organizations;</p>
+            <p>3.10 You shall not authorize or license this product to any third party without the consent of the development team.</p>
+        </div>
+
+        <div class="section">
+            <h2>4. Disclaimer</h2>
+            <p>4.1 This product is provided on an "as is" and "as available" basis. The development team does not guarantee that any service or feature of this product will be error-free or uninterrupted, that any defects will be corrected, or that your use of this product will produce specific results.</p>
+            <p>4.2 The development team shall not be liable for any results arising from or potentially arising from the software applicable to this product or the use of this product.</p>
+            <p>4.3 You lawfully choose the manner and objects of use of this product at your own discretion. In all circumstances, you shall bear full responsibility for the use of this product and its results and risks. If your use of this product infringes upon any third party's rights, you shall bear all resulting legal liability.</p>
+        </div>
+
+        <div class="section">
+            <h2>5. Limitation of Liability</h2>
+            <p>5.1 Unless otherwise provided by law, the development team shall not be liable for any indirect, consequential, punitive, incidental, or exemplary damages, including loss of profits, under any circumstances.</p>
+        </div>
+    </div>
+
+    <div class="container" lang="vi">
+        <h1>Thỏa thuận dịch vụ người dùng</h1>
+        <div class="intro">Vui lòng đọc kỹ và hiểu đầy đủ các điều khoản sau trước khi sử dụng ứng dụng ESign:</div>
+
+        <div class="section">
+            <h2>1. Về sản phẩm này</h2>
+            <p>1.1 Sản phẩm này là công cụ phát triển cung cấp khả năng ký và kiểm thử IPA. Nó chỉ dành cho việc kiểm thử ứng dụng hợp pháp. Bạn không được sử dụng công cụ này để xâm phạm quyền lợi của bên thứ ba hoặc cho bất kỳ mục đích bất hợp pháp nào.</p>
+        </div>
+
+        <div class="section">
+            <h2>2. Hành vi người dùng</h2>
+            <p>Trong mọi trường hợp, bạn không được sử dụng sản phẩm này để tạo, sao chép, xuất bản hoặc phân phối thông tin, chương trình hoặc hành vi:</p>
+            <p>2.1 Chống lại các nguyên tắc cơ bản được hiến pháp quy định;</p>
+            <p>2.2 Gây nguy hại cho an ninh quốc gia, tiết lộ bí mật nhà nước, lật đổ chính quyền hoặc phá hoại sự thống nhất quốc gia;</p>
+            <p>2.3 Gây tổn hại đến danh dự và lợi ích quốc gia;</p>
+            <p>2.4 Kích động thù hận dân tộc, phân biệt dân tộc hoặc phá hoại đoàn kết dân tộc;</p>
+            <p>2.5 Phá hoại chính sách tôn giáo, truyền bá tà giáo hoặc mê tín dị đoan;</p>
+            <p>2.6 Lan truyền tin đồn, phá rối trật tự xã hội hoặc làm mất ổn định xã hội;</p>
+            <p>2.7 Lan truyền nội dung khiêu dâm, cờ bạc, bạo lực, khủng bố hoặc xúi giục phạm tội;</p>
+            <p>2.8 Xúc phạm hoặc phỉ báng người khác;</p>
+            <p>2.9 Xâm phạm quyền sở hữu trí tuệ hoặc các quyền hợp pháp khác của người khác;</p>
+            <p>2.10 Vi phạm luật pháp và quy định quốc gia.</p>
+        </div>
+
+        <div class="section">
+            <h2>3. Quy tắc sử dụng</h2>
+            <p>3.1 Bạn thừa nhận và đồng ý rằng bạn sẽ không sử dụng bất kỳ dịch vụ nào của ESign cho mục đích vi phạm pháp luật. Bạn sẽ chịu mọi hậu quả pháp lý phát sinh;</p>
+            <p>3.2 Bạn thừa nhận và đồng ý rằng bạn sẽ không thêm bất kỳ nguồn phần mềm nào chứa nội dung bất hợp pháp hoặc vi phạm bản quyền. Việc thêm nguồn phần mềm là hành vi cá nhân không liên quan đến App này;</p>
+            <p>3.3 Bạn thừa nhận và đồng ý rằng bạn sẽ không ký bất kỳ gói IPA nào chứa nội dung bất hợp pháp hoặc vi phạm bản quyền. Việc ký IPA là hành vi cá nhân không liên quan đến App này;</p>
+            <p>3.4 Bạn thừa nhận và đồng ý rằng bạn sẽ không cài đặt bất kỳ gói IPA nào chứa nội dung bất hợp pháp hoặc vi phạm bản quyền. Việc cài đặt IPA là hành vi cá nhân không liên quan đến App này;</p>
+            <p>3.5 Bạn thừa nhận và đồng ý rằng bạn sẽ không tải xuống bất kỳ video nào chứa nội dung bất hợp pháp hoặc vi phạm bản quyền. Việc tải video là hành vi cá nhân không liên quan đến App này;</p>
+            <p>3.6 Bạn thừa nhận và đồng ý rằng bạn không gửi bất kỳ thông tin hoặc tài liệu sai lệch nào cho ESign. Bạn sẽ chịu mọi hậu quả phát sinh;</p>
+            <p>3.7 Bạn thừa nhận và đồng ý rằng do hạn chế kỹ thuật, ESign có thể khiến ứng dụng đã ký bị lỗi. ESign không chịu trách nhiệm cho những rủi ro đó;</p>
+            <p>3.8 Bạn thừa nhận và đồng ý rằng App của chúng tôi sở hữu đầy đủ quyền sở hữu trí tuệ độc lập;</p>
+            <p>3.9 Bạn thừa nhận và đồng ý rằng chúng tôi có thể thu thập thông tin kỹ thuật hoặc chẩn đoán khi cần thiết để cải thiện dịch vụ. Chúng tôi sẽ không chia sẻ hoặc bán thông tin thiết bị của bạn cho tổ chức khác;</p>
+            <p>3.10 Bạn không được ủy quyền hoặc cấp phép sản phẩm này cho bên thứ ba nếu không có sự đồng ý của đội ngũ phát triển.</p>
+        </div>
+
+        <div class="section">
+            <h2>4. Tuyên bố miễn trừ</h2>
+            <p>4.1 Sản phẩm này được cung cấp trên cơ sở "nguyên trạng". Đội ngũ phát triển không đảm bảo rằng bất kỳ dịch vụ hoặc tính năng nào sẽ không có lỗi hoặc không bị gián đoạn.</p>
+            <p>4.2 Đội ngũ phát triển không chịu trách nhiệm cho bất kỳ kết quả nào phát sinh từ việc sử dụng sản phẩm này.</p>
+            <p>4.3 Bạn tự chịu toàn bộ trách nhiệm về việc sử dụng sản phẩm này và các kết quả cũng như rủi ro của nó.</p>
+        </div>
+
+        <div class="section">
+            <h2>5. Giới hạn trách nhiệm</h2>
+            <p>5.1 Trừ khi pháp luật có quy định khác, đội ngũ phát triển sẽ không chịu trách nhiệm cho bất kỳ thiệt hại gián tiếp, phái sinh, trừng phạt, phụ thuộc hoặc mang tính trừng phạt nào, bao gồm cả tổn thất lợi nhuận.</p>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        function normalizeLang(value) {
+            var lang = (value || '').toLowerCase();
+            if (lang.indexOf('zh') === 0) return 'zh';
+            if (lang.indexOf('vi') === 0) return 'vi';
+            return 'en';
+        }
+
+        var appLang = '';
+        if (typeof window.__APP_LANG === 'string') {
+            appLang = window.__APP_LANG;
+        }
+
+        var lang = appLang || navigator.language || navigator.userLanguage || 'en';
+        var target = normalizeLang(lang);
+
+        var blocks = document.querySelectorAll('.container[lang]');
+        for (var i = 0; i < blocks.length; i++) {
+            blocks[i].style.display = (blocks[i].getAttribute('lang') === target) ? 'block' : 'none';
+        }
+        document.documentElement.lang = target;
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>ESign</string>
+	<key>CFBundleName</key>
+	<string>ESign</string>
+	<key>NSCameraUsageDescription</key>
+	<string>L'accès à l'appareil photo est requis pour prendre des photos.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Face ID est utilisé pour protéger la sécurité de l'application.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>L'accès à la localisation est requis pour que l'application puisse installer des apps et transférer des fichiers en arrière-plan.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>L'accès à la localisation est requis pour que l'application puisse installer des apps et transférer des fichiers en arrière-plan.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>L'accès au microphone est requis pour enregistrer des vidéos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>L'accès à la photothèque est requis pour enregistrer des images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>L'accès à la photothèque est requis pour importer des images.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Cet identifiant sera utilisé pour vous proposer des publicités personnalisées.</string>
+</dict>
+</plist>

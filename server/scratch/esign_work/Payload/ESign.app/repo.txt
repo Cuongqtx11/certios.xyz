@@ -1,0 +1,4 @@
+https://khoindvn.github.io/apps.json
+https://github.com/LiveContainer/LiveContainer/releases/download/1.0/apps.json
+https://community-apps.sidestore.io/sidecommunity.json
+https://alt.crystall1ne.dev

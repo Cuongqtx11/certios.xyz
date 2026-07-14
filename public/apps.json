@@ -1,6 +1,18 @@
 {
   "esign": [
     {
+      "id": "esign_1784020141641",
+      "name": "ESign",
+      "developer": "CERTIOS.XYZ",
+      "status": "active",
+      "size": "Auto",
+      "version": "VIP",
+      "date": "14/7/2026",
+      "icon": "https://vsacheat.com/img/esign.png",
+      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784020141641.plist",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784020141641.ipa"
+    },
+    {
       "id": "esign_1784005450875",
       "name": "CERTIOS ESign VIP (test ký)",
       "developer": "CERTIOS.XYZ",
@@ -44,6 +56,15 @@
     }
   ],
   "cert": [
+    {
+      "id": "cert_1784020141641",
+      "name": "Chứng Chỉ Mới",
+      "description": "Tự động ký chứng chỉ",
+      "status": "active",
+      "version": "Vĩnh viễn",
+      "date": "14/7/2026",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10"
+    },
     {
       "id": "cert_1784005450875",
       "name": "test ký",
