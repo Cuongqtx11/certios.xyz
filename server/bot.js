@@ -46,7 +46,14 @@ const downloadFile = (url, dest) => {
     });
 };
 
+const ALLOWED_USER = 5654107862;
+
+bot.on('polling_error', (error) => {
+    console.log(`[Polling Error] ${error.code || error.message}`);
+});
+
 bot.onText(/\/start/, (msg) => {
+    if (msg.from.id !== ALLOWED_USER) return;
     const chatId = msg.chat.id;
     userStates[chatId] = { step: 'IDLE' };
     
@@ -65,6 +72,7 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.on('message', async (msg) => {
+    if (msg.from.id !== ALLOWED_USER) return;
     const chatId = msg.chat.id;
     const text = msg.text;
     const state = userStates[chatId] || { step: 'IDLE' };
@@ -557,6 +565,7 @@ async function processCertZip(chatId, state) {
 
 
 bot.on('callback_query', async (query) => {
+    if (query.from.id !== ALLOWED_USER) return;
     const chatId = query.message.chat.id;
     const messageId = query.message.message_id;
     const data = query.data;
