@@ -448,15 +448,28 @@ async function processCertZip(chatId, state) {
         
         const dateStr = new Date().toLocaleDateString('vi-VN');
         
+        // Create a ZIP for web download
+        const downloadZipPath = path.join(CERTS_DIR, `cert_download_${timestamp}.zip`);
+        const passPath = path.join(CERTS_DIR, `pass_${timestamp}.txt`);
+        fs.writeFileSync(passPath, 'certios');
+        const cp = require('child_process');
+        cp.execSync(`zip -j "${downloadZipPath}" "${newP12Path}" "${newProvPath}" "${passPath}"`);
+        fs.unlinkSync(passPath);
+        
+        const certDownloadUrl = `https://certios.xyz/downloads/certs/cert_download_${timestamp}.zip`;
+        const sizeMb = (fs.statSync(downloadZipPath).size / 1024).toFixed(1) + ' KB';
+
         // Display Cert on Web
         const newCertEntry = {
             id: 'cert_' + timestamp,
             name: state.appName,
-            description: 'Tự động ký chứng chỉ',
+            description: 'Mật khẩu: certios',
+            size: sizeMb,
             status: 'active',
             version: 'Vĩnh viễn',
             date: dateStr,
-            icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10'
+            icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10',
+            installUrl: certDownloadUrl
         };
         updateJSON('cert', newCertEntry);
         await updateLogs('[ + ] Đã hiển thị Chứng Chỉ lên web!');
@@ -678,9 +691,14 @@ bot.on('callback_query', async (query) => {
                 }
                 if (item.installUrl) {
                     try {
-                        const plistFilename = item.installUrl.split('/').pop();
-                        const plistLocalPath = path.join(__dirname, '../public/downloads/plists', plistFilename);
-                        if (fs.existsSync(plistLocalPath)) fs.unlinkSync(plistLocalPath);
+                        const filename = item.installUrl.split('/').pop();
+                        if (category === 'cert') {
+                            const certLocalPath = path.join(__dirname, '../public/downloads/certs', filename);
+                            if (fs.existsSync(certLocalPath)) fs.unlinkSync(certLocalPath);
+                        } else {
+                            const plistLocalPath = path.join(__dirname, '../public/downloads/plists', filename);
+                            if (fs.existsSync(plistLocalPath)) fs.unlinkSync(plistLocalPath);
+                        }
                     } catch(e){}
                 }
             }
