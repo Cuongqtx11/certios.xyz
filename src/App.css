@@ -14,14 +14,21 @@
   padding-bottom: 10px;
 }
 
+@keyframes shine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
 .logo-text {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: var(--gradient-1);
+  background: linear-gradient(90deg, #0a84ff, #5e5ce6, #00cec9, #0a84ff);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-decoration: none;
+  animation: shine 3s linear infinite;
 }
 
 .header-controls {
@@ -83,6 +90,12 @@
   animation: fadeInDown 0.8s ease-out forwards;
 }
 
+.apple-icon-header {
+  font-size: 40px;
+  color: var(--text-color);
+  margin-bottom: 12px;
+}
+
 .title {
   font-size: 32px;
   font-weight: 700;
@@ -97,6 +110,113 @@
   font-size: 15px;
   color: var(--secondary-text);
   font-weight: 400;
+}
+
+/* Action Links */
+.links-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--text-color);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.action-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.action-icon {
+  font-size: 18px;
+}
+
+/* Compare Section */
+.compare-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compare-row {
+  display: flex;
+  gap: 12px;
+}
+
+.compare-col {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 20px;
+  flex: 1;
+  transition: transform 0.2s ease;
+}
+
+.compare-col:hover {
+  transform: translateY(-2px);
+}
+
+.compare-label {
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.compare-label-free {
+  color: #ff453a;
+}
+
+.compare-label-premium {
+  color: var(--primary-color);
+}
+
+.compare-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.compare-list li {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+}
+
+.compare-list li i {
+  font-size: 13px;
+}
+
+.compare-list li .fa-minus-circle {
+  color: #ff453a;
+}
+
+.compare-list li .fa-check-circle {
+  color: #30d158;
+}
+
+@media (max-width: 400px) {
+  .compare-row {
+    flex-direction: column;
+  }
 }
 
 /* DNS Banner placed above tabs */

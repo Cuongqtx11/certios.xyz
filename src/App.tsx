@@ -11,7 +11,20 @@ const t = {
     footerWait: "Giao diện chờ dữ liệu API của bạn.",
     signed: "Good",
     revoked: "Thu hồi",
-    alertMsg: "Chức năng tải"
+    alertMsg: "Chức năng tải",
+    support: "Liên Hệ Hỗ Trợ 24/7",
+    community: "Tham Gia Cộng Đồng",
+    autoStore: "Website Bán Chứng Chỉ Tự Động",
+    freeCert: "⚡ CHỨNG CHỈ MIỄN PHÍ",
+    free1: "Thời gian không ổn định",
+    free2: "Có thể bị thu hồi",
+    free3: "Dùng chung nhiều người",
+    free4: "Phù hợp trải nghiệm",
+    premCert: "⭐ CHỨNG CHỈ CÁ NHÂN",
+    prem1: "Ổn định trọn vẹn 1 năm",
+    prem2: "Không lo bị thu hồi",
+    prem3: "UDID riêng biệt",
+    prem4: "Cài thoải mái, bền vững",
   },
   en: {
     subtitle: "Free Enterprise Certificates",
@@ -21,7 +34,20 @@ const t = {
     footerWait: "Interface waiting for your API data.",
     signed: "Good",
     revoked: "Revoked",
-    alertMsg: "Download feature for"
+    alertMsg: "Download feature for",
+    support: "24/7 Support Contact",
+    community: "Join Community",
+    autoStore: "Automated Certificate Store",
+    freeCert: "⚡ FREE CERTIFICATES",
+    free1: "Unstable duration",
+    free2: "Can be revoked anytime",
+    free3: "Shared with many users",
+    free4: "Good for testing",
+    premCert: "⭐ PERSONAL CERTIFICATES",
+    prem1: "Stable for full 1 year",
+    prem2: "No revoke worries",
+    prem3: "Dedicated UDID",
+    prem4: "Install freely, durable",
   }
 };
 
@@ -179,9 +205,50 @@ function App() {
 
         {/* Header */}
         <header className="header">
+          <i className="fab fa-apple apple-icon-header"></i>
           <h1 className="title">APPLE CERTIFICATE.</h1>
           <p className="subtitle">{t[lang].subtitle}</p>
         </header>
+
+        {/* Action Links */}
+        <div className="links-container">
+          <a href="https://t.me/tomqtx1111" target="_blank" rel="noopener noreferrer" className="action-link glass">
+            <i className="fas fa-headset action-icon" style={{ color: '#FF8C42' }}></i>
+            <span>{t[lang].support}</span>
+          </a>
+          <a href="https://t.me/chungchicuios" target="_blank" rel="noopener noreferrer" className="action-link glass">
+            <i className="fas fa-users action-icon" style={{ color: '#34B7F1' }}></i>
+            <span>{t[lang].community}</span>
+          </a>
+          <a href="https://cuios.shop" target="_blank" rel="noopener noreferrer" className="action-link glass">
+            <i className="fas fa-globe action-icon" style={{ color: '#E91E63' }}></i>
+            <span>{t[lang].autoStore}</span>
+          </a>
+        </div>
+
+        {/* Compare Section */}
+        <div className="compare-section">
+          <div className="compare-row">
+            <div className="compare-col glass">
+              <div className="compare-label compare-label-free">{t[lang].freeCert}</div>
+              <ul className="compare-list">
+                <li><i className="fas fa-minus-circle"></i> {t[lang].free1}</li>
+                <li><i className="fas fa-minus-circle"></i> {t[lang].free2}</li>
+                <li><i className="fas fa-minus-circle"></i> {t[lang].free3}</li>
+                <li><i className="fas fa-minus-circle"></i> {t[lang].free4}</li>
+              </ul>
+            </div>
+            <div className="compare-col glass">
+              <div className="compare-label compare-label-premium">{t[lang].premCert}</div>
+              <ul className="compare-list">
+                <li><i className="fas fa-check-circle"></i> {t[lang].prem1}</li>
+                <li><i className="fas fa-check-circle"></i> {t[lang].prem2}</li>
+                <li><i className="fas fa-check-circle"></i> {t[lang].prem3}</li>
+                <li><i className="fas fa-check-circle"></i> {t[lang].prem4}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
         {/* DNS Banner */}
         <a href="#" className="dns-banner glass" onClick={(e) => { e.preventDefault(); alert("Link tải file cấu hình chặn thu hồi"); }}>
