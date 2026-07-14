@@ -45,5 +45,18 @@
       "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10"
     }
   ],
-  "mods": []
+  "mods": [
+    {
+      "id": "mods_1784024874669",
+      "name": "Liên Quân Mobile",
+      "description": "map kín cam xa 3 nấc",
+      "developer": "Mod",
+      "status": "active",
+      "size": "N/A",
+      "version": "1.0",
+      "date": "14/7/2026",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxytBMzcd3jfDzSmCVBJY7t3gmDHcHjH46_NhgYqChhA&s=10",
+      "installUrl": "https://www.mediafire.com/file/6vfvgjzgn4fp790/Map+Free.ipa/file"
+    }
+  ]
 }
