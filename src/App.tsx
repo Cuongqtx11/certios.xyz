@@ -7,6 +7,7 @@ const t = {
     subtitle: "Chứng Chỉ Doanh Nghiệp Miễn Phí",
     dns: "DNS Chặn Thu Hồi",
     dnsDesc: "Cài cấu hình để sử dụng ESign an toàn",
+    dnsWarning: "Đây là cấu hình bắt buộc cài đặt trước tiên",
     get: "NHẬN",
     footerWait: "Giao diện chờ dữ liệu API của bạn.",
     signed: "Good",
@@ -30,6 +31,7 @@ const t = {
     subtitle: "Free Enterprise Certificates",
     dns: "Anti-Revoke DNS",
     dnsDesc: "Install profile to use ESign safely",
+    dnsWarning: "This is a mandatory profile to install first",
     get: "GET",
     footerWait: "Interface waiting for your API data.",
     signed: "Good",
@@ -264,6 +266,7 @@ function App() {
             <div className="dns-text">
               <h4>{t[lang].dns}</h4>
               <p>{t[lang].dnsDesc}</p>
+              <p className="dns-warning"><i className="fas fa-exclamation-triangle"></i> {t[lang].dnsWarning}</p>
             </div>
           </div>
           <div className="dns-arrow">
