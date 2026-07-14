@@ -3,7 +3,7 @@
     {
       "id": "esign_1784022078485",
       "name": "ESign",
-      "developer": "CERTIOS.XYZ",
+      "developer": "VIETNAM AIRLINES JSC",
       "status": "active",
       "size": "Auto",
       "version": "VIP",
@@ -28,7 +28,7 @@
   "cert": [
     {
       "id": "cert_1784022078485",
-      "name": "iPhone Distribution: VIETNAM AIRLINES JSC",
+      "name": "VIETNAM AIRLINES JSC",
       "description": "Tự động ký chứng chỉ",
       "status": "active",
       "version": "Vĩnh viễn",
