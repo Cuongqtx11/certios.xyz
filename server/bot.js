@@ -178,7 +178,8 @@ bot.on('document', async (msg) => {
             
             // Generate Plist
             const ipaUrl = `https://certios.xyz/downloads/mods/signed_${timestamp}.ipa`;
-            generatePlist(state.appName, ipaUrl, plistPath);
+            const bundleId = `com.certios.${timestamp}`;
+            generatePlist(state.appName, ipaUrl, plistPath, bundleId);
             
             // Add to apps.json
             const dateStr = new Date().toLocaleDateString('vi-VN');
@@ -233,7 +234,7 @@ function updateJSON(category, newEntry) {
     fs.writeFileSync(APPS_JSON_PATH, JSON.stringify(data, null, 2));
 }
 
-function generatePlist(appName, ipaUrl, dest) {
+function generatePlist(appName, ipaUrl, dest, bundleId) {
     const plist = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -253,7 +254,7 @@ function generatePlist(appName, ipaUrl, dest) {
             <key>metadata</key>
             <dict>
                 <key>bundle-identifier</key>
-                <string>com.certios.${Date.now()}</string>
+                <string>${bundleId}</string>
                 <key>bundle-version</key>
                 <string>1.0</string>
                 <key>kind</key>
@@ -363,7 +364,8 @@ async function processCertZip(chatId, state) {
             
             const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
             const ipaUrl = `https://certios.xyz/downloads/esign/esign_signed_${timestamp}.ipa`;
-            generatePlist('CERTIOS ESign', ipaUrl, plistPath);
+            const bundleId = `com.certios.${timestamp}`;
+            generatePlist('CERTIOS ESign', ipaUrl, plistPath, bundleId);
             
             const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
