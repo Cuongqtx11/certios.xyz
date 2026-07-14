@@ -9,7 +9,7 @@ const t = {
     dnsDesc: "Cài cấu hình để sử dụng ESign an toàn",
     get: "NHẬN",
     footerWait: "Giao diện chờ dữ liệu API của bạn.",
-    signed: "Đã ký",
+    signed: "Good",
     revoked: "Thu hồi",
     alertMsg: "Chức năng tải"
   },
@@ -19,7 +19,7 @@ const t = {
     dnsDesc: "Install profile to use ESign safely",
     get: "GET",
     footerWait: "Interface waiting for your API data.",
-    signed: "Signed",
+    signed: "Good",
     revoked: "Revoked",
     alertMsg: "Download feature for"
   }
