@@ -140,20 +140,18 @@ function App() {
   const renderAppCard = (app: any) => (
     <div key={app.id} className="app-card glass">
       <div className="app-header">
-        <div className="app-icon" style={{ background: (activeTab === 'esign' || activeTab === 'cert') ? 'transparent' : 'var(--gradient-2)', boxShadow: (activeTab === 'esign' || activeTab === 'cert') ? 'none' : '0 4px 12px var(--primary-glow)' }}>
+        <div className="app-icon" style={{ background: (activeTab === 'esign' || activeTab === 'cert' || (activeTab === 'mods' && app.icon)) ? 'transparent' : 'var(--gradient-2)', boxShadow: (activeTab === 'esign' || activeTab === 'cert' || (activeTab === 'mods' && app.icon)) ? 'none' : '0 4px 12px var(--primary-glow)' }}>
           {activeTab === 'esign' && <img src="https://vsacheat.com/img/esign.png" alt="ESign" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
           {activeTab === 'cert' && <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10" alt="Cert" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
-          {activeTab === 'mods' && <i className="fas fa-gamepad"></i>}
+          {activeTab === 'mods' && (app.icon ? <img src={app.icon} alt={app.name} style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} /> : <i className="fas fa-gamepad"></i>)}
         </div>
         <div className="app-info">
           <h3>{app.name}</h3>
           <p>{app.developer}</p>
           <div className="app-badges">
             <span className="badge">{app.size}</span>
-            <span className={`badge ${app.status}`}>
-              {(app.status === 'active' || app.status === 'Signed') ? t[lang].signed : t[lang].revoked}
-            </span>
           </div>
+          {app.description && <p className="app-desc" style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px' }}>{app.description}</p>}
         </div>
       </div>
       <div className="card-actions" style={{ display: 'flex', gap: '8px' }}>

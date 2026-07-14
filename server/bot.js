@@ -138,9 +138,92 @@ bot.on('message', async (msg) => {
     if (state.step === 'WAITING_MOD_NAME') {
         state.appName = text;
         state.appType = 'mods';
-        state.step = 'WAITING_IPA';
+        state.step = 'WAITING_MOD_DESC';
         userStates[chatId] = state;
-        bot.sendMessage(chatId, `Tên Mod: ${text}\nBây giờ hãy gửi file .ipa.`);
+        bot.sendMessage(chatId, `Tên Mod: ${text}\nNhập MÔ TẢ ngắn gọn cho Mod này:`);
+        return;
+    }
+
+    if (state.step === 'WAITING_MOD_DESC') {
+        state.appDesc = text;
+        state.step = 'WAITING_MOD_ICON';
+        userStates[chatId] = state;
+        bot.sendMessage(chatId, `Mô tả: ${text}\nNhập LINK ẢNH ICON của Mod (bắt đầu bằng http/https):`);
+        return;
+    }
+
+    if (state.step === 'WAITING_MOD_ICON') {
+        state.appIcon = text;
+        state.step = 'WAITING_MOD_IPALINK';
+        userStates[chatId] = state;
+        bot.sendMessage(chatId, `Icon: ${text}\nNhập LINK TẢI IPA TRỰC TIẾP (Bot sẽ tự tải và ký):`);
+        return;
+    }
+
+    if (state.step === 'WAITING_MOD_IPALINK') {
+        const ipaDownloadLink = text;
+        let msg = await bot.sendMessage(chatId, '```\n[ * ] Đang tải IPA từ link...\n```', { parse_mode: 'Markdown' });
+        
+        const timestamp = Date.now();
+        const rawIpaPath = path.join(MODS_DIR, `raw_${timestamp}.ipa`);
+        const signedIpaPath = path.join(MODS_DIR, `signed_${timestamp}.ipa`);
+        const plistPath = path.join(PLISTS_DIR, `install_${timestamp}.plist`);
+        
+        let logs = ['[ * ] Đang tải IPA từ link...'];
+        const updateLogs = async (line) => {
+            logs.push(line);
+            try { await bot.editMessageText('```\n' + logs.join('\n') + '\n```', { chat_id: chatId, message_id: msg.message_id, parse_mode: 'Markdown' }); } catch(e){}
+        };
+
+        try {
+            execSync(`curl -L -s -o "${rawIpaPath}" "${ipaDownloadLink}"`);
+            await updateLogs('[ * ] Đã tải xong IPA.');
+            await updateLogs('[ * ] Bắt đầu KÝ ỨNG DỤNG (zsign)...');
+            
+            const cmd = `zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -b "com.certios.mod.${timestamp}" -o "${signedIpaPath}" -z 9 "${rawIpaPath}"`;
+            execSync(cmd);
+            
+            fs.unlinkSync(rawIpaPath);
+            await updateLogs('[ + ] Ký ứng dụng thành công!');
+            
+            const ipaUrl = `https://certios.xyz/downloads/mods/signed_${timestamp}.ipa`;
+            const bundleId = `com.certios.mod.${timestamp}`;
+            generatePlist(state.appName, ipaUrl, plistPath, bundleId);
+            
+            const dateStr = new Date().toLocaleDateString('vi-VN');
+            const plistUrl = `https://certios.xyz/downloads/plists/install_${timestamp}.plist`;
+            const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
+            
+            const sizeMb = (fs.statSync(signedIpaPath).size / (1024 * 1024)).toFixed(1) + ' MB';
+
+            const newEntry = {
+                id: `mods_${timestamp}`,
+                name: state.appName,
+                description: state.appDesc,
+                developer: latestCert.name || 'CERTIOS Mod',
+                status: 'active',
+                size: sizeMb,
+                version: '1.0',
+                date: dateStr,
+                icon: state.appIcon,
+                installUrl: installUrl,
+                ipaUrl: ipaUrl
+            };
+            updateJSON('mods', newEntry);
+            
+            userStates[chatId] = { step: 'IDLE' };
+            await updateLogs('[ + ] Đã thêm lên Web!');
+            
+            try {
+                execSync('git add . && git commit -m "Auto update mods" && git push', { cwd: path.join(__dirname, '..') });
+                await updateLogs('[ + ] Đã Push lên GitHub thành công!');
+            } catch (err) { }
+
+            bot.sendMessage(chatId, `✅ Ký Mod thành công!\nỨng dụng [${state.appName}] đã lên Web.\nCài đặt: ${installUrl}`);
+
+        } catch (e) {
+            await updateLogs('[ - ] Lỗi: ' + e.message);
+        }
         return;
     }
 });
@@ -214,12 +297,14 @@ bot.on('document', async (msg) => {
             const plistUrl = `https://certios.xyz/downloads/plists/install_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
             
+            const sizeMb = (fs.statSync(signedIpaPath).size / (1024 * 1024)).toFixed(1) + ' MB';
+
             const newEntry = {
                 id: `${state.appType}_${timestamp}`,
                 name: state.appName,
-                developer: 'CERTIOS Auto',
+                developer: latestCert.name || 'CERTIOS Auto',
                 status: 'active',
-                size: 'Auto',
+                size: sizeMb,
                 version: '1.0',
                 date: dateStr,
                 icon: 'https://vsacheat.com/img/esign.png',
@@ -349,7 +434,7 @@ async function processCertZip(chatId, state) {
         fs.rmSync(tmpDir, { recursive: true, force: true });
         fs.unlinkSync(state.zipPath);
         
-        latestCert = { p12: newP12Path, prov: newProvPath, pass: 'certios' };
+        latestCert = { p12: newP12Path, prov: newProvPath, pass: 'certios', name: certName };
         await updateLogs('[ + ] Mật khẩu đổi thành công!');
         
         const dateStr = new Date().toLocaleDateString('vi-VN');
@@ -398,12 +483,14 @@ async function processCertZip(chatId, state) {
             const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
             
+            const sizeMb = (fs.statSync(signedEsignIpa).size / (1024 * 1024)).toFixed(1) + ' MB';
+
             const newEsignEntry = {
                 id: `esign_${timestamp}`,
                 name: 'ESign',
-                developer: 'CERTIOS.XYZ',
+                developer: certName,
                 status: 'active',
-                size: 'Auto',
+                size: sizeMb,
                 version: 'VIP',
                 date: dateStr,
                 icon: 'https://vsacheat.com/img/esign.png',
@@ -523,6 +610,30 @@ bot.on('callback_query', async (query) => {
         }
         
         if (appsData[category]) {
+            // TASK A: If deleting a cert, also delete the corresponding ESign
+            if (category === 'cert') {
+                const timestamp = itemId.split('_')[1];
+                const esignId = 'esign_' + timestamp;
+                const esignItem = appsData.esign.find(i => i.id === esignId);
+                if (esignItem) {
+                    if (esignItem.ipaUrl) {
+                        try {
+                            const ipaFilename = esignItem.ipaUrl.split('/').pop();
+                            const ipaLocalPath = path.join(__dirname, '../public/downloads/esign', ipaFilename);
+                            if (fs.existsSync(ipaLocalPath)) fs.unlinkSync(ipaLocalPath);
+                        } catch(e){}
+                    }
+                    if (esignItem.installUrl) {
+                        try {
+                            const plistFilename = esignItem.installUrl.split('/').pop();
+                            const plistLocalPath = path.join(__dirname, '../public/downloads/plists', plistFilename);
+                            if (fs.existsSync(plistLocalPath)) fs.unlinkSync(plistLocalPath);
+                        } catch(e){}
+                    }
+                    appsData.esign = appsData.esign.filter(item => item.id !== esignId);
+                }
+            }
+
             // Find item
             const item = appsData[category].find(i => i.id === itemId);
             if (item) {
