@@ -6,7 +6,27 @@ const https = require('https');
 
 // Token from the user
 const token = '8565117060:AAEHcP73S-K7hvD7HZj4DnCV6-mjKOdWfhM';
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, { 
+    polling: {
+        interval: 300,
+        autoStart: true
+    },
+    request: {
+        agentOptions: {
+            keepAlive: true,
+            family: 4 // Ép dùng IPv4 để tránh lỗi kết nối mạng ENETUNREACH
+        }
+    }
+});
+
+// Bắt lỗi toàn cục để tránh bị crash app
+process.on('uncaughtException', (error) => {
+    console.log('Uncaught Exception:', error.message || error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled Rejection:', reason);
+});
 
 bot.on('polling_error', (error) => {
     console.log('Polling error:', error.code || error.message);
@@ -48,9 +68,6 @@ const downloadFile = (url, dest) => {
 
 const ALLOWED_USER = 5654107862;
 
-bot.on('polling_error', (error) => {
-    console.log(`[Polling Error] ${error.code || error.message}`);
-});
 
 bot.onText(/\/start/, (msg) => {
     if (msg.from.id !== ALLOWED_USER) return;
