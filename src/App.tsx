@@ -1,5 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
+
+// Translations
+const t = {
+  vi: {
+    subtitle: "Chứng Chỉ Doanh Nghiệp Miễn Phí",
+    dns: "DNS Chặn Thu Hồi",
+    dnsDesc: "Cài cấu hình để sử dụng ESign an toàn",
+    get: "NHẬN",
+    footerWait: "Giao diện chờ dữ liệu API của bạn.",
+    signed: "Đã ký",
+    revoked: "Thu hồi",
+    alertMsg: "Chức năng tải"
+  },
+  en: {
+    subtitle: "Free Enterprise Certificates",
+    dns: "Anti-Revoke DNS",
+    dnsDesc: "Install profile to use ESign safely",
+    get: "GET",
+    footerWait: "Interface waiting for your API data.",
+    signed: "Signed",
+    revoked: "Revoked",
+    alertMsg: "Download feature for"
+  }
+};
 
 // Mock data based on tabs
 const esignData = [
@@ -55,9 +79,40 @@ const modsData = [
 
 function App() {
   const [activeTab, setActiveTab] = useState<'esign' | 'cert' | 'mods'>('esign');
+  const [lang, setLang] = useState<'vi' | 'en'>('vi');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [curtainClass, setCurtainClass] = useState('');
+
+  // Handle Theme Toggle
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
+  // Handle Language Switch with Curtain Transition
+  const switchLanguage = (newLang: 'vi' | 'en') => {
+    if (lang === newLang || isTransitioning) return;
+    
+    setIsTransitioning(true);
+    setCurtainClass('slide-in');
+    
+    setTimeout(() => {
+      setLang(newLang);
+      setCurtainClass('slide-in slide-out');
+      
+      setTimeout(() => {
+        setCurtainClass('');
+        setIsTransitioning(false);
+      }, 500); // Wait for slide-out to finish
+    }, 500); // Wait for slide-in to cover screen
+  };
 
   const handleDownload = (appName: string) => {
-    alert(`Chức năng tải [${appName}] chưa được tích hợp.`);
+    alert(`${t[lang].alertMsg} [${appName}] chưa được tích hợp.`);
   };
 
   const renderAppCard = (app: any) => (
@@ -74,7 +129,7 @@ function App() {
           <div className="app-badges">
             <span className="badge">{app.size}</span>
             <span className={`badge ${app.status}`}>
-              {app.status === 'active' ? 'Signed' : 'Revoked'}
+              {app.status === 'active' ? t[lang].signed : t[lang].revoked}
             </span>
           </div>
         </div>
@@ -85,70 +140,101 @@ function App() {
         style={{ opacity: app.status === 'active' ? 1 : 0.5 }}
         disabled={app.status !== 'active'}
       >
-        <i className="fas fa-download"></i> NHẬN
+        <i className="fas fa-download"></i> {t[lang].get}
       </button>
     </div>
   );
 
   return (
-    <div className="app-container">
-      {/* Header */}
-      <header className="header">
-        <h1 className="title">CERTIOS.XYZ</h1>
-        <p className="subtitle">Free Enterprise Certificates</p>
-      </header>
-
-      {/* DNS Banner */}
-      <a href="#" className="dns-banner glass" onClick={(e) => { e.preventDefault(); alert("Link tải file cấu hình chặn thu hồi"); }}>
-        <div className="dns-info">
-          <div className="dns-icon">
-            <i className="fas fa-shield-alt"></i>
-          </div>
-          <div className="dns-text">
-            <h4>DNS Chặn Thu Hồi</h4>
-            <p>Cài cấu hình để sử dụng ESign an toàn</p>
-          </div>
-        </div>
-        <div className="dns-arrow">
-          <i className="fas fa-chevron-right"></i>
-        </div>
-      </a>
-
-      {/* Tabs */}
-      <div className="tab-container glass">
-        <button 
-          className={`tab-btn ${activeTab === 'esign' ? 'active' : ''}`}
-          onClick={() => setActiveTab('esign')}
-        >
-          <i className="fas fa-signature"></i> ESign
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'cert' ? 'active' : ''}`}
-          onClick={() => setActiveTab('cert')}
-        >
-          <i className="fas fa-certificate"></i> Cert
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'mods' ? 'active' : ''}`}
-          onClick={() => setActiveTab('mods')}
-        >
-          <i className="fas fa-cogs"></i> Mods
-        </button>
+    <>
+      {/* Game Transition Curtain */}
+      <div className={`transition-curtain ${curtainClass}`}>
+        <div className="curtain-logo">CERTIOS.XYZ</div>
       </div>
 
-      {/* List Content */}
-      <main className="app-grid">
-        {activeTab === 'esign' && esignData.map(renderAppCard)}
-        {activeTab === 'cert' && certData.map(renderAppCard)}
-        {activeTab === 'mods' && modsData.map(renderAppCard)}
-      </main>
-      
-      {/* Footer */}
-      <footer>
-        <p>Giao diện chờ dữ liệu API của bạn.</p>
-        <p>&copy; 2026 CERTIOS.XYZ</p>
-      </footer>
-    </div>
+      <div className="app-container">
+        {/* Top Header */}
+        <div className="top-header">
+          <a href="#" className="logo-text">CERTIOS.XYZ</a>
+          <div className="header-controls">
+            <div className="lang-switcher">
+              <button 
+                className={`lang-btn ${lang === 'vi' ? 'active' : ''}`}
+                onClick={() => switchLanguage('vi')}
+              >
+                VN
+              </button>
+              <button 
+                className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
+                onClick={() => switchLanguage('en')}
+              >
+                EN
+              </button>
+            </div>
+            <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+              <i className={theme === 'dark' ? "fas fa-sun" : "fas fa-moon"}></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Header */}
+        <header className="header">
+          <h1 className="title">APPLE CERTIFICATE.</h1>
+          <p className="subtitle">{t[lang].subtitle}</p>
+        </header>
+
+        {/* DNS Banner */}
+        <a href="#" className="dns-banner glass" onClick={(e) => { e.preventDefault(); alert("Link tải file cấu hình chặn thu hồi"); }}>
+          <div className="dns-info">
+            <div className="dns-icon">
+              <i className="fas fa-shield-alt"></i>
+            </div>
+            <div className="dns-text">
+              <h4>{t[lang].dns}</h4>
+              <p>{t[lang].dnsDesc}</p>
+            </div>
+          </div>
+          <div className="dns-arrow">
+            <i className="fas fa-chevron-right"></i>
+          </div>
+        </a>
+
+        {/* Tabs */}
+        <div className="tab-container glass">
+          <button 
+            className={`tab-btn ${activeTab === 'esign' ? 'active' : ''}`}
+            onClick={() => setActiveTab('esign')}
+          >
+            <i className="fas fa-signature"></i> ESign
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'cert' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cert')}
+          >
+            <i className="fas fa-certificate"></i> Cert
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'mods' ? 'active' : ''}`}
+            onClick={() => setActiveTab('mods')}
+          >
+            <i className="fas fa-cogs"></i> Mods
+          </button>
+        </div>
+
+        {/* List Content */}
+        <main className="app-grid">
+          {activeTab === 'esign' && esignData.map(renderAppCard)}
+          {activeTab === 'cert' && certData.map(renderAppCard)}
+          {activeTab === 'mods' && modsData.map(renderAppCard)}
+        </main>
+        
+        {/* Footer */}
+        <footer>
+          <p>{t[lang].footerWait}</p>
+          <p>&copy; 2026 CERTIOS.XYZ</p>
+        </footer>
+      </div>
+    </>
   );
 }
 
