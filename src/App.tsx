@@ -148,9 +148,11 @@ function App() {
         <div className="app-info">
           <h3>{app.name}</h3>
           <p>{app.developer}</p>
-          <div className="app-badges">
-            <span className="badge">{app.size}</span>
-          </div>
+          {app.size && app.size !== 'N/A' && (
+            <div className="app-badges">
+              <span className="badge">{app.size}</span>
+            </div>
+          )}
           {app.description && <p className="app-desc" style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '4px' }}>{app.description}</p>}
         </div>
       </div>
