@@ -79,7 +79,7 @@ bot.onText(/\/start/, (msg) => {
             keyboard: [
                 ['🪪 Upload Chứng Chỉ', '📱 Upload ESign'],
                 ['🛠 Upload Mods', '🗂 Quản Lý'],
-                ['🌐 Push to GitHub']
+                ['🌐 Push to GitHub', '🔒 Bật/Tắt Tải Cert']
             ],
             resize_keyboard: true,
             one_time_keyboard: false
@@ -124,6 +124,26 @@ bot.on('message', async (msg) => {
         return;
     }
 
+    if (text === '🔒 Bật/Tắt Tải Cert') {
+        let appsData = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
+        if (fs.existsSync(APPS_JSON_PATH)) {
+            appsData = { ...appsData, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
+        }
+        
+        appsData.config.certDownloadDisabled = !appsData.config.certDownloadDisabled;
+        
+        fs.writeFileSync(APPS_JSON_PATH, JSON.stringify(appsData, null, 2));
+        
+        const statusMsg = appsData.config.certDownloadDisabled ? "🔴 ĐÃ KHOÁ tải Cert trên web." : "🟢 ĐÃ MỞ tải Cert trên web.";
+        bot.sendMessage(chatId, `Thành công: ${statusMsg}\nĐang push thay đổi lên GitHub...`);
+        
+        try {
+            execSync('git add . && git commit -m "Toggle cert download" && git push', { cwd: path.join(__dirname, '..') });
+            bot.sendMessage(chatId, '✅ Đã cập nhật lên Web!');
+        } catch (e) {}
+        return;
+    }
+
     if (text === '🗂 Quản Lý') {
         const opts = {
             reply_markup: {
@@ -164,9 +184,9 @@ bot.on('message', async (msg) => {
         const itemId = state.itemId;
         const newName = text;
         
-        let appsData = { esign: [], cert: [], mods: [] };
+        let appsData = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
         if (fs.existsSync(APPS_JSON_PATH)) {
-            appsData = JSON.parse(fs.readFileSync(APPS_JSON_PATH));
+            appsData = { ...appsData, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
         }
         
         const certItem = appsData.cert.find(i => i.id === itemId);
@@ -359,9 +379,9 @@ bot.on('document', async (msg) => {
 });
 
 function updateJSON(category, newEntry) {
-    let data = { esign: [], cert: [], mods: [] };
+    let data = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
     if (fs.existsSync(APPS_JSON_PATH)) {
-        data = JSON.parse(fs.readFileSync(APPS_JSON_PATH));
+        data = { ...data, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
     }
     
     if (!data[category]) data[category] = [];
@@ -564,9 +584,9 @@ bot.on('callback_query', async (query) => {
     
     if (data.startsWith('mgr_cat_')) {
         const category = data.split('_')[2];
-        let appsData = { esign: [], cert: [], mods: [] };
+        let appsData = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
         if (fs.existsSync(APPS_JSON_PATH)) {
-            appsData = JSON.parse(fs.readFileSync(APPS_JSON_PATH));
+            appsData = { ...appsData, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
         }
         const items = appsData[category] || [];
         
@@ -665,9 +685,9 @@ bot.on('callback_query', async (query) => {
         const category = parts[2];
         const itemId = parts.slice(3).join('_');
         
-        let appsData = { esign: [], cert: [], mods: [] };
+        let appsData = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
         if (fs.existsSync(APPS_JSON_PATH)) {
-            appsData = JSON.parse(fs.readFileSync(APPS_JSON_PATH));
+            appsData = { ...appsData, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
         }
         
         if (appsData[category]) {

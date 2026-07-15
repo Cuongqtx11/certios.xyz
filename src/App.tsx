@@ -79,6 +79,7 @@ function App() {
   const [esignData, setEsignData] = useState<any[]>([]);
   const [certData, setCertData] = useState<any[]>([]);
   const [modsData, setModsData] = useState<any[]>([]);
+  const [certDownloadDisabled, setCertDownloadDisabled] = useState(false);
 
   useEffect(() => {
     fetch(`/apps.json?t=${Date.now()}`)
@@ -87,6 +88,7 @@ function App() {
         setEsignData(data.esign || []);
         setCertData(data.cert || []);
         setModsData(data.mods || []);
+        setCertDownloadDisabled(data.config?.certDownloadDisabled || false);
       })
       .catch(err => console.error('Error fetching apps.json:', err));
   }, []);
@@ -130,6 +132,10 @@ function App() {
   };
 
   const handleDownload = (app: any) => {
+    if (activeTab === 'cert' && certDownloadDisabled) {
+      alert(lang === 'vi' ? 'Bảo trì: Tạm thời khoá tải xuống chứng chỉ.' : 'Maintenance: Certificate download is temporarily disabled.');
+      return;
+    }
     if (app.installUrl) {
       window.location.href = app.installUrl;
     } else {
@@ -160,8 +166,8 @@ function App() {
         <button 
           className="btn-get" 
           onClick={() => handleDownload(app)}
-          style={{ flex: 1, opacity: (app.status === 'active' || app.status === 'Signed') ? 1 : 0.5 }}
-          disabled={(app.status !== 'active' && app.status !== 'Signed')}
+          style={{ flex: 1, opacity: (app.status === 'active' || app.status === 'Signed') && !(activeTab === 'cert' && certDownloadDisabled) ? 1 : 0.5 }}
+          disabled={(app.status !== 'active' && app.status !== 'Signed') || (activeTab === 'cert' && certDownloadDisabled)}
         >
           <i className="fas fa-download"></i> {t[lang].get}
         </button>
