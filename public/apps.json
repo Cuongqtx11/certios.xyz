@@ -1,4 +1,7 @@
 {
+  "config": {
+    "certDownloadDisabled": true
+  },
   "esign": [
     {
       "id": "esign_1784029135972",
