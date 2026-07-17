@@ -110,7 +110,7 @@ function SigneSign() {
       addLog('Đang gửi yêu cầu đến hệ thống...');
       await animateProgress(0, 30, 800);
 
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3030';
+      const API_URL = import.meta.env.VITE_API_URL || 'https://api.p12.vn';
       const response = await fetch(`${API_URL}/api/signesign`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
