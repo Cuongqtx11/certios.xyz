@@ -106,70 +106,43 @@ function SigneSign() {
     setProgress(0);
 
     try {
-      // Step 1: Search order
-      addLog('Đang tìm kiếm đơn hàng theo UDID...');
-      await animateProgress(0, 15, 800);
+      // Step 1 & 2 & 3: Call backend API
+      addLog('Đang gửi yêu cầu đến hệ thống...');
+      await animateProgress(0, 30, 800);
 
-      const formData = new FormData();
-      formData.append('udid', udid.trim());
-
-      const statusRes = await fetch('https://cuios.shop/api/status', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3030';
+      const response = await fetch(`${API_URL}/api/signesign`, {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ udid: udid.trim() })
       });
 
-      if (!statusRes.ok) throw new Error('Không thể kết nối tới máy chủ Cuios.shop');
-
-      const statusData = await statusRes.json();
-      setOrderData(statusData);
-      addLog(`✓ Tìm thấy đơn hàng: ${statusData.model}`);
-      addLog(`  UDID: ${statusData.udid}`);
-      addLog(`  Trạng thái: ${statusData.remainTime}`);
-      await animateProgress(15, 30, 600);
-
-      if (statusData.remainTime !== 'DONE') {
-        addLog(`⚠ Đơn hàng chưa sẵn sàng (${statusData.remainTime}). Không thể tiếp tục.`);
-        setError(`Đơn hàng chưa hoàn tất. Trạng thái: ${statusData.remainTime}`);
-        setIsProcessing(false);
-        return;
+      const data = await response.json();
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Có lỗi xảy ra từ máy chủ');
       }
 
-      // Step 2: Download certificate
-      setCurrentStep(1);
-      addLog('Đang tải chứng chỉ cá nhân từ Cuios.shop...');
-      await animateProgress(30, 45, 800);
-
-      const certFormData = new FormData();
-      certFormData.append('udid', udid.trim());
-
-      const certRes = await fetch('https://cuios.shop/api/getcert', {
-        method: 'POST',
-        body: certFormData,
-      });
-
-      if (!certRes.ok) throw new Error('Không thể tải chứng chỉ');
-
-      const certResult = await certRes.json();
-      setCertData(certResult);
-      addLog(`✓ Đã nhận chứng chỉ thành công!`);
-      addLog(`  Mật khẩu: ${certResult.password}`);
-      await animateProgress(45, 65, 600);
-
-      // Step 3: Auto sign
-      setCurrentStep(2);
+      addLog('✓ ' + data.message);
+      await animateProgress(30, 60, 1000);
+      
+      // Since the backend handles the full process, we simulate the remaining progress
       addLog('Đang ký ESign tự động với chứng chỉ cá nhân...');
-      await animateProgress(65, 80, 1000);
+      await animateProgress(60, 80, 1500);
       addLog('✓ Chuẩn bị link cài đặt ESign...');
-      await animateProgress(80, 90, 500);
-      addLog('✓ Ký ESign hoàn tất!');
-      await animateProgress(90, 95, 400);
+      await animateProgress(80, 95, 1000);
 
       // Step 4: Done
       setCurrentStep(3);
       addLog('🎉 Hoàn tất toàn bộ quy trình!');
-      addLog('   Bạn có thể tải và cài đặt ngay bên dưới.');
+      addLog('   Hệ thống sẽ tự động xoá file sau 5 phút để bảo mật.');
       await animateProgress(95, 100, 500);
 
+      setCertData({
+          certFile: '',
+          ESign: data.installUrl || '',
+          password: 'Lưu trên server'
+      });
       setShowResult(true);
     } catch (err: any) {
       addLog(`✗ Lỗi: ${err.message || 'Có lỗi xảy ra'}`);

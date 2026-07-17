@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^2.3.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "ipa-extract-info": "^1.2.6",
     "multer": "^2.2.0",
-    "node-telegram-bot-api": "^1.1.2"
+    "node-telegram-bot-api": "^1.1.2",
+    "p-limit": "^7.3.0"
   },
   "description": ""
 }
