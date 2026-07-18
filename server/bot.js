@@ -334,13 +334,13 @@ bot.on('document', async (msg) => {
             await updateLogs('[ + ] Ký ứng dụng thành công!');
             
             // Generate Plist
-            const ipaUrl = `https://certios.xyz/downloads/mods/signed_${timestamp}.ipa`;
+            const ipaUrl = `https://api.certios.xyz/downloads/mods/signed_${timestamp}.ipa`;
             const bundleId = `com.certios.${timestamp}`;
             generatePlist(state.appName, ipaUrl, plistPath, bundleId);
             
             // Add to apps.json
             const dateStr = new Date().toLocaleDateString('vi-VN');
-            const plistUrl = `https://certios.xyz/downloads/plists/install_${timestamp}.plist`;
+            const plistUrl = `https://api.certios.xyz/downloads/plists/install_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
             
             const sizeMb = (fs.statSync(signedIpaPath).size / (1024 * 1024)).toFixed(1) + ' MB';
@@ -493,7 +493,7 @@ async function processCertZip(chatId, state) {
         cp.execSync(`zip -j "${downloadZipPath}" "${newP12Path}" "${newProvPath}" "${passPath}"`);
         fs.unlinkSync(passPath);
         
-        const certDownloadUrl = `https://certios.xyz/downloads/certs/cert_download_${timestamp}.zip`;
+        const certDownloadUrl = `https://api.certios.xyz/downloads/certs/cert_download_${timestamp}.zip`;
         const sizeMb = (fs.statSync(downloadZipPath).size / 1024).toFixed(1) + ' KB';
 
         // Display Cert on Web
@@ -535,11 +535,11 @@ async function processCertZip(chatId, state) {
             fs.unlinkSync(repackedIpa);
             
             const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
-            const ipaUrl = `https://certios.xyz/downloads/esign/esign_signed_${timestamp}.ipa`;
+            const ipaUrl = `https://api.certios.xyz/downloads/esign/esign_signed_${timestamp}.ipa`;
             const bundleId = `com.certios.${timestamp}`;
             generatePlist('CERTIOS ESign', ipaUrl, plistPath, bundleId);
             
-            const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
+            const plistUrl = `https://api.certios.xyz/downloads/plists/esign_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
             
             const sizeMb = (fs.statSync(signedEsignIpa).size / (1024 * 1024)).toFixed(1) + ' MB';
