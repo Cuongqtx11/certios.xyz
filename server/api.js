@@ -85,7 +85,7 @@ const TEMPLATES_DIR = path.join(__dirname, 'templates');
 
     if (cleaned > 0) {
         console.log(`[API] Cleaned ${cleaned} temp files/dirs.`);
-        await safeGitPush('Auto cleanup old temp signs on startup');
+        // await safeGitPush('Auto cleanup old temp signs on startup');
     } else {
         console.log('[API] No temp files to clean.');
     }
@@ -425,6 +425,7 @@ app.post('/api/signesign', async (req, res) => {
                 installUrl,
                 progress: 100,
                 createdAt: timestamp,
+                doneAt: Date.now(),
                 certPassword: certPass || 'Không có mật khẩu'
             });
 
@@ -445,7 +446,7 @@ app.post('/api/signesign', async (req, res) => {
                 } catch (e) {
                     console.error('[API] Error deleting expired files:', e.message);
                 }
-            }, 5 * 60 * 1000); // 5 minutes
+            }, 10 * 60 * 1000); // 10 minutes
 
         } catch (err) {
             console.error(`[API] ❌ Error signing for ${cleanUdid}:`, err.message);

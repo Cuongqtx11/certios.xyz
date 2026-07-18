@@ -111,14 +111,14 @@ function SigneSign() {
           setCurrentStep(3);
           setProgress(100);
           addLog('🎉 Hoàn tất toàn bộ quy trình!');
-          addLog('   Hệ thống sẽ tự động xoá file sau 5 phút để bảo mật.');
+          addLog('   Hệ thống sẽ tự động xoá file sau 10 phút để bảo mật.');
 
           setInstallUrl(data.installUrl || '');
           setShowResult(true);
           setIsProcessing(false);
           
-          const timeElapsed = Math.floor((Date.now() - data.createdAt) / 1000);
-          let remaining = 300 - timeElapsed;
+          const timeElapsed = Math.floor((Date.now() - (data.doneAt || Date.now())) / 1000);
+          let remaining = 600 - timeElapsed;
           if (remaining < 0) remaining = 0;
           
           setCountdown(remaining);
