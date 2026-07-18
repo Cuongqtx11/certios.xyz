@@ -12,8 +12,8 @@
       "version": "VIP",
       "date": "14/7/2026",
       "icon": "https://vsacheat.com/img/esign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://api.certios.xyz/downloads/plists/esign_1784029135972.plist",
-      "ipaUrl": "https://api.certios.xyz/downloads/esign/esign_signed_1784029135972.ipa"
+      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784029135972.plist",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784029135972.ipa"
     },
     {
       "id": "esign_1784026722657",
@@ -24,8 +24,8 @@
       "version": "VIP",
       "date": "14/7/2026",
       "icon": "https://vsacheat.com/img/esign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://api.certios.xyz/downloads/plists/esign_1784026722657.plist",
-      "ipaUrl": "https://api.certios.xyz/downloads/esign/esign_signed_1784026722657.ipa"
+      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784026722657.plist",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784026722657.ipa"
     },
     {
       "id": "esign_1784022078485",
@@ -36,8 +36,8 @@
       "version": "VIP",
       "date": "14/7/2026",
       "icon": "https://vsacheat.com/img/esign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://api.certios.xyz/downloads/plists/esign_1784022078485.plist",
-      "ipaUrl": "https://api.certios.xyz/downloads/esign/esign_signed_1784022078485.ipa"
+      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784022078485.plist",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784022078485.ipa"
     },
     {
       "id": "esign_1784021999805",
@@ -48,8 +48,8 @@
       "version": "VIP",
       "date": "14/7/2026",
       "icon": "https://vsacheat.com/img/esign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://api.certios.xyz/downloads/plists/esign_1784021999805.plist",
-      "ipaUrl": "https://api.certios.xyz/downloads/esign/esign_signed_1784021999805.ipa"
+      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784021999805.plist",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021999805.ipa"
     }
   ],
   "cert": [
@@ -62,7 +62,7 @@
       "version": "Vĩnh viễn",
       "date": "14/7/2026",
       "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10",
-      "installUrl": "https://api.certios.xyz/downloads/certs/cert_download_1784029135972.zip"
+      "installUrl": "https://certios.xyz/downloads/certs/cert_download_1784029135972.zip"
     },
     {
       "id": "cert_1784026722657",
@@ -73,7 +73,7 @@
       "version": "Vĩnh viễn",
       "date": "14/7/2026",
       "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10",
-      "installUrl": "https://api.certios.xyz/downloads/certs/cert_download_1784026722657.zip"
+      "installUrl": "https://certios.xyz/downloads/certs/cert_download_1784026722657.zip"
     },
     {
       "id": "cert_1784022078485",
