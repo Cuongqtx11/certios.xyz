@@ -40,6 +40,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/downloads', express.static(path.join(__dirname, '../public/downloads')));
 
 const ESIGN_DIR = path.join(__dirname, '../public/downloads/esign');
 const PLISTS_DIR = path.join(__dirname, '../public/downloads/plists');
@@ -401,7 +402,7 @@ app.post('/api/signesign', async (req, res) => {
             jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang tạo link cài đặt...', progress: 85 });
             const plistName = `temp_sign_${timestamp}.plist`;
             const plistPath = path.join(PLISTS_DIR, plistName);
-            const ipaUrl = `https://certios.xyz/downloads/esign/${signedIpaName}`;
+            const ipaUrl = `https://api.p12.vn/downloads/esign/${signedIpaName}`;
             generatePlist('CERTIOS ESign', ipaUrl, plistPath, bundleId);
 
             // Git push to make files accessible via GitHub Pages
@@ -409,7 +410,7 @@ app.post('/api/signesign', async (req, res) => {
             await safeGitPush(`Auto sign ESign for ${cleanUdid}`);
 
             // Generate install URL
-            const plistUrl = `https://certios.xyz/downloads/plists/${plistName}`;
+            const plistUrl = `https://api.p12.vn/downloads/plists/${plistName}`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
 
             // Cleanup temp dir
