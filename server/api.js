@@ -406,8 +406,8 @@ app.post('/api/signesign', async (req, res) => {
             generatePlist('CERTIOS ESign', ipaUrl, plistPath, bundleId);
 
             // Git push to make files accessible via GitHub Pages
-            jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đẩy lên server tải...', progress: 90 });
-            await safeGitPush(`Auto sign ESign for ${cleanUdid}`);
+            // jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đẩy lên server tải...', progress: 90 });
+            // await safeGitPush(`Auto sign ESign for ${cleanUdid}`);
 
             // Generate install URL
             const plistUrl = `https://api.p12.vn/downloads/plists/${plistName}`;
@@ -436,7 +436,7 @@ app.post('/api/signesign', async (req, res) => {
                 try {
                     if (fs.existsSync(signedIpaPath)) fs.unlinkSync(signedIpaPath);
                     if (fs.existsSync(plistPath)) fs.unlinkSync(plistPath);
-                    await safeGitPush(`Auto remove expired sign for ${cleanUdid}`);
+                    // await safeGitPush(`Auto remove expired sign for ${cleanUdid}`);
                     // Remove job from tracking
                     jobs.delete(jobId);
                     if (udidJobs.get(cleanUdid) === jobId) {
