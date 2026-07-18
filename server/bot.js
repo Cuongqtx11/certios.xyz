@@ -456,7 +456,7 @@ async function processCertZip(chatId, state) {
         await updateLogs('[ * ] Đang nhận diện tên chứng chỉ...');
         let certName = 'Chứng Chỉ Mới';
         try {
-            const subject = execSync(`openssl pkcs12 -in "${p12File}" -passin "pass:${state.certPass}" -nokeys | openssl x509 -noout -subject 2>/dev/null || true`).toString();
+            const subject = execSync(`openssl pkcs12 -legacy -in "${p12File}" -passin "pass:${state.certPass}" -nokeys | openssl x509 -noout -subject 2>/dev/null || true`).toString();
             const match = subject.match(/CN\s*=\s*([^,\n]+)/);
             if (match && match[1]) {
                 certName = match[1].trim();
