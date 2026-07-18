@@ -117,7 +117,11 @@ function SigneSign() {
           setShowResult(true);
           setIsProcessing(false);
           
-          setCountdown(300); // 5 minutes
+          const timeElapsed = Math.floor((Date.now() - data.createdAt) / 1000);
+          let remaining = 300 - timeElapsed;
+          if (remaining < 0) remaining = 0;
+          
+          setCountdown(remaining);
           if (countdownRef.current) clearInterval(countdownRef.current);
           countdownRef.current = setInterval(() => {
             setCountdown(prev => (prev !== null && prev > 0 ? prev - 1 : 0));

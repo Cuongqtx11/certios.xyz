@@ -147,6 +147,7 @@ const IP_COOLDOWN = 60000; // 1 minute
 
 // In-progress job tracking for status polling
 const jobs = new Map();
+const udidJobs = new Map();
 
 function generatePlist(appName, ipaUrl, dest, bundleId) {
     const plist = `<?xml version="1.0" encoding="UTF-8"?>
@@ -212,8 +213,32 @@ app.post('/api/signesign', async (req, res) => {
         return res.status(400).json({ success: false, message: 'UDID chứa ký tự không hợp lệ' });
     }
 
-    // Rate limit check
     const now = Date.now();
+
+    // Check if there is already an ongoing or recently completed job for this UDID
+    if (udidJobs.has(cleanUdid)) {
+        const existingJobId = udidJobs.get(cleanUdid);
+        const existingJob = jobs.get(existingJobId);
+        if (existingJob) {
+            const timeSinceCreation = now - existingJob.createdAt;
+            // If the job is still active/valid (within 5 minutes = 300,000 ms)
+            if (timeSinceCreation < 5 * 60 * 1000) {
+                console.log(`[API] Reusing existing job ${existingJobId} for UDID: ${cleanUdid}`);
+                return res.json({
+                    success: true,
+                    message: existingJob.status === 'done' ? 'Đã tìm thấy link cài đặt cũ (chưa hết hạn).' : 'Đang tiếp tục quá trình ký trước đó...',
+                    jobId: existingJobId,
+                    timestamp: now
+                });
+            } else {
+                udidJobs.delete(cleanUdid);
+            }
+        } else {
+            udidJobs.delete(cleanUdid);
+        }
+    }
+
+    // Rate limit check
     if (!ipLocks.has(clientIp)) {
         ipLocks.set(clientIp, []);
     }
@@ -235,6 +260,7 @@ app.post('/api/signesign', async (req, res) => {
 
     const timestamp = Date.now();
     const jobId = `${timestamp}_${crypto.randomBytes(4).toString('hex')}`;
+    udidJobs.set(cleanUdid, jobId);
 
     // Create job entry
     jobs.set(jobId, {
@@ -412,6 +438,9 @@ app.post('/api/signesign', async (req, res) => {
                     await safeGitPush(`Auto remove expired sign for ${cleanUdid}`);
                     // Remove job from tracking
                     jobs.delete(jobId);
+                    if (udidJobs.get(cleanUdid) === jobId) {
+                        udidJobs.delete(cleanUdid);
+                    }
                 } catch (e) {
                     console.error('[API] Error deleting expired files:', e.message);
                 }
@@ -434,7 +463,12 @@ app.post('/api/signesign', async (req, res) => {
             });
 
             // Clean up error job after 5 minutes
-            setTimeout(() => { jobs.delete(jobId); }, 5 * 60 * 1000);
+            setTimeout(() => { 
+                jobs.delete(jobId); 
+                if (udidJobs.get(cleanUdid) === jobId) {
+                    udidJobs.delete(cleanUdid);
+                }
+            }, 5 * 60 * 1000);
         }
     });
 });
