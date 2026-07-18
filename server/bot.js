@@ -14,7 +14,7 @@ const bot = new TelegramBot(token, {
     request: {
         agentOptions: {
             keepAlive: true,
-            family: 4 // Ép dùng IPv4 để tránh lỗi kết nối mạng ENETUNREACH
+            family: 4, localAddress: '192.168.1.21' // Ép dùng IPv4 để tránh lỗi kết nối mạng ENETUNREACH
         }
     }
 });
