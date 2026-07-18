@@ -4,18 +4,6 @@
   },
   "esign": [
     {
-      "id": "esign_1784379429529",
-      "name": "ESign",
-      "developer": "Chứng Chỉ Mới",
-      "status": "active",
-      "size": "17.0 MB",
-      "version": "VIP",
-      "date": "18/7/2026",
-      "icon": "https://vsacheat.com/img/esign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1784379429529.plist",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784379429529.ipa"
-    },
-    {
       "id": "esign_1784029135972",
       "name": "ESign",
       "developer": "Aramco Services Company",
@@ -65,17 +53,6 @@
     }
   ],
   "cert": [
-    {
-      "id": "cert_1784379429529",
-      "name": "Chứng Chỉ Mới",
-      "description": "Mật khẩu: certios",
-      "size": "14.4 KB",
-      "status": "active",
-      "version": "Vĩnh viễn",
-      "date": "18/7/2026",
-      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10",
-      "installUrl": "https://certios.xyz/downloads/certs/cert_download_1784379429529.zip"
-    },
     {
       "id": "cert_1784029135972",
       "name": "Aramco Services Company",
