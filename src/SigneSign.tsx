@@ -9,37 +9,28 @@ const STEPS = [
   { id: 'done', label: 'Hoàn tất – Sẵn sàng cài đặt', icon: '✅' },
 ];
 
-interface OrderData {
-  model: string;
-  udid: string;
-  remainTime: string;
-}
-
-interface CertData {
-  certFile: string;
-  ESign: string;
-  Scarlet?: string;
-  GBox?: string;
-  MoreIPA?: string;
-  UnlockIPA?: string;
-  UnlockIPAweb?: string;
-  UnlockIPA_Mini?: string;
-  UnlockIPA_TRIAL?: string;
-  password: string;
-}
+const STEP_MAP: Record<string, number> = {
+  'init': 0,
+  'fetch_cert': 0,
+  'download_cert': 1,
+  'signing': 2,
+  'done': 3,
+  'error': -1
+};
 
 function SigneSign() {
   const [udid, setUdid] = useState('');
   const [currentStep, setCurrentStep] = useState(-1);
   const [progress, setProgress] = useState(0);
-  const [orderData, setOrderData] = useState<OrderData | null>(null);
-  const [certData, setCertData] = useState<CertData | null>(null);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
+  const [installUrl, setInstallUrl] = useState('');
+  const [certPassword, setCertPassword] = useState('');
   const logEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     // Check URL params for UDID
@@ -48,6 +39,9 @@ function SigneSign() {
     if (udidParam) {
       setUdid(udidParam);
     }
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -58,30 +52,76 @@ function SigneSign() {
     setLogs(prev => [...prev, `[${new Date().toLocaleTimeString('vi-VN')}] ${msg}`]);
   };
 
-  const animateProgress = (from: number, to: number, duration: number): Promise<void> => {
-    return new Promise(resolve => {
-      const start = performance.now();
-      const animate = (now: number) => {
-        const elapsed = now - start;
-        const ratio = Math.min(elapsed / duration, 1);
-        // Ease out cubic
-        const eased = 1 - Math.pow(1 - ratio, 3);
-        setProgress(from + (to - from) * eased);
-        if (ratio < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          resolve();
-        }
-      };
-      requestAnimationFrame(animate);
-    });
-  };
-
   const validateUDID = (value: string): boolean => {
     const regex1 = /^[a-f0-9]{40}$/i;
     const regex2 = /^[0-9a-f]{8}-[0-9a-f]{16}$/i;
-    const regex3 = /^[a-zA-Z0-9]{6}$/;
+    const regex3 = /^[a-zA-Z0-9\-]{6,}$/;
     return regex1.test(value) || regex2.test(value) || regex3.test(value);
+  };
+
+  const API_URL = import.meta.env.VITE_API_URL || 'https://api.certios.xyz';
+
+  const pollJobStatus = (jobId: string) => {
+    let lastMessage = '';
+
+    pollRef.current = setInterval(async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/signesign/status/${jobId}`);
+        const data = await response.json();
+
+        // Update progress
+        if (data.progress !== undefined) {
+          setProgress(data.progress);
+        }
+
+        // Update step
+        if (data.step && STEP_MAP[data.step] !== undefined) {
+          const stepIndex = STEP_MAP[data.step];
+          if (stepIndex >= 0) setCurrentStep(stepIndex);
+        }
+
+        // Add log if message changed
+        if (data.message && data.message !== lastMessage) {
+          lastMessage = data.message;
+          if (data.status === 'error') {
+            addLog(`✗ ${data.message}`);
+          } else if (data.status === 'done') {
+            addLog(`✓ ${data.message}`);
+          } else {
+            addLog(`⏳ ${data.message}`);
+          }
+        }
+
+        // Handle completion
+        if (data.status === 'done') {
+          if (pollRef.current) clearInterval(pollRef.current);
+          pollRef.current = null;
+
+          setCurrentStep(3);
+          setProgress(100);
+          addLog('🎉 Hoàn tất toàn bộ quy trình!');
+          addLog('   Hệ thống sẽ tự động xoá file sau 5 phút để bảo mật.');
+
+          setInstallUrl(data.installUrl || '');
+          setCertPassword(data.certPassword || '');
+          setShowResult(true);
+          setIsProcessing(false);
+        }
+
+        // Handle error
+        if (data.status === 'error') {
+          if (pollRef.current) clearInterval(pollRef.current);
+          pollRef.current = null;
+
+          setError(data.message || 'Có lỗi xảy ra');
+          setProgress(0);
+          setIsProcessing(false);
+        }
+      } catch (err) {
+        // Network error - keep polling
+        console.error('Poll error:', err);
+      }
+    }, 2000); // Poll every 2 seconds
   };
 
   const handleProcess = async () => {
@@ -99,18 +139,22 @@ function SigneSign() {
     setError('');
     setIsProcessing(true);
     setShowResult(false);
-    setOrderData(null);
-    setCertData(null);
+    setInstallUrl('');
+    setCertPassword('');
     setLogs([]);
     setCurrentStep(0);
     setProgress(0);
 
-    try {
-      // Step 1 & 2 & 3: Call backend API
-      addLog('Đang gửi yêu cầu đến hệ thống...');
-      await animateProgress(0, 30, 800);
+    // Clear any existing poll
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
 
-      const API_URL = import.meta.env.VITE_API_URL || 'https://api.certios.xyz';
+    try {
+      addLog('Đang gửi yêu cầu đến hệ thống...');
+      setProgress(5);
+
       const response = await fetch(`${API_URL}/api/signesign`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,36 +162,24 @@ function SigneSign() {
       });
 
       const data = await response.json();
-      
+
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Có lỗi xảy ra từ máy chủ');
       }
 
       addLog('✓ ' + data.message);
-      await animateProgress(30, 60, 1000);
-      
-      // Since the backend handles the full process, we simulate the remaining progress
-      addLog('Đang ký ESign tự động với chứng chỉ cá nhân...');
-      await animateProgress(60, 80, 1500);
-      addLog('✓ Chuẩn bị link cài đặt ESign...');
-      await animateProgress(80, 95, 1000);
 
-      // Step 4: Done
-      setCurrentStep(3);
-      addLog('🎉 Hoàn tất toàn bộ quy trình!');
-      addLog('   Hệ thống sẽ tự động xoá file sau 5 phút để bảo mật.');
-      await animateProgress(95, 100, 500);
+      // Start polling for job status
+      if (data.jobId) {
+        addLog('Đang theo dõi tiến trình ký...');
+        pollJobStatus(data.jobId);
+      } else {
+        throw new Error('Không nhận được Job ID từ server');
+      }
 
-      setCertData({
-          certFile: '',
-          ESign: data.installUrl || '',
-          password: 'Lưu trên server'
-      });
-      setShowResult(true);
     } catch (err: any) {
       addLog(`✗ Lỗi: ${err.message || 'Có lỗi xảy ra'}`);
       setError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -254,7 +286,7 @@ function SigneSign() {
               <div className="ss-progress-bar">
                 <div
                   className="ss-progress-fill"
-                  style={{ width: `${progress}%` }}
+                  style={{ width: `${progress}%`, transition: 'width 0.5s ease-out' }}
                 >
                   <div className="ss-progress-shine"></div>
                 </div>
@@ -323,186 +355,44 @@ function SigneSign() {
           </div>
         )}
 
-        {/* Order Info */}
-        {orderData && (
-          <div className="ss-info-card ss-glass ss-fade-in">
-            <div className="ss-info-header">
-              <i className="fas fa-receipt"></i>
-              <h3>Thông Tin Đơn Hàng</h3>
-            </div>
-            <div className="ss-info-grid">
-              <div className="ss-info-item">
-                <span className="ss-info-label">
-                  <i className="fas fa-mobile-alt"></i> Thiết bị
-                </span>
-                <span className="ss-info-value">{orderData.model}</span>
-              </div>
-              <div className="ss-info-item">
-                <span className="ss-info-label">
-                  <i className="fas fa-id-badge"></i> UDID
-                </span>
-                <span className="ss-info-value ss-mono">{orderData.udid}</span>
-              </div>
-              <div className="ss-info-item">
-                <span className="ss-info-label">
-                  <i className="fas fa-hourglass-half"></i> Trạng thái
-                </span>
-                <span className={`ss-info-badge ${orderData.remainTime === 'DONE' ? 'success' : 'warning'}`}>
-                  {orderData.remainTime === 'DONE' ? '✅ Hoàn tất' : orderData.remainTime}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Result Section */}
-        {showResult && certData && (
+        {showResult && installUrl && (
           <div className="ss-result ss-fade-in">
             <div className="ss-result-header">
               <div className="ss-result-icon-wrap">
                 <i className="fas fa-check-circle"></i>
               </div>
               <h2>Ký Thành Công!</h2>
-              <p>Chứng chỉ đã sẵn sàng. Chọn phương thức cài đặt bên dưới.</p>
+              <p>Chứng chỉ đã sẵn sàng. Nhấn nút bên dưới để cài đặt ESign.</p>
             </div>
 
             {/* Certificate Info */}
-            <div className="ss-cert-info ss-glass">
-              <div className="ss-cert-row">
-                <span className="ss-cert-label">
-                  <i className="fas fa-key"></i> Mật khẩu chứng chỉ
-                </span>
-                <span className="ss-cert-password">{certData.password}</span>
+            {certPassword && (
+              <div className="ss-cert-info ss-glass">
+                <div className="ss-cert-row">
+                  <span className="ss-cert-label">
+                    <i className="fas fa-key"></i> Mật khẩu chứng chỉ
+                  </span>
+                  <span className="ss-cert-password">{certPassword}</span>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Install Buttons */}
+            {/* Install Button */}
             <div className="ss-install-grid">
-              {certData.certFile && (
-                <a
-                  href={certData.certFile.trim() + '?dl'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-cert"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-certificate"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">Tải Chứng Chỉ</span>
-                    <span className="ss-install-sub">File .p12 + .mobileprovision</span>
-                  </div>
-                  <i className="fas fa-download ss-install-arrow"></i>
-                </a>
-              )}
-
-              {certData.ESign && (
-                <a
-                  href={certData.ESign.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-esign"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-signature"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">Cài Đặt ESign</span>
-                    <span className="ss-install-sub">Ký và cài ứng dụng IPA</span>
-                  </div>
-                  <i className="fas fa-external-link-alt ss-install-arrow"></i>
-                </a>
-              )}
-
-              {certData.GBox && (
-                <a
-                  href={certData.GBox.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-gbox"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-box-open"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">Cài Đặt GBox</span>
-                    <span className="ss-install-sub">Ứng dụng quản lý IPA</span>
-                  </div>
-                  <i className="fas fa-external-link-alt ss-install-arrow"></i>
-                </a>
-              )}
-
-              {certData.Scarlet && (
-                <a
-                  href={certData.Scarlet.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-scarlet"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-feather-alt"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">Cài Đặt Scarlet</span>
-                    <span className="ss-install-sub">Kho ứng dụng thay thế</span>
-                  </div>
-                  <i className="fas fa-external-link-alt ss-install-arrow"></i>
-                </a>
-              )}
-
-              {certData.UnlockIPA_Mini && (
-                <a
-                  href={certData.UnlockIPA_Mini.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-unlock"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-unlock-alt"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">UnlockIPA Mini</span>
-                    <span className="ss-install-sub">All in One</span>
-                  </div>
-                  <i className="fas fa-external-link-alt ss-install-arrow"></i>
-                </a>
-              )}
-
-              {certData.UnlockIPA && (
-                <a
-                  href={certData.UnlockIPA.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-unlock"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-lock-open"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">UnlockIPA</span>
-                    <span className="ss-install-sub">Mở khoá ứng dụng</span>
-                  </div>
-                  <i className="fas fa-external-link-alt ss-install-arrow"></i>
-                </a>
-              )}
-
-              {certData.MoreIPA && (
-                <a
-                  href={certData.MoreIPA.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ss-install-btn ss-btn-more"
-                >
-                  <div className="ss-install-icon">
-                    <i className="fas fa-th-large"></i>
-                  </div>
-                  <div className="ss-install-text">
-                    <span className="ss-install-title">Cài IPA Khác</span>
-                    <span className="ss-install-sub">Thêm nhiều ứng dụng</span>
-                  </div>
-                  <i className="fas fa-external-link-alt ss-install-arrow"></i>
-                </a>
-              )}
+              <a
+                href={installUrl}
+                className="ss-install-btn ss-btn-esign"
+              >
+                <div className="ss-install-icon">
+                  <i className="fas fa-signature"></i>
+                </div>
+                <div className="ss-install-text">
+                  <span className="ss-install-title">Cài Đặt ESign</span>
+                  <span className="ss-install-sub">Ký và cài ứng dụng IPA</span>
+                </div>
+                <i className="fas fa-external-link-alt ss-install-arrow"></i>
+              </a>
             </div>
 
             {/* Reminder */}
@@ -512,6 +402,15 @@ function SigneSign() {
                 <strong>Lưu ý:</strong> Với iOS 16 trở lên, hãy bật <em>Chế độ nhà phát triển</em> tại:
                 <br />
                 <code>Cài đặt → Quyền riêng tư và bảo mật → Chế độ nhà phát triển</code>
+              </div>
+            </div>
+
+            {/* Timer */}
+            <div className="ss-reminder ss-glass" style={{ borderColor: 'rgba(255,165,0,0.3)' }}>
+              <i className="fas fa-clock" style={{ color: '#ffa500' }}></i>
+              <div>
+                <strong>⏰ Link cài đặt sẽ tự động hết hạn sau 5 phút</strong> để bảo mật.
+                Hãy cài đặt ngay!
               </div>
             </div>
           </div>
