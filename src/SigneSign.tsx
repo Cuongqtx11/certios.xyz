@@ -70,7 +70,7 @@ function SigneSign() {
     return regex1.test(value) || regex2.test(value) || regex3.test(value);
   };
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://api.certios.xyz';
+  const API_URL = import.meta.env.VITE_API_URL || 'https://api.p12.vn';
 
   const pollJobStatus = (jobId: string) => {
     let lastMessage = '';
