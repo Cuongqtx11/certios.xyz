@@ -196,7 +196,16 @@ app.get('/api/signesign/status/:jobId', (req, res) => {
     if (!job) {
         return res.status(404).json({ success: false, message: 'Job không tồn tại hoặc đã hết hạn.' });
     }
-    res.json(job);
+    let responseData = { ...job };
+    if (responseData.installUrl && responseData.installUrl.includes('.plist')) {
+        const plistUrl = responseData.installUrl.split('url=')[1];
+        if (plistUrl) {
+            // Append timestamp and URL encode it so iOS parses it correctly
+            const newPlistUrl = `${plistUrl}?v=${Date.now()}`;
+            responseData.installUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(newPlistUrl)}`;
+        }
+    }
+    res.json(responseData);
 });
 
 // Main signing endpoint
@@ -446,7 +455,7 @@ app.post('/api/signesign', async (req, res) => {
                 } catch (e) {
                     console.error('[API] Error deleting expired files:', e.message);
                 }
-            }, 10 * 60 * 1000); // 10 minutes
+            }, 15 * 60 * 1000); // 15 minutes
 
         } catch (err) {
             console.error(`[API] ❌ Error signing for ${cleanUdid}:`, err.message);

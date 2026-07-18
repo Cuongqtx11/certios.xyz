@@ -111,7 +111,7 @@ function SigneSign() {
           setCurrentStep(3);
           setProgress(100);
           addLog('🎉 Hoàn tất toàn bộ quy trình!');
-          addLog('   Hệ thống sẽ tự động xoá file sau 10 phút để bảo mật.');
+          addLog('   Hệ thống sẽ tự động xoá file sau 15 phút để bảo mật.');
 
           setInstallUrl(data.installUrl || '');
           setShowResult(true);
