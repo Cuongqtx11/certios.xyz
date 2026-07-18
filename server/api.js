@@ -214,19 +214,24 @@ app.post('/api/signesign', async (req, res) => {
 
     // Rate limit check
     const now = Date.now();
-    if (ipLocks.has(clientIp)) {
-        const lockTime = ipLocks.get(clientIp);
-        if (now - lockTime < IP_COOLDOWN) {
-            const remaining = Math.ceil((IP_COOLDOWN - (now - lockTime)) / 1000);
-            return res.status(429).json({
-                success: false,
-                message: `Bạn thao tác quá nhanh. Vui lòng thử lại sau ${remaining} giây.`
-            });
-        }
+    if (!ipLocks.has(clientIp)) {
+        ipLocks.set(clientIp, []);
+    }
+    const timestamps = ipLocks.get(clientIp);
+    const validTimestamps = timestamps.filter(t => now - t < IP_COOLDOWN);
+    
+    if (validTimestamps.length >= 3) {
+        const oldest = validTimestamps[0];
+        const remaining = Math.ceil((IP_COOLDOWN - (now - oldest)) / 1000);
+        return res.status(429).json({
+            success: false,
+            message: `Bạn đã đạt giới hạn 3 lần/phút. Vui lòng thử lại sau ${remaining} giây.`
+        });
     }
 
     // Set rate limit lock
-    ipLocks.set(clientIp, now);
+    validTimestamps.push(now);
+    ipLocks.set(clientIp, validTimestamps);
 
     const timestamp = Date.now();
     const jobId = `${timestamp}_${crypto.randomBytes(4).toString('hex')}`;
@@ -437,9 +442,12 @@ app.post('/api/signesign', async (req, res) => {
 // Cleanup expired rate limits every 5 minutes
 setInterval(() => {
     const now = Date.now();
-    for (const [ip, time] of ipLocks) {
-        if (now - time > IP_COOLDOWN) {
+    for (const [ip, timestamps] of ipLocks.entries()) {
+        const valid = timestamps.filter(t => now - t < IP_COOLDOWN);
+        if (valid.length === 0) {
             ipLocks.delete(ip);
+        } else {
+            ipLocks.set(ip, valid);
         }
     }
 }, 5 * 60 * 1000);

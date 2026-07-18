@@ -27,10 +27,11 @@ function SigneSign() {
   const [logs, setLogs] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
   const [installUrl, setInstallUrl] = useState('');
-  const [certPassword, setCertPassword] = useState('');
+  const [countdown, setCountdown] = useState<number | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     // Check URL params for UDID
@@ -41,8 +42,18 @@ function SigneSign() {
     }
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
+      if (countdownRef.current) clearInterval(countdownRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (countdown === 0) {
+      setShowResult(false);
+      setInstallUrl('');
+      addLog('⏰ Link cài đặt đã hết hạn và bị xoá để bảo mật.');
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    }
+  }, [countdown]);
 
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -103,9 +114,14 @@ function SigneSign() {
           addLog('   Hệ thống sẽ tự động xoá file sau 5 phút để bảo mật.');
 
           setInstallUrl(data.installUrl || '');
-          setCertPassword(data.certPassword || '');
           setShowResult(true);
           setIsProcessing(false);
+          
+          setCountdown(300); // 5 minutes
+          if (countdownRef.current) clearInterval(countdownRef.current);
+          countdownRef.current = setInterval(() => {
+            setCountdown(prev => (prev !== null && prev > 0 ? prev - 1 : 0));
+          }, 1000);
         }
 
         // Handle error
@@ -140,7 +156,6 @@ function SigneSign() {
     setIsProcessing(true);
     setShowResult(false);
     setInstallUrl('');
-    setCertPassword('');
     setLogs([]);
     setCurrentStep(0);
     setProgress(0);
@@ -363,33 +378,21 @@ function SigneSign() {
                 <i className="fas fa-check-circle"></i>
               </div>
               <h2>Ký Thành Công!</h2>
-              <p>Chứng chỉ đã sẵn sàng. Nhấn nút bên dưới để cài đặt ESign.</p>
+              <p>Chứng chỉ đã sẵn sàng. Hãy cài đặt ngay trước khi hết hạn.</p>
             </div>
-
-            {/* Certificate Info */}
-            {certPassword && (
-              <div className="ss-cert-info ss-glass">
-                <div className="ss-cert-row">
-                  <span className="ss-cert-label">
-                    <i className="fas fa-key"></i> Mật khẩu chứng chỉ
-                  </span>
-                  <span className="ss-cert-password">{certPassword}</span>
-                </div>
-              </div>
-            )}
 
             {/* Install Button */}
             <div className="ss-install-grid">
               <a
                 href={installUrl}
-                className="ss-install-btn ss-btn-esign"
+                className="ss-install-btn ss-btn-esign large-install-btn"
               >
                 <div className="ss-install-icon">
                   <i className="fas fa-signature"></i>
                 </div>
                 <div className="ss-install-text">
-                  <span className="ss-install-title">Cài Đặt ESign</span>
-                  <span className="ss-install-sub">Ký và cài ứng dụng IPA</span>
+                  <span className="ss-install-title">Bấm vào đây để cài ESign</span>
+                  <span className="ss-install-sub">Cài đặt trực tiếp vào thiết bị</span>
                 </div>
                 <i className="fas fa-external-link-alt ss-install-arrow"></i>
               </a>
@@ -409,8 +412,13 @@ function SigneSign() {
             <div className="ss-reminder ss-glass" style={{ borderColor: 'rgba(255,165,0,0.3)' }}>
               <i className="fas fa-clock" style={{ color: '#ffa500' }}></i>
               <div>
-                <strong>⏰ Link cài đặt sẽ tự động hết hạn sau 5 phút</strong> để bảo mật.
-                Hãy cài đặt ngay!
+                <strong>⏰ Link cài đặt sẽ tự động hết hạn sau: 
+                  <span style={{ color: '#ffa500', fontSize: '1.2em', marginLeft: '8px' }}>
+                    {countdown ? `${Math.floor(countdown / 60)}:${(countdown % 60).toString().padStart(2, '0')}` : '0:00'}
+                  </span>
+                </strong>
+                <br />
+                Vui lòng cài đặt ngay!
               </div>
             </div>
           </div>
