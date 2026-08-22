@@ -94,5 +94,18 @@
       "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10"
     }
   ],
-  "mods": []
+  "mods": [
+    {
+      "id": "mods_1787387170326",
+      "name": "No Menu",
+      "description": "máp ios",
+      "developer": "Mod",
+      "status": "active",
+      "size": "N/A",
+      "version": "1.0",
+      "date": "22/8/2026",
+      "icon": "https://www.thanglongwaterpuppet.org/wp-content/uploads/2025/11/avatar-lien-quan-meme-5.webp",
+      "installUrl": "https://t.me/bufreechiuroi/133"
+    }
+  ]
 }
