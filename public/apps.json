@@ -96,6 +96,18 @@
   ],
   "mods": [
     {
+      "id": "mods_1787387265148",
+      "name": "Menu",
+      "description": "menu đủ chức năng để chơi",
+      "developer": "Mod",
+      "status": "active",
+      "size": "N/A",
+      "version": "1.0",
+      "date": "22/8/2026",
+      "icon": "https://www.thanglongwaterpuppet.org/wp-content/uploads/2025/11/meme-lien-quan-hai-21.webp",
+      "installUrl": "https://t.me/bufreechiuroi/135"
+    },
+    {
       "id": "mods_1787387170326",
       "name": "No Menu",
       "description": "máp ios",
