@@ -76,6 +76,7 @@ const t = {
 };
 
 function App() {
+  const [showPopup, setShowPopup] = useState(true);
   const [esignData, setEsignData] = useState<any[]>([]);
   const [certData, setCertData] = useState<any[]>([]);
   const [modsData, setModsData] = useState<any[]>([]);
@@ -187,6 +188,35 @@ function App() {
 
   return (
     <>
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content glass">
+            <h3 style={{ color: 'var(--primary-color)', marginBottom: '10px' }}>Thông Báo</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-color)', marginBottom: '20px', textAlign: 'left' }}>
+              Web ký esign chứng chỉ free, một số thiết bị cài có thể lỗi hoặc thành công vì đây là free (lưu ý cài DNS trước và không dùng VPN), nếu muốn ổn định hãy bấm vào mua ở nút website bán chứng chỉ tự động.
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                className="btn-get" 
+                style={{ background: 'rgba(128, 128, 128, 0.2)', color: 'var(--text-color)' }}
+                onClick={() => setShowPopup(false)}
+              >
+                Đóng
+              </button>
+              <a 
+                href="https://cuios.shop" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn-get" 
+                style={{ textDecoration: 'none' }}
+              >
+                Mua Ngay
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Game Transition Curtain */}
       <div className={`transition-curtain ${curtainClass}`}>
         <div className="curtain-logo">CERTIOS.XYZ</div>
