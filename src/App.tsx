@@ -194,6 +194,8 @@ function App() {
             <h3 style={{ color: 'var(--primary-color)', marginBottom: '10px' }}>Thông Báo</h3>
             <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-color)', marginBottom: '20px', textAlign: 'left' }}>
               Web ký esign chứng chỉ free, một số thiết bị cài có thể lỗi hoặc thành công vì đây là free (lưu ý cài DNS trước và không dùng VPN), nếu muốn ổn định hãy bấm vào mua ở nút website bán chứng chỉ tự động.
+              <br /><br />
+              Chứng chỉ mua sẽ cài đặt 100% thành công và dùng ổn định hỗ trợ mọi phiên bản ios kể cả sau khi update ios hoặc reset máy. Có thể tham khảo video mua và cài <a href="https://t.me/huongdancaiipa" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-color)', textDecoration: 'underline', fontWeight: 'bold' }}>Tại Đây</a>.
             </p>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button 
