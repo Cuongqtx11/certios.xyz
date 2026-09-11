@@ -357,12 +357,12 @@ app.post('/api/signesign', async (req, res) => {
             }
 
             // Update job: Step 3 - Sign with zsign
-            jobs.set(jobId, { ...jobs.get(jobId), step: 'signing', message: 'Đang ký ESign tự động...', progress: 55 });
+            jobs.set(jobId, { ...jobs.get(jobId), step: 'signing', message: 'Đang ký CSign tự động...', progress: 55 });
 
             // Check template exists
-            const esignBase = path.join(TEMPLATES_DIR, 'ESign_CERTIOS_TEMPLATE.ipa');
+            const esignBase = path.join(TEMPLATES_DIR, 'CSign_CERTIOS_TEMPLATE.ipa');
             if (!fs.existsSync(esignBase)) {
-                throw new Error('Thiếu template ESign trên server. Liên hệ admin.');
+                throw new Error('Thiếu template CSign trên server. Liên hệ admin.');
             }
 
             // Unpack template
@@ -370,8 +370,8 @@ app.post('/api/signesign', async (req, res) => {
             fs.mkdirSync(tmpEsignDir, { recursive: true });
             await execAsync(`unzip -o -q "${esignBase}" -d "${tmpEsignDir}"`, { timeout: 60000 });
 
-            // Inject cert into ESign app
-            const certAssetDir = path.join(tmpEsignDir, 'Payload/ESign.app/signing-assets/cuios.shop');
+            // Inject cert into CSign app
+            const certAssetDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets/DefaultCert');
             fs.mkdirSync(certAssetDir, { recursive: true });
             fs.copyFileSync(p12File, path.join(certAssetDir, 'cert.p12'));
             if (provFile && fs.existsSync(provFile)) {
@@ -391,7 +391,7 @@ app.post('/api/signesign', async (req, res) => {
             const signedIpaName = `temp_sign_${timestamp}.ipa`;
             const signedIpaPath = path.join(ESIGN_DIR, signedIpaName);
 
-            const bundleId = `com.certios.esign.${timestamp}`;
+            const bundleId = `com.certios.csign.${timestamp}`;
             let zsignCmd;
 
             if (provFile && fs.existsSync(provFile)) {
@@ -412,7 +412,7 @@ app.post('/api/signesign', async (req, res) => {
             const plistName = `temp_sign_${timestamp}.plist`;
             const plistPath = path.join(PLISTS_DIR, plistName);
             const ipaUrl = `https://api.certios.xyz/downloads/esign/${signedIpaName}`;
-            generatePlist('CERTIOS ESign', ipaUrl, plistPath, bundleId);
+            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId);
 
             // Git push to make files accessible via GitHub Pages
             // jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đẩy lên server tải...', progress: 90 });

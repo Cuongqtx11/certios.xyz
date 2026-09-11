@@ -11,19 +11,19 @@
                     <key>kind</key>
                     <string>software-package</string>
                     <key>url</key>
-                    <string>https://api.certios.xyz/downloads/esign/temp_sign_1787727629091.ipa</string>
+                    <string>https://certios.xyz/downloads/esign/esign_signed_1789116149839.ipa</string>
                 </dict>
             </array>
             <key>metadata</key>
             <dict>
                 <key>bundle-identifier</key>
-                <string>com.certios.esign.1787727629091</string>
+                <string>com.certios.1789116149839</string>
                 <key>bundle-version</key>
                 <string>1.0</string>
                 <key>kind</key>
                 <string>software</string>
                 <key>title</key>
-                <string>CERTIOS ESign</string>
+                <string>CERTIOS CSign</string>
             </dict>
         </dict>
     </array>

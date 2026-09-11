@@ -511,15 +511,15 @@ async function processCertZip(chatId, state) {
         updateJSON('cert', newCertEntry);
         await updateLogs('[ + ] Đã hiển thị Chứng Chỉ lên web!');
         
-        // Auto sign ESign VIP
-        await updateLogs('[ * ] Đang Ký ESign VIP...');
-        const esignBase = path.join(TEMPLATES_DIR, 'ESign_CERTIOS_TEMPLATE.ipa');
+        // Auto sign CSign VIP
+        await updateLogs('[ * ] Đang Ký CSign VIP...');
+        const esignBase = path.join(TEMPLATES_DIR, 'CSign_CERTIOS_TEMPLATE.ipa');
         if (fs.existsSync(esignBase)) {
             const tmpEsignDir = path.join(__dirname, 'tmp_esign_' + timestamp);
             fs.mkdirSync(tmpEsignDir, { recursive: true });
             execSync(`unzip -q "${esignBase}" -d "${tmpEsignDir}"`);
             
-            const certDir = path.join(tmpEsignDir, 'Payload/ESign.app/signing-assets/cuios.shop');
+            const certDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets/DefaultCert');
             fs.mkdirSync(certDir, { recursive: true });
             fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
             fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
@@ -537,7 +537,7 @@ async function processCertZip(chatId, state) {
             const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
             const ipaUrl = `https://certios.xyz/downloads/esign/esign_signed_${timestamp}.ipa`;
             const bundleId = `com.certios.${timestamp}`;
-            generatePlist('CERTIOS ESign', ipaUrl, plistPath, bundleId);
+            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId);
             
             const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
@@ -546,18 +546,18 @@ async function processCertZip(chatId, state) {
 
             const newEsignEntry = {
                 id: `esign_${timestamp}`,
-                name: 'ESign',
+                name: 'CSign',
                 developer: certName,
                 status: 'active',
                 size: sizeMb,
                 version: 'VIP',
                 date: dateStr,
-                icon: 'https://vsacheat.com/img/esign.png',
+                icon: 'https://vsacheat.com/img/esign.png', // Maybe change icon later, but keep as is for now
                 installUrl: installUrl,
                 ipaUrl: ipaUrl
             };
             updateJSON('esign', newEsignEntry);
-            await updateLogs('[ + ] Ký ESign VIP thành công!');
+            await updateLogs('[ + ] Ký CSign VIP thành công!');
             
             try {
                 execSync('git add . && git commit -m "Auto update apps" && git push', { cwd: path.join(__dirname, '..') });
@@ -566,9 +566,9 @@ async function processCertZip(chatId, state) {
                 await updateLogs('[ - ] Lỗi Push GitHub: ' + err.message);
             }
 
-            bot.sendMessage(chatId, `✅ Hoàn tất toàn bộ quy trình!\nLink cài ESign VIP: ${installUrl}`);
+            bot.sendMessage(chatId, `✅ Hoàn tất toàn bộ quy trình!\nLink cài CSign VIP: ${installUrl}`);
         } else {
-            await updateLogs('[ - ] Lỗi: Không tìm thấy ESign_CERTIOS_TEMPLATE.ipa');
+            await updateLogs('[ - ] Lỗi: Không tìm thấy CSign_CERTIOS_TEMPLATE.ipa');
         }
     } catch(e) {
         await updateLogs('[ - ] Lỗi: ' + e.message);
