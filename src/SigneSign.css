@@ -958,11 +958,13 @@
   padding: 1.5rem !important;
   background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(78, 205, 196, 0.4)) !important;
   border: 2px solid rgba(78, 205, 196, 0.6) !important;
-  transform: scale(1.05);
+  /* Removed transform: scale(1.05) to fix mobile overflow zoom bug */
+  transition: all 0.3s ease;
 }
 .large-install-btn:hover {
-  transform: scale(1.1);
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(78, 205, 196, 0.5)) !important;
   box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4) !important;
+  /* Removed transform: scale(1.1) */
 }
 .large-install-btn .ss-install-title {
   font-size: 1.3rem !important;
