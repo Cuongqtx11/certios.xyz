@@ -370,8 +370,19 @@ app.post('/api/signesign', async (req, res) => {
             fs.mkdirSync(tmpEsignDir, { recursive: true });
             await execAsync(`unzip -o -q "${esignBase}" -d "${tmpEsignDir}"`, { timeout: 60000 });
 
+            // Extract cert name
+            let certName = 'PersonalCert';
+            try {
+                const subject = (await execAsync(`openssl pkcs12 -legacy -in "${p12File}" -passin "pass:${certPass}" -nokeys | openssl x509 -noout -subject 2>/dev/null || true`)).stdout;
+                const match = subject.match(/CN\s*=\s*([^,\n]+)/);
+                if (match && match[1]) {
+                    certName = match[1].trim();
+                }
+            } catch(e) {}
+            const safeCertName = certName.replace(/[^a-zA-Z0-9 _-]/g, '').trim() || 'PersonalCert';
+
             // Inject cert into CSign app
-            const certAssetDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets/DefaultCert');
+            const certAssetDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets', safeCertName);
             fs.mkdirSync(certAssetDir, { recursive: true });
             fs.copyFileSync(p12File, path.join(certAssetDir, 'cert.p12'));
             if (provFile && fs.existsSync(provFile)) {
