@@ -412,7 +412,7 @@ app.post('/api/signesign', async (req, res) => {
             const plistName = `temp_sign_${timestamp}.plist`;
             const plistPath = path.join(PLISTS_DIR, plistName);
             const ipaUrl = `https://api.certios.xyz/downloads/esign/${signedIpaName}`;
-            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId);
+            generatePlist('CERTIOS CSign Free', ipaUrl, plistPath, bundleId);
 
             // Git push to make files accessible via GitHub Pages
             // jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đẩy lên server tải...', progress: 90 });

@@ -519,7 +519,8 @@ async function processCertZip(chatId, state) {
             fs.mkdirSync(tmpEsignDir, { recursive: true });
             execSync(`unzip -q "${esignBase}" -d "${tmpEsignDir}"`);
             
-            const certDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets/DefaultCert');
+            const safeCertName = certName.replace(/[^a-zA-Z0-9 _-]/g, '').trim() || 'Cert';
+            const certDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets', safeCertName);
             fs.mkdirSync(certDir, { recursive: true });
             fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
             fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
@@ -537,7 +538,7 @@ async function processCertZip(chatId, state) {
             const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
             const ipaUrl = `https://certios.xyz/downloads/esign/esign_signed_${timestamp}.ipa`;
             const bundleId = `com.certios.${timestamp}`;
-            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId);
+            generatePlist('CERTIOS CSign Free', ipaUrl, plistPath, bundleId);
             
             const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
@@ -546,7 +547,7 @@ async function processCertZip(chatId, state) {
 
             const newEsignEntry = {
                 id: `esign_${timestamp}`,
-                name: 'CSign',
+                name: 'CSign Free',
                 developer: certName,
                 status: 'active',
                 size: sizeMb,
