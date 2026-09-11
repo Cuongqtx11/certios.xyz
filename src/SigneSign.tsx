@@ -5,7 +5,7 @@ import './SigneSign.css';
 const STEPS = [
   { id: 'search', label: 'Tìm kiếm đơn hàng', icon: '🔍' },
   { id: 'cert', label: 'Tải chứng chỉ cá nhân', icon: '📜' },
-  { id: 'sign', label: 'Ký CSign Free tự động', icon: '✍️' },
+  { id: 'sign', label: 'Ký CSign tự động', icon: '✍️' },
   { id: 'done', label: 'Hoàn tất – Sẵn sàng cài đặt', icon: '✅' },
 ];
 
@@ -242,7 +242,7 @@ function SigneSign() {
           <p className="ss-subtitle">Tự Động Ký Chứng Chỉ Cá Nhân & Cài Đặt</p>
           <p className="ss-desc">
             Nhập UDID thiết bị để tự động tải chứng chỉ cá nhân từ đơn hàng Cuios.shop,
-            ký CSign Free và nhận link cài đặt trực tiếp.
+            ký CSign và nhận link cài đặt trực tiếp.
           </p>
         </div>
 
@@ -395,7 +395,7 @@ function SigneSign() {
                   <i className="fas fa-signature"></i>
                 </div>
                 <div className="ss-install-text">
-                  <span className="ss-install-title">Bấm vào đây để cài CSign Free</span>
+                  <span className="ss-install-title">Bấm vào đây để cài CSign</span>
                   <span className="ss-install-sub">Cài đặt trực tiếp vào thiết bị</span>
                 </div>
                 <i className="fas fa-external-link-alt ss-install-arrow"></i>

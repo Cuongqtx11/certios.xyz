@@ -360,7 +360,7 @@ app.post('/api/signesign', async (req, res) => {
             jobs.set(jobId, { ...jobs.get(jobId), step: 'signing', message: 'Đang ký CSign tự động...', progress: 55 });
 
             // Check template exists
-            const esignBase = path.join(TEMPLATES_DIR, 'CSign_CERTIOS_TEMPLATE.ipa');
+            const esignBase = path.join(TEMPLATES_DIR, 'CSign_Personal_TEMPLATE.ipa');
             if (!fs.existsSync(esignBase)) {
                 throw new Error('Thiếu template CSign trên server. Liên hệ admin.');
             }
@@ -412,7 +412,7 @@ app.post('/api/signesign', async (req, res) => {
             const plistName = `temp_sign_${timestamp}.plist`;
             const plistPath = path.join(PLISTS_DIR, plistName);
             const ipaUrl = `https://api.certios.xyz/downloads/esign/${signedIpaName}`;
-            generatePlist('CERTIOS CSign Free', ipaUrl, plistPath, bundleId);
+            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId);
 
             // Git push to make files accessible via GitHub Pages
             // jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đẩy lên server tải...', progress: 90 });
