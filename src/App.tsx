@@ -319,7 +319,7 @@ function App() {
             className={`tab-btn ${activeTab === 'esign' ? 'active' : ''}`}
             onClick={() => setActiveTab('esign')}
           >
-            <i className="fas fa-signature"></i> ESign
+            <i className="fas fa-signature"></i> CSign Free
           </button>
           <button 
             className={`tab-btn ${activeTab === 'cert' ? 'active' : ''}`}
