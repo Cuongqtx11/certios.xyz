@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const https = require('https');
+const { signCSign } = require('./csign');
 
 // Token from the user
 const token = '8565117060:AAEHcP73S-K7hvD7HZj4DnCV6-mjKOdWfhM';
@@ -393,7 +394,7 @@ function updateJSON(category, newEntry) {
     fs.writeFileSync(APPS_JSON_PATH, JSON.stringify(data, null, 2));
 }
 
-function generatePlist(appName, ipaUrl, dest, bundleId) {
+function generatePlist(appName, ipaUrl, dest, bundleId, bundleVersion = '1') {
     const plist = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -415,7 +416,7 @@ function generatePlist(appName, ipaUrl, dest, bundleId) {
                 <key>bundle-identifier</key>
                 <string>${bundleId}</string>
                 <key>bundle-version</key>
-                <string>1.0</string>
+                <string>${bundleVersion}</string>
                 <key>kind</key>
                 <string>software</string>
                 <key>title</key>
@@ -515,30 +516,17 @@ async function processCertZip(chatId, state) {
         await updateLogs('[ * ] Đang Ký CSign VIP...');
         const esignBase = path.join(TEMPLATES_DIR, 'CSign_CERTIOS_TEMPLATE.ipa');
         if (fs.existsSync(esignBase)) {
-            const tmpEsignDir = path.join(__dirname, 'tmp_esign_' + timestamp);
-            fs.mkdirSync(tmpEsignDir, { recursive: true });
-            execSync(`unzip -q "${esignBase}" -d "${tmpEsignDir}"`);
-            
-            const safeCertName = certName.replace(/[^a-zA-Z0-9 _-]/g, '').trim() || 'Cert';
-            const certDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets', safeCertName);
-            fs.mkdirSync(certDir, { recursive: true });
-            fs.copyFileSync(latestCert.p12, path.join(certDir, 'cert.p12'));
-            fs.copyFileSync(latestCert.prov, path.join(certDir, 'cert.mobileprovision'));
-            fs.writeFileSync(path.join(certDir, 'cert.txt'), latestCert.pass);
-            
-            const repackedIpa = path.join(ESIGN_DIR, `esign_raw_${timestamp}.ipa`);
-            execSync(`cd "${tmpEsignDir}" && zip -qr "${repackedIpa}" Payload`);
-            
             const signedEsignIpa = path.join(ESIGN_DIR, `esign_signed_${timestamp}.ipa`);
-            execSync(`zsign -k "${latestCert.p12}" -p "${latestCert.pass}" -m "${latestCert.prov}" -b "com.certios.${timestamp}" -o "${signedEsignIpa}" -z 9 "${repackedIpa}"`);
-            
-            fs.rmSync(tmpEsignDir, { recursive: true, force: true });
-            fs.unlinkSync(repackedIpa);
-            
+            const signed = await signCSign({
+                template: esignBase, certificate: latestCert.p12, provision: latestCert.prov,
+                password: latestCert.pass, output: signedEsignIpa,
+                bundleId: `com.certios.${timestamp}`, certName
+            });
+
             const plistPath = path.join(PLISTS_DIR, `esign_${timestamp}.plist`);
             const ipaUrl = `https://certios.xyz/downloads/esign/esign_signed_${timestamp}.ipa`;
-            const bundleId = `com.certios.${timestamp}`;
-            generatePlist('CERTIOS CSign Free', ipaUrl, plistPath, bundleId);
+            const bundleId = signed.bundleId;
+            generatePlist('CERTIOS CSign Free', ipaUrl, plistPath, bundleId, signed.bundleVersion);
             
             const plistUrl = `https://certios.xyz/downloads/plists/esign_${timestamp}.plist`;
             const installUrl = `itms-services://?action=download-manifest&url=${plistUrl}`;
@@ -551,9 +539,9 @@ async function processCertZip(chatId, state) {
                 developer: certName,
                 status: 'active',
                 size: sizeMb,
-                version: 'VIP',
+                version: signed.version,
                 date: dateStr,
-                icon: 'https://vsacheat.com/img/esign.png', // Maybe change icon later, but keep as is for now
+                icon: '/csign.png',
                 installUrl: installUrl,
                 ipaUrl: ipaUrl
             };

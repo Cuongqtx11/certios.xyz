@@ -148,7 +148,7 @@ function App() {
     <div key={app.id} className="app-card glass">
       <div className="app-header">
         <div className="app-icon" style={{ background: (activeTab === 'esign' || activeTab === 'cert' || (activeTab === 'mods' && app.icon)) ? 'transparent' : 'var(--gradient-2)', boxShadow: (activeTab === 'esign' || activeTab === 'cert' || (activeTab === 'mods' && app.icon)) ? 'none' : '0 4px 12px var(--primary-glow)' }}>
-          {activeTab === 'esign' && <img src="https://vsacheat.com/img/esign.png" alt="ESign" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
+          {activeTab === 'esign' && <img src={app.icon || '/csign.png'} alt="CSign" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
           {activeTab === 'cert' && <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10" alt="Cert" style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />}
           {activeTab === 'mods' && (app.icon ? <img src={app.icon} alt={app.name} style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} /> : <i className="fas fa-gamepad"></i>)}
         </div>

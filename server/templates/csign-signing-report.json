@@ -1,0 +1,68 @@
+[
+  {
+    "entry": "esign_1790586606308",
+    "filename": "esign_signed_1790586606308.ipa",
+    "plistName": "esign_1790586606308.plist",
+    "bundleId": "cn.edu.buaa.wxwork.notifyext",
+    "bundleVersion": "1",
+    "version": "2.9.0",
+    "size": 18348460,
+    "expiration": "2026-12-03T02:06:44",
+    "allDevices": true
+  },
+  {
+    "entry": "esign_1787582896789",
+    "filename": "esign_signed_1787582896789.ipa",
+    "plistName": "esign_1787582896789.plist",
+    "bundleId": "hk.com.hsbc.enterprise.hsbchkrewards.local2",
+    "bundleVersion": "1",
+    "version": "2.9.0",
+    "size": 18348099,
+    "expiration": "2027-05-04T05:56:26",
+    "allDevices": true
+  },
+  {
+    "entry": "esign_1784029135972",
+    "filename": "esign_signed_1784029135972.ipa",
+    "plistName": "esign_1784029135972.plist",
+    "bundleId": "com.aramco.cycomm",
+    "bundleVersion": "1",
+    "version": "2.9.0",
+    "size": 18348282,
+    "expiration": "2026-09-24T13:35:52",
+    "allDevices": true
+  },
+  {
+    "entry": "esign_1784026722657",
+    "filename": "esign_signed_1784026722657.ipa",
+    "plistName": "esign_1784026722657.plist",
+    "bundleId": "com.ctq.qmc.yiban.product",
+    "bundleVersion": "1",
+    "version": "2.9.0",
+    "size": 18349094,
+    "expiration": "2027-04-23T08:44:02",
+    "allDevices": true
+  },
+  {
+    "entry": "esign_1784022078485",
+    "filename": "esign_signed_1784022078485.ipa",
+    "plistName": "esign_1784022078485.plist",
+    "bundleId": "com.vietnamairlines.moplus.uat.lido",
+    "bundleVersion": "1",
+    "version": "2.9.0",
+    "size": 18348148,
+    "expiration": "2026-08-08T12:21:46",
+    "allDevices": true
+  },
+  {
+    "entry": "esign_1784021999805",
+    "filename": "esign_signed_1784021999805.ipa",
+    "plistName": "esign_1784021999805.plist",
+    "bundleId": "app.gemini2041.amber8351",
+    "bundleVersion": "1",
+    "version": "2.9.0",
+    "size": 18354353,
+    "expiration": "2027-01-27T12:13:16",
+    "allDevices": false
+  }
+]

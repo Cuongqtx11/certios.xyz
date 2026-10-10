@@ -25,3 +25,5 @@ dist-ssr
 CERTIOS.XYZ_NOTES.md
 server/node_modules/
 .env
+.zsign_cache/
+__pycache__/

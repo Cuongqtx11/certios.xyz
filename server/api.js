@@ -7,6 +7,7 @@ const util = require('util');
 const https = require('https');
 const http = require('http');
 const crypto = require('crypto');
+const { signCSign } = require('./csign');
 
 const execAsync = util.promisify(exec);
 
@@ -150,7 +151,7 @@ const IP_COOLDOWN = 60000; // 1 minute
 const jobs = new Map();
 const udidJobs = new Map();
 
-function generatePlist(appName, ipaUrl, dest, bundleId) {
+function generatePlist(appName, ipaUrl, dest, bundleId, bundleVersion = '1') {
     const plist = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -172,7 +173,7 @@ function generatePlist(appName, ipaUrl, dest, bundleId) {
                 <key>bundle-identifier</key>
                 <string>${bundleId}</string>
                 <key>bundle-version</key>
-                <string>1.0</string>
+                <string>${bundleVersion}</string>
                 <key>kind</key>
                 <string>software</string>
                 <key>title</key>
@@ -365,65 +366,23 @@ app.post('/api/signesign', async (req, res) => {
                 throw new Error('Thiếu template CSign trên server. Liên hệ admin.');
             }
 
-            // Unpack template
-            const tmpEsignDir = path.join(tmpDir, 'esign_extract');
-            fs.mkdirSync(tmpEsignDir, { recursive: true });
-            await execAsync(`unzip -o -q "${esignBase}" -d "${tmpEsignDir}"`, { timeout: 60000 });
-
-            // Extract cert name
-            let certName = 'PersonalCert';
-            try {
-                const subject = (await execAsync(`openssl pkcs12 -legacy -in "${p12File}" -passin "pass:${certPass}" -nokeys | openssl x509 -noout -subject 2>/dev/null || true`)).stdout;
-                const match = subject.match(/CN\s*=\s*([^,\n]+)/);
-                if (match && match[1]) {
-                    certName = match[1].trim();
-                }
-            } catch(e) {}
-            const safeCertName = certName.replace(/[^a-zA-Z0-9 _-]/g, '').trim() || 'PersonalCert';
-
-            // Inject cert into CSign app
-            const certAssetDir = path.join(tmpEsignDir, 'Payload/CSign.app/signing-assets', safeCertName);
-            fs.mkdirSync(certAssetDir, { recursive: true });
-            fs.copyFileSync(p12File, path.join(certAssetDir, 'cert.p12'));
-            if (provFile && fs.existsSync(provFile)) {
-                fs.copyFileSync(provFile, path.join(certAssetDir, 'cert.mobileprovision'));
-            }
-            if (certPass) {
-                fs.writeFileSync(path.join(certAssetDir, 'cert.txt'), certPass);
-            }
-
-            // Repack IPA
-            jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đóng gói IPA...', progress: 65 });
-            const repackedIpa = path.join(tmpDir, 'esign_raw.ipa');
-            await execAsync(`cd "${tmpEsignDir}" && zip -qr "${repackedIpa}" Payload`, { timeout: 120000 });
-
-            // Sign with zsign
-            jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang ký chữ ký số với zsign...', progress: 75 });
+            // Use the current template and the provisioning profile's permitted Bundle ID.
             const signedIpaName = `temp_sign_${timestamp}.ipa`;
             const signedIpaPath = path.join(ESIGN_DIR, signedIpaName);
-
-            const bundleId = `com.certios.csign.${timestamp}`;
-            let zsignCmd;
-
-            if (provFile && fs.existsSync(provFile)) {
-                zsignCmd = `zsign -k "${p12File}" -p "${certPass}" -m "${provFile}" -b "${bundleId}" -o "${signedIpaPath}" -z 9 "${repackedIpa}"`;
-            } else {
-                // Sign without mobileprovision (may work for some certs)
-                zsignCmd = `zsign -k "${p12File}" -p "${certPass}" -b "${bundleId}" -o "${signedIpaPath}" -z 9 "${repackedIpa}"`;
-            }
-
-            await execAsync(zsignCmd, { timeout: 180000 });
-
-            if (!fs.existsSync(signedIpaPath)) {
-                throw new Error('zsign không tạo được file IPA đã ký.');
-            }
+            jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đóng gói và ký CSign...', progress: 65 });
+            const signed = await signCSign({
+                template: esignBase, certificate: p12File, provision: provFile,
+                password: certPass, output: signedIpaPath,
+                bundleId: `com.certios.csign.${timestamp}`, certName: 'PersonalCert', udid: cleanUdid
+            });
+            const bundleId = signed.bundleId;
 
             // Generate plist
             jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang tạo link cài đặt...', progress: 85 });
             const plistName = `temp_sign_${timestamp}.plist`;
             const plistPath = path.join(PLISTS_DIR, plistName);
             const ipaUrl = `https://api.certios.xyz/downloads/esign/${signedIpaName}`;
-            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId);
+            generatePlist('CERTIOS CSign', ipaUrl, plistPath, bundleId, signed.bundleVersion);
 
             // Git push to make files accessible via GitHub Pages
             // jobs.set(jobId, { ...jobs.get(jobId), message: 'Đang đẩy lên server tải...', progress: 90 });
@@ -441,7 +400,7 @@ app.post('/api/signesign', async (req, res) => {
                 success: true,
                 status: 'done',
                 step: 'done',
-                message: '🎉 Ký thành công! Nhấn nút bên dưới để cài đặt ESign.',
+                message: '🎉 Ký thành công! Nhấn nút bên dưới để cài đặt CSign.',
                 installUrl,
                 progress: 100,
                 createdAt: timestamp,

@@ -1,0 +1,11 @@
+{
+  "sourceRepository": "https://github.com/Tomqtx11/CSign",
+  "sourceCommit": "b7220451d9abd94a97e0d706877cb0e84ceede79",
+  "workflowRun": 38044968862,
+  "artifactId": 11667143301,
+  "sourceIpaSha256": "a99d36846b9a1317e9c2b02bf9a5f837ac3ce3ad8d773b55e8b1c9d795ce403c",
+  "templates": {
+    "CSign_CERTIOS_TEMPLATE.ipa": "28ccec11eded102894e514ab234ee5004b3de14a45850dd898b015abcfde954c",
+    "CSign_Personal_TEMPLATE.ipa": "a99d36846b9a1317e9c2b02bf9a5f837ac3ce3ad8d773b55e8b1c9d795ce403c"
+  }
+}
