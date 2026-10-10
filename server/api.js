@@ -63,7 +63,16 @@ const TEMPLATES_DIR = path.join(__dirname, 'templates');
             for (const file of files) {
                 if (file.startsWith('temp_sign_')) {
                     try {
-                        fs.unlinkSync(path.join(dir, file));
+                        const fullPath = path.join(dir, file);
+                        const remaining = 15 * 60 * 1000 - (Date.now() - fs.statSync(fullPath).mtimeMs);
+                        if (remaining > 0) {
+                            // Keep recent install links working across an API update.
+                            setTimeout(() => {
+                                try { fs.unlinkSync(fullPath); } catch { /* already removed */ }
+                            }, remaining).unref();
+                            continue;
+                        }
+                        fs.unlinkSync(fullPath);
                         cleaned++;
                     } catch (e) { /* ignore */ }
                 }
@@ -373,7 +382,7 @@ app.post('/api/signesign', async (req, res) => {
             const signed = await signCSign({
                 template: esignBase, certificate: p12File, provision: provFile,
                 password: certPass, output: signedIpaPath,
-                bundleId: `com.certios.csign.${timestamp}`, certName: 'PersonalCert', udid: cleanUdid
+                bundleId: `com.certios.csign.${timestamp}`, certName: 'Certificate', udid: cleanUdid
             });
             const bundleId = signed.bundleId;
 

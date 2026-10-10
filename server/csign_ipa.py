@@ -91,7 +91,8 @@ def sign(args):
         assets = app / 'signing-assets'
         if assets.exists():
             shutil.rmtree(assets)
-        safe_name = re.sub(r'[^a-zA-Z0-9 _-]', '', args.cert_name).strip() or 'Cert'
+        cert_name = 'Certificate' if args.cert_name == 'PersonalCert' else args.cert_name
+        safe_name = re.sub(r'[^a-zA-Z0-9 _-]', '', cert_name).strip() or 'Cert'
         assets = assets / safe_name
         assets.mkdir(parents=True)
         shutil.copy2(certificate, assets / 'cert.p12')
