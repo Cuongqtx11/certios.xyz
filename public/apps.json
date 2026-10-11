@@ -140,5 +140,18 @@
       "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10"
     }
   ],
-  "mods": []
+  "mods": [
+    {
+      "id": "mods_1791732303527",
+      "name": "Tiktok BackGround",
+      "description": "đặt ảnh bìa tiktok",
+      "developer": "Mod",
+      "status": "active",
+      "size": "N/A",
+      "version": "1.0",
+      "date": "11/10/2026",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPNj-WbqYMxAlEcdyJxRwXHFpkOFydENm81pdWuwqURg&s=10",
+      "installUrl": "https://www.mediafire.com/file/f2mi97g6z3sp5xv/Tiktok+background.ipa/file"
+    }
+  ]
 }
