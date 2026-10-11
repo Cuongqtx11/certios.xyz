@@ -10,7 +10,10 @@ const token = '8565117060:AAEHcP73S-K7hvD7HZj4DnCV6-mjKOdWfhM';
 const bot = new TelegramBot(token, { 
     polling: {
         interval: 300,
-        autoStart: true
+        autoStart: true,
+        params: {
+            allowed_updates: ['message', 'callback_query']
+        }
     },
     request: {
         agentOptions: {
@@ -93,6 +96,9 @@ bot.on('message', async (msg) => {
     if (msg.from.id !== ALLOWED_USER) return;
     const chatId = msg.chat.id;
     const text = msg.text;
+    const menuText = typeof text === 'string'
+        ? text.replace(/[\uFE0E\uFE0F]/g, '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('vi-VN')
+        : '';
     const state = userStates[chatId] || { step: 'IDLE' };
 
     if (text === '🪪 Upload Chứng Chỉ') {
@@ -145,17 +151,21 @@ bot.on('message', async (msg) => {
         return;
     }
 
-    if (text === '🗂 Quản Lý') {
-        const opts = {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '📱 Quản lý ESign', callback_data: 'mgr_cat_esign' }],
-                    [{ text: '🪪 Quản lý Chứng Chỉ', callback_data: 'mgr_cat_cert' }],
-                    [{ text: '🛠 Quản lý Mods', callback_data: 'mgr_cat_mods' }]
-                ]
-            }
-        };
-        bot.sendMessage(chatId, 'Chọn chuyên mục bạn muốn quản lý:', opts);
+    if (menuText === '🗂 quản lý') {
+        userStates[chatId] = { step: 'IDLE' };
+        await bot.sendMessage(chatId, 'Chọn chuyên mục bạn muốn quản lý:', managementMenu());
+        return;
+    }
+
+    const managementCategory = {
+        '📱 quản lý esign': 'esign',
+        '🪪 quản lý chứng chỉ': 'cert',
+        '🛠 quản lý mods': 'mods'
+    }[menuText];
+    if (managementCategory) {
+        userStates[chatId] = { step: 'IDLE' };
+        const view = managementList(managementCategory);
+        await bot.sendMessage(chatId, view.text, view.options);
         return;
     }
 
@@ -565,121 +575,147 @@ async function processCertZip(chatId, state) {
 }
 
 
+function managementMenu() {
+    return {
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: '📱 Quản lý ESign', callback_data: 'mgr_cat_esign' }],
+                [{ text: '🪪 Quản lý Chứng Chỉ', callback_data: 'mgr_cat_cert' }],
+                [{ text: '🛠 Quản lý Mods', callback_data: 'mgr_cat_mods' }]
+            ]
+        }
+    };
+}
+
+const MANAGEMENT_CATEGORIES = { esign: 'ESign', cert: 'Chứng Chỉ', mods: 'Mods' };
+
+function readManagementData() {
+    const defaults = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
+    return fs.existsSync(APPS_JSON_PATH)
+        ? { ...defaults, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH, 'utf8')) }
+        : defaults;
+}
+
+function managementList(category) {
+    const items = readManagementData()[category] || [];
+    const inlineKeyboard = items.map(item => [{
+        text: category === 'esign' && item.developer
+            ? `${item.name} — ${item.developer}`
+            : String(item.name || item.id),
+        callback_data: `mgr_item_${category}_${item.id}`
+    }]);
+    inlineKeyboard.push([{ text: '🔙 Quay lại', callback_data: 'mgr_back' }]);
+    return {
+        text: items.length
+            ? `Chọn mục trong ${MANAGEMENT_CATEGORIES[category]} để xem hoặc xoá:`
+            : `Danh sách ${MANAGEMENT_CATEGORIES[category]} trống!`,
+        options: { reply_markup: { inline_keyboard: inlineKeyboard } }
+    };
+}
+
+function managementItemDetails(category, item) {
+    const lines = [`${MANAGEMENT_CATEGORIES[category]}: ${item.name || item.id}`];
+    for (const [field, label] of [
+        ['developer', 'Nhà phát triển'], ['description', 'Mô tả'],
+        ['status', 'Trạng thái'], ['version', 'Phiên bản'],
+        ['size', 'Dung lượng'], ['date', 'Ngày cập nhật'],
+        ['installUrl', category === 'cert' ? 'Link tải chứng chỉ' : 'Link cài đặt'],
+        ['ipaUrl', 'Link tải IPA']
+    ]) {
+        if (item[field]) lines.push(`${label}: ${item[field]}`);
+    }
+    return lines.join('\n');
+}
+
 bot.on('callback_query', async (query) => {
-    if (query.from.id !== ALLOWED_USER) return;
+    if (query.from?.id !== ALLOWED_USER) return;
+    const data = query.data;
+    if (typeof data !== 'string' || !data.startsWith('mgr_')) return;
+
+    // Always stop Telegram's loading indicator, including repeated or stale clicks.
+    try {
+        await bot.answerCallbackQuery(query.id);
+    } catch (error) {
+        console.log('Management callback acknowledgement:', error.message);
+    }
+    if (!query.message?.chat) return;
     const chatId = query.message.chat.id;
     const messageId = query.message.message_id;
-    const data = query.data;
-    
-    if (data.startsWith('mgr_cat_')) {
-        const category = data.split('_')[2];
-        let appsData = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
-        if (fs.existsSync(APPS_JSON_PATH)) {
-            appsData = { ...appsData, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
-        }
-        const items = appsData[category] || [];
-        
-        if (items.length === 0) {
-            bot.editMessageText('Danh sách trống!', { chat_id: chatId, message_id: messageId });
+    const messageOptions = { chat_id: chatId, message_id: messageId };
+
+    try {
+        if (data === 'mgr_back') {
+            userStates[chatId] = { step: 'IDLE' };
+            await bot.editMessageText('Chọn chuyên mục bạn muốn quản lý:', {
+                ...messageOptions, ...managementMenu()
+            });
             return;
         }
-        
-        const inlineKeyboard = items.map(item => {
-            return [{ text: item.name, callback_data: `mgr_item_${category}_${item.id}` }];
-        });
-        
-        inlineKeyboard.push([{ text: '🔙 Quay lại', callback_data: 'mgr_back' }]);
-        
-        bot.editMessageText(`Chọn ứng dụng trong mục ${category} để quản lý:`, {
-            chat_id: chatId,
-            message_id: messageId,
-            reply_markup: { inline_keyboard: inlineKeyboard }
-        });
-    }
-    
-    if (data === 'mgr_back') {
-        const opts = {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '📱 Quản lý ESign', callback_data: 'mgr_cat_esign' }],
-                    [{ text: '🪪 Quản lý Chứng Chỉ', callback_data: 'mgr_cat_cert' }],
-                    [{ text: '🛠 Quản lý Mods', callback_data: 'mgr_cat_mods' }]
-                ]
-            }
-        };
-        bot.editMessageText('Chọn chuyên mục bạn muốn quản lý:', {
-            chat_id: chatId,
-            message_id: messageId,
-            ...opts
-        });
-    }
-    
-    if (data.startsWith('mgr_item_')) {
-        const parts = data.split('_');
-        const category = parts[2];
-        const itemId = parts.slice(3).join('_'); // In case ID has underscores
-        
-        
-        const kb = [];
-        kb.push([{ text: '❌ Xoá ứng dụng này', callback_data: `mgr_del_${category}_${itemId}` }]);
-        if (category === 'cert') {
-            kb.push([{ text: '✏️ Đổi tên hiển thị', callback_data: `mgr_ren_${category}_${itemId}` }]);
+
+        if (data.startsWith('mgr_cat_')) {
+            const category = data.substring('mgr_cat_'.length);
+            if (!Object.hasOwn(MANAGEMENT_CATEGORIES, category)) return;
+            userStates[chatId] = { step: 'IDLE' };
+            const view = managementList(category);
+            await bot.editMessageText(view.text, { ...messageOptions, ...view.options });
+            return;
         }
-        kb.push([{ text: '🔙 Quay lại danh sách', callback_data: `mgr_cat_${category}` }]);
 
-        bot.editMessageText(`Bạn muốn làm gì với ${category === 'cert' ? 'chứng chỉ' : 'ứng dụng'} này?`, {
-            chat_id: chatId,
-            message_id: messageId,
-            reply_markup: {
-                inline_keyboard: kb
+        const match = data.match(/^mgr_(item|ren|del|confirm)_(esign|cert|mods)_(.+)$/);
+        if (!match) return;
+        const [, action, category, itemId] = match;
+        const appsData = readManagementData();
+        const item = appsData[category].find(entry => entry.id === itemId);
+        if (!item) {
+            userStates[chatId] = { step: 'IDLE' };
+            await bot.editMessageText('Mục này không còn tồn tại. Vui lòng mở lại danh sách.', {
+                ...messageOptions,
+                reply_markup: { inline_keyboard: [[{
+                    text: '🔙 Quay lại danh sách', callback_data: `mgr_cat_${category}`
+                }]] }
+            });
+            return;
+        }
+
+        if (action === 'item') {
+            userStates[chatId] = { step: 'IDLE' };
+            const kb = [[{ text: '❌ Xoá mục này', callback_data: `mgr_del_${category}_${itemId}` }]];
+            if (category === 'cert') {
+                kb.push([{ text: '✏️ Đổi tên hiển thị', callback_data: `mgr_ren_cert_${itemId}` }]);
             }
-        });
+            kb.push([{ text: '🔙 Quay lại danh sách', callback_data: `mgr_cat_${category}` }]);
+            await bot.editMessageText(managementItemDetails(category, item), {
+                ...messageOptions,
+                disable_web_page_preview: true,
+                reply_markup: { inline_keyboard: kb }
+            });
+            return;
+        }
 
-    }
-    
-    
-    if (data.startsWith('mgr_ren_cert_')) {
-        const itemId = data.substring('mgr_ren_cert_'.length);
-        userStates[chatId] = { step: 'WAITING_RENAME_CERT', itemId: itemId, messageId: messageId };
-        bot.editMessageText('Nhập TÊN HIỂN THỊ MỚI cho chứng chỉ này:', {
-            chat_id: chatId,
-            message_id: messageId,
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '❌ Huỷ', callback_data: `mgr_cat_cert` }]
-                ]
-            }
-        });
-    }
+        if (action === 'ren' && category === 'cert') {
+            userStates[chatId] = { step: 'WAITING_RENAME_CERT', itemId, messageId };
+            await bot.editMessageText(`Nhập TÊN HIỂN THỊ MỚI cho chứng chỉ: ${item.name}`, {
+                ...messageOptions,
+                reply_markup: { inline_keyboard: [[{ text: '❌ Huỷ', callback_data: 'mgr_cat_cert' }]] }
+            });
+            return;
+        }
 
-    if (data.startsWith('mgr_del_')) {
-        const parts = data.split('_');
-        const category = parts[2];
-        const itemId = parts.slice(3).join('_');
-        
-        bot.editMessageText(`⚠️ Xác nhận XOÁ vĩnh viễn?`, {
-            chat_id: chatId,
-            message_id: messageId,
-            reply_markup: {
-                inline_keyboard: [
+        if (action === 'del') {
+            userStates[chatId] = { step: 'IDLE' };
+            const relatedNotice = category === 'cert' ? '\nESign đi kèm cũng sẽ bị xoá.' : '';
+            await bot.editMessageText(`⚠️ Xác nhận XOÁ vĩnh viễn: ${item.name}?${relatedNotice}`, {
+                ...messageOptions,
+                reply_markup: { inline_keyboard: [
                     [{ text: '✅ Có, Xoá Ngay!', callback_data: `mgr_confirm_${category}_${itemId}` }],
-                    [{ text: '❌ Huỷ bỏ', callback_data: `mgr_cat_${category}` }]
-                ]
-            }
-        });
-    }
-    
-    if (data.startsWith('mgr_confirm_')) {
-        const parts = data.split('_');
-        const category = parts[2];
-        const itemId = parts.slice(3).join('_');
-        
-        let appsData = { config: { certDownloadDisabled: false }, esign: [], cert: [], mods: [] };
-        if (fs.existsSync(APPS_JSON_PATH)) {
-            appsData = { ...appsData, ...JSON.parse(fs.readFileSync(APPS_JSON_PATH)) };
+                    [{ text: '❌ Huỷ bỏ', callback_data: `mgr_item_${category}_${itemId}` }]
+                ] }
+            });
+            return;
         }
-        
-        if (appsData[category]) {
+
+        if (action === 'confirm') {
+            userStates[chatId] = { step: 'IDLE' };
             // TASK A: If deleting a cert, also delete the corresponding ESign
             if (category === 'cert') {
                 const timestamp = itemId.split('_')[1];
@@ -704,35 +740,31 @@ bot.on('callback_query', async (query) => {
                 }
             }
 
-            // Find item
-            const item = appsData[category].find(i => i.id === itemId);
-            if (item) {
-                // Remove files if ipaUrl exists
-                if (item.ipaUrl) {
-                    try {
-                        const ipaFilename = item.ipaUrl.split('/').pop();
-                        const ipaLocalPath = path.join(__dirname, '../public/downloads', category, ipaFilename);
-                        if (fs.existsSync(ipaLocalPath)) fs.unlinkSync(ipaLocalPath);
-                    } catch(e){}
-                }
-                if (item.installUrl) {
-                    try {
-                        const filename = item.installUrl.split('/').pop();
-                        if (category === 'cert') {
-                            const certLocalPath = path.join(__dirname, '../public/downloads/certs', filename);
-                            if (fs.existsSync(certLocalPath)) fs.unlinkSync(certLocalPath);
-                        } else {
-                            const plistLocalPath = path.join(__dirname, '../public/downloads/plists', filename);
-                            if (fs.existsSync(plistLocalPath)) fs.unlinkSync(plistLocalPath);
-                        }
-                    } catch(e){}
-                }
+            // Remove files if ipaUrl exists
+            if (item.ipaUrl) {
+                try {
+                    const ipaFilename = item.ipaUrl.split('/').pop();
+                    const ipaLocalPath = path.join(__dirname, '../public/downloads', category, ipaFilename);
+                    if (fs.existsSync(ipaLocalPath)) fs.unlinkSync(ipaLocalPath);
+                } catch(e){}
+            }
+            if (item.installUrl) {
+                try {
+                    const filename = item.installUrl.split('/').pop();
+                    if (category === 'cert') {
+                        const certLocalPath = path.join(__dirname, '../public/downloads/certs', filename);
+                        if (fs.existsSync(certLocalPath)) fs.unlinkSync(certLocalPath);
+                    } else {
+                        const plistLocalPath = path.join(__dirname, '../public/downloads/plists', filename);
+                        if (fs.existsSync(plistLocalPath)) fs.unlinkSync(plistLocalPath);
+                    }
+                } catch(e){}
             }
         
             appsData[category] = appsData[category].filter(item => item.id !== itemId);
             fs.writeFileSync(APPS_JSON_PATH, JSON.stringify(appsData, null, 2));
             
-            bot.editMessageText(`✅ Đã xoá thành công!`, {
+            await bot.editMessageText(`✅ Đã xoá thành công: ${item.name}`, {
                 chat_id: chatId,
                 message_id: messageId,
                 reply_markup: {
@@ -741,11 +773,21 @@ bot.on('callback_query', async (query) => {
                     ]
                 }
             });
-            
-            // Auto commit
+
+            // Preserve the existing automatic website update after deletion.
             try {
                 execSync('git add . && git commit -m "Auto delete app" && git push', { cwd: path.join(__dirname, '..') });
-            } catch (e) {}
+            } catch (error) {
+                console.log('Management delete push failed:', error.message);
+            }
+        }
+    } catch (error) {
+        if (/message is not modified/i.test(error.message)) return;
+        console.log('Management callback failed:', error.message);
+        try {
+            await bot.sendMessage(chatId, '❌ Không thể xử lý tác vụ quản lý. Vui lòng chọn lại mục Quản Lý.');
+        } catch (sendError) {
+            console.log('Management error notification failed:', sendError.message);
         }
     }
 });
