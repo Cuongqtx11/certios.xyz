@@ -1,6 +1,6 @@
 {
   "config": {
-    "certDownloadDisabled": true
+    "certDownloadDisabled": false
   },
   "esign": [
     {
