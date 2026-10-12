@@ -6,7 +6,7 @@
     "bundleId": "cn.edu.buaa.wxwork.notifyext",
     "bundleVersion": "1",
     "version": "2.9.0",
-    "size": 18348460,
+    "size": 18349335,
     "expiration": "2026-12-03T02:06:44",
     "allDevices": true
   },
@@ -17,7 +17,7 @@
     "bundleId": "hk.com.hsbc.enterprise.hsbchkrewards.local2",
     "bundleVersion": "1",
     "version": "2.9.0",
-    "size": 18348099,
+    "size": 18348885,
     "expiration": "2027-05-04T05:56:26",
     "allDevices": true
   },
@@ -28,7 +28,7 @@
     "bundleId": "com.aramco.cycomm",
     "bundleVersion": "1",
     "version": "2.9.0",
-    "size": 18348282,
+    "size": 18349088,
     "expiration": "2026-09-24T13:35:52",
     "allDevices": true
   },
@@ -39,7 +39,7 @@
     "bundleId": "com.ctq.qmc.yiban.product",
     "bundleVersion": "1",
     "version": "2.9.0",
-    "size": 18349094,
+    "size": 18349956,
     "expiration": "2027-04-23T08:44:02",
     "allDevices": true
   },
@@ -50,7 +50,7 @@
     "bundleId": "com.vietnamairlines.moplus.uat.lido",
     "bundleVersion": "1",
     "version": "2.9.0",
-    "size": 18348148,
+    "size": 18349012,
     "expiration": "2026-08-08T12:21:46",
     "allDevices": true
   },
@@ -61,7 +61,7 @@
     "bundleId": "app.gemini2041.amber8351",
     "bundleVersion": "1",
     "version": "2.9.0",
-    "size": 18354353,
+    "size": 18355183,
     "expiration": "2027-01-27T12:13:16",
     "allDevices": false
   }
