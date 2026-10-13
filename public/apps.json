@@ -12,8 +12,8 @@
       "version": "2.9.0",
       "date": "28/9/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1790586606308.plist%3Fv%3D4ac15f7",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1790586606308.ipa?v=4ac15f7"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1790586606308.plist%3Fv%3D4ac15f7-free-name",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1790586606308.ipa?v=4ac15f7-free-name"
     },
     {
       "id": "esign_1787582896789",
@@ -24,8 +24,8 @@
       "version": "2.9.0",
       "date": "24/8/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1787582896789.plist%3Fv%3D4ac15f7",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1787582896789.ipa?v=4ac15f7"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1787582896789.plist%3Fv%3D4ac15f7-free-name",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1787582896789.ipa?v=4ac15f7-free-name"
     },
     {
       "id": "esign_1784029135972",
@@ -36,8 +36,8 @@
       "version": "2.9.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784029135972.plist%3Fv%3D4ac15f7",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784029135972.ipa?v=4ac15f7"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784029135972.plist%3Fv%3D4ac15f7-free-name",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784029135972.ipa?v=4ac15f7-free-name"
     },
     {
       "id": "esign_1784026722657",
@@ -48,8 +48,8 @@
       "version": "2.9.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784026722657.plist%3Fv%3D4ac15f7",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784026722657.ipa?v=4ac15f7"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784026722657.plist%3Fv%3D4ac15f7-free-name",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784026722657.ipa?v=4ac15f7-free-name"
     },
     {
       "id": "esign_1784022078485",
@@ -60,8 +60,8 @@
       "version": "2.9.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784022078485.plist%3Fv%3D4ac15f7",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784022078485.ipa?v=4ac15f7"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784022078485.plist%3Fv%3D4ac15f7-free-name",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784022078485.ipa?v=4ac15f7-free-name"
     },
     {
       "id": "esign_1784021999805",
@@ -72,8 +72,8 @@
       "version": "2.9.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784021999805.plist%3Fv%3D4ac15f7",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021999805.ipa?v=4ac15f7"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784021999805.plist%3Fv%3D4ac15f7-free-name",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021999805.ipa?v=4ac15f7-free-name"
     }
   ],
   "cert": [

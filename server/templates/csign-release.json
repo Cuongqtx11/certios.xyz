@@ -5,7 +5,7 @@
   "artifactId": 11755900293,
   "sourceIpaSha256": "07db0bfd61cc8be0d751c79642e14ff0e234358f731c7f038efb69a994c47ef3",
   "templates": {
-    "CSign_CERTIOS_TEMPLATE.ipa": "07db0bfd61cc8be0d751c79642e14ff0e234358f731c7f038efb69a994c47ef3",
+    "CSign_CERTIOS_TEMPLATE.ipa": "4c0adec74b1385594bcdcb2ade58cdd81cc38590ea4ac782e43d3f82c3b98572",
     "CSign_Personal_TEMPLATE.ipa": "07db0bfd61cc8be0d751c79642e14ff0e234358f731c7f038efb69a994c47ef3"
   },
   "personalBuild": {
@@ -17,5 +17,10 @@
   "defaultSources": [
     "https://is.gd/17AE4t",
     "https://raw.githubusercontent.com/Tomqtx11/kho-app-ipa/main/repo.json"
-  ]
+  ],
+  "templateDisplayNames": {
+    "CSign_CERTIOS_TEMPLATE.ipa": "CSign Free",
+    "CSign_Personal_TEMPLATE.ipa": "CSign"
+  },
+  "freeDownloadVersion": "4ac15f7-free-name"
 }
