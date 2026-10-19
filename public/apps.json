@@ -4,6 +4,18 @@
   },
   "esign": [
     {
+      "id": "esign_1792452946743",
+      "name": "CSign Free",
+      "developer": "iPhone Distribution: RAKUTEN SECURITIES",
+      "status": "active",
+      "size": "17.7 MB",
+      "version": "2.11.1",
+      "date": "20/10/2026",
+      "icon": "/csign.png",
+      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1792452946743.plist",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1792452946743.ipa"
+    },
+    {
       "id": "esign_1790586606308",
       "name": "CSign Free",
       "developer": "iPhone Distribution: Beihang University",
@@ -77,6 +89,17 @@
     }
   ],
   "cert": [
+    {
+      "id": "cert_1792452946743",
+      "name": "iPhone Distribution: RAKUTEN SECURITIES",
+      "description": "Mật khẩu: certios",
+      "size": "11.4 KB",
+      "status": "active",
+      "version": "Vĩnh viễn",
+      "date": "20/10/2026",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEQCh3W32OqIspAx8-OlEnTiDGXz8eYRMfz15DL4vrw&s=10",
+      "installUrl": "https://certios.xyz/downloads/certs/cert_download_1792452946743.zip"
+    },
     {
       "id": "cert_1790586606308",
       "name": "iPhone Distribution: Beihang University",
