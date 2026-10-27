@@ -1,6 +1,6 @@
 {
   "title": "Thập Kỷ Chung Sức",
-  "description": "Mua vé Chung sức Liên Quân chỉ với mã mời sự kiện. Thanh toán QR, tự xử lý đơn và theo dõi tiến độ ngay trên web. Không cần đăng nhập hay Telegram.",
+  "description": "Chạy sự kiện Chung sức Liên Quân siêu tốc, 30s là có vé nhảy cộng vào acc game. Chỉ cần nhập mã mời để nhận lượt nhảy. Không cần đăng nhập hay login Telegram.",
   "image": "/images/chung-suc-lien-quan.png",
   "buttonText": "Làm sự kiện ngay",
   "href": "/chungsuclienquan/"
