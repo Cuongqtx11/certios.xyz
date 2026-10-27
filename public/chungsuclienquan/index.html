@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0d16">
+  <meta name="description" content="Mua vé Chung sức Liên Quân tại CertiOS. Không cần đăng nhập, thanh toán QR Vietcombank và tra cứu tiến độ bằng mã đơn.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.certios.xyz; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>Chung sức Liên Quân · CertiOS</title>
+  <link rel="stylesheet" href="/chungsuclienquan/style.css">
+  <script src="/chungsuclienquan/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="/" aria-label="Về trang chủ CertiOS"><span class="brand-mark">C<span>✦</span></span><span>CERT<span class="brand-light">iOS</span><small>CHUNG SỨC LIÊN QUÂN</small></span></a>
+    <div class="top-actions"><span class="online"><i></i><span id="online-text">Đang nhận đơn</span></span><a class="home-link" href="/">Trang chủ <span aria-hidden="true">↗</span></a></div>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <div class="eyebrow"><span></span> CÙNG CHUNG SỨC, NHẬN THÊM QUÀ</div>
+      <h1>Thêm vé. <span>Thêm cơ hội.</span></h1>
+      <p>Mua vé Chung sức Liên Quân trong vài bước.<br class="desktop-break"> Chỉ cần mã mời của bạn. Không cần đăng nhập.</p>
+      <div class="benefits"><span>✦ Không cần mật khẩu game</span><span>▧ Thanh toán QR</span><span>↻ Tự cập nhật tiến độ</span></div>
+    </section>
+    <div class="workspace">
+      <section class="purchase panel" aria-labelledby="purchase-title">
+        <div class="tabs" role="tablist" aria-label="Chức năng"><button class="tab active" id="buy-tab" role="tab" aria-selected="true" aria-controls="buy-view">Mua vé</button><button class="tab" id="lookup-tab" role="tab" aria-selected="false" aria-controls="lookup-view">Tra cứu đơn</button></div>
+        <div id="buy-view" role="tabpanel" aria-labelledby="buy-tab">
+          <div class="section-title"><h2 id="purchase-title">Chọn gói của bạn</h2><span>01 / 03</span></div>
+          <div id="packages" class="packages" aria-live="polite"><div class="loading-box">Đang tải các gói vé…</div></div>
+          <div class="form-divider"></div>
+          <div class="section-title"><h2><label for="invite">Nhập mã mời sự kiện</label></h2><span>02 / 03</span></div>
+          <textarea id="invite" rows="2" maxlength="4000" placeholder="Mã mời 10 ký tự hoặc dán nguyên lời mời…" autocomplete="off" spellcheck="false"></textarea>
+          <p class="field-note">Mở Liên Quân → Sự kiện Chung sức → Sao chép mã mời.</p>
+          <div id="balance-note" class="notice" hidden></div>
+          <div class="order-summary"><span>Tổng thanh toán</span><strong id="total-price">—</strong></div>
+          <button class="primary buy-button" id="buy-button" disabled><span id="buy-button-label">Đang tải gói vé…</span><span aria-hidden="true">↗</span></button>
+          <div class="secure-note">◈ Không yêu cầu tài khoản hay mật khẩu game</div>
+        </div>
+        <div id="lookup-view" role="tabpanel" aria-labelledby="lookup-tab" hidden>
+          <div class="section-title"><h2>Tìm đơn của bạn</h2><span>TRA CỨU</span></div>
+          <p class="muted lookup-description">Nhập nội dung chuyển khoản để xem thanh toán và tiến độ xử lý.</p>
+          <label class="input-label" for="lookup-code">Mã đơn / nội dung chuyển khoản</label>
+          <input id="lookup-code" type="text" maxlength="10" placeholder="SKCSABC123" autocomplete="off" spellcheck="false">
+          <button class="primary" id="lookup-button">Tra cứu đơn <span aria-hidden="true">↗</span></button>
+          <div id="lookup-result" class="lookup-result" aria-live="polite" hidden></div>
+          <div id="saved-orders" class="saved-orders"></div>
+        </div>
+        <p id="form-error" class="error-message" role="alert" hidden></p>
+      </section>
+      <aside class="guide-column">
+        <div class="ticket-art" aria-hidden="true"><span class="art-glow"></span><span class="tiny-spark one">✦</span><span class="tiny-spark two">✧</span><div class="floating-ticket back"><span>LIÊN QUÂN</span><strong>✦</strong></div><div class="floating-ticket front"><span>CHUNG SỨC</span><strong>VÉ SỰ KIỆN</strong><div class="ticket-symbol">✦</div><span class="ticket-number">CÙNG BẠN CHINH PHỤC</span></div><span class="art-caption">SẴN SÀNG NHẬN THÊM QUÀ?</span></div>
+        <section class="how-it-works"><h2>Mua nhanh, theo dõi dễ</h2><ol><li><b>1</b><div><strong>Chọn gói & nhập mã mời</strong><p>Dán mã từ sự kiện trong game.</p></div></li><li><b>2</b><div><strong>Quét QR thanh toán</strong><p>Giữ đúng nội dung SKCS trên phiếu.</p></div></li><li><b>3</b><div><strong>Để hệ thống xử lý</strong><p>Đủ tiền, đơn tự vào hàng chờ.</p></div></li></ol></section>
+        <div class="small-note"><span>ⓘ</span><p>Lưu mã đơn hoặc liên kết phiếu mua để xem lại. Có thể tra cứu ngay trên web, không cần Telegram.</p></div>
+      </aside>
+    </div>
+    <section class="receipt panel" id="receipt" aria-labelledby="receipt-title" hidden>
+      <div class="receipt-heading"><div><div class="eyebrow">PHIẾU MUA HÀNG</div><h2 id="receipt-title">Đơn của bạn</h2></div><span id="receipt-status" class="status-chip">Chờ thanh toán</span></div>
+      <div class="receipt-grid">
+        <div class="receipt-info"><div class="receipt-code"><span id="receipt-code"></span><button class="text-button" id="copy-code">Sao chép mã</button></div><p id="receipt-package"></p><p class="muted">Mã mời: <span id="receipt-invite"></span></p><div class="progress-track"><div id="progress-fill"></div></div><p id="receipt-progress" class="muted"></p><div id="receipt-message" class="notice"></div><div id="receipt-balance" class="notice" hidden></div><div class="receipt-actions"><button class="secondary" id="copy-link">Lưu liên kết đơn ↗</button><button class="secondary" id="refresh-order">Cập nhật</button><button class="secondary" id="pay-wallet" hidden>Dùng số tiền còn lại</button><button class="danger-button" id="cancel-order" hidden>Hủy đơn chờ</button></div><p class="field-note">Liên kết phiếu mua cho phép xem chi tiết và sử dụng tiền dư. Hãy giữ riêng.</p></div>
+        <div id="payment" class="payment"><div class="qr-heading"><span class="bank-mark">V</span><div><strong>Vietcombank</strong><span id="bank-name"></span></div></div><img id="payment-qr" width="250" height="250" alt="Mã QR chuyển khoản cho đơn hàng"><div class="bank-row"><span>Số tài khoản</span><button id="copy-account" class="copy-value"></button></div><div class="bank-row"><span>Cần chuyển thêm</span><strong id="payment-amount"></strong></div><div class="bank-row"><span>Nội dung</span><button id="copy-transfer" class="copy-value"></button></div><p id="payment-expiry" class="field-note"></p><p id="bank-delayed" class="error-message" hidden>Đối soát đang chậm. Tiền chỉ được ghi nhận sau khi ngân hàng xác minh.</p><p class="payment-hint">Quét bằng ứng dụng ngân hàng. Chuyển đúng nội dung, không cần gửi ảnh biên lai.</p></div>
+      </div>
+    </section>
+    <section class="faq"><h2>Bạn cần biết</h2><details><summary>Có cần đăng nhập hoặc gửi tài khoản game?</summary><p>Không. Chỉ cần chọn gói và gửi mã mời Chung sức của bạn. Không gửi mật khẩu game cho bất kỳ ai.</p></details><details><summary>Đã chuyển khoản nhưng chưa thấy đơn chạy?</summary><p>Hệ thống kiểm tra giao dịch định kỳ. Hãy giữ đúng nội dung SKCS và đủ số tiền trên phiếu. Nếu chuyển thiếu, bạn có thể chuyển thêm cùng nội dung. Khi kết nối xử lý bị gián đoạn, đơn đã thanh toán vẫn được giữ trong hàng chờ.</p></details><details><summary>Chuyển dư hoặc hủy đơn thì tiền ở đâu?</summary><p>Tiền dư và tiền hoàn được giữ trên phiên mua hàng của bạn. Lưu liên kết phiếu mua và mở lại trên thiết bị để sử dụng số tiền còn lại cho đơn tiếp theo. Đơn đã gửi xử lý cần được đối soát trước khi hủy.</p></details><details><summary>Không có Telegram thì kiểm tra thế nào?</summary><p>Chọn “Tra cứu đơn” và nhập nội dung chuyển khoản SKCS để xem tiến độ. Liên kết phiếu mua đã lưu giúp xem đầy đủ chi tiết đơn.</p></details></section>
+  </main>
+  <footer class="wrap"><a href="/">CERTiOS</a><p>Chung sức dễ dàng. Theo dõi ngay trên web.</p><span>Dịch vụ độc lập, không đại diện nhà phát hành game.</span></footer>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

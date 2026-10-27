@@ -38,6 +38,8 @@ const signLimit = createLimit(3); // Max 3 concurrent signs
 const gitLimit = createLimit(1);  // Max 1 git operation at a time
 
 const app = express();
+// Isolated Chung suc checkout; existing routes remain below.
+app.use('/chungsuclienquan/api', require('./chungsuc-proxy')());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
