@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
+type PopupPromotion = {
+  title: string;
+  description: string;
+  image: string;
+  buttonText: string;
+  href: string;
+};
+
 // Translations
 const t = {
   vi: {
@@ -77,10 +85,30 @@ const t = {
 
 function App() {
   const [showPopup, setShowPopup] = useState(true);
+  const [popupReady, setPopupReady] = useState(false);
+  const [popupPromotion, setPopupPromotion] = useState<PopupPromotion | null>(null);
   const [esignData, setEsignData] = useState<any[]>([]);
   const [certData, setCertData] = useState<any[]>([]);
   const [modsData, setModsData] = useState<any[]>([]);
   const [certDownloadDisabled, setCertDownloadDisabled] = useState(false);
+
+  useEffect(() => {
+    // The original notice below is the fallback when this optional file is removed.
+    const controller = new AbortController();
+    let mounted = true;
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    fetch('/popup-chungsuc.json', { cache: 'no-store', signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => {
+        if (mounted && data && ['title', 'description', 'image', 'buttonText', 'href'].every(key => typeof data[key] === 'string' && data[key].trim())
+          && data.href === '/chungsuclienquan/' && data.image === '/images/chung-suc-lien-quan.png') {
+          setPopupPromotion(data);
+        }
+      })
+      .catch(() => { /* A missing or unavailable promotion restores the original notice. */ })
+      .finally(() => { clearTimeout(timeout); if (mounted) setPopupReady(true); });
+    return () => { mounted = false; clearTimeout(timeout); controller.abort(); };
+  }, []);
 
   useEffect(() => {
     fetch(`/apps.json?t=${Date.now()}`)
@@ -188,8 +216,24 @@ function App() {
 
   return (
     <>
-      {showPopup && (
+      {showPopup && popupReady && (
         <div className="popup-overlay">
+          {popupPromotion ? (
+            <div className="popup-content glass event-popup" role="dialog" aria-modal="true" aria-labelledby="event-popup-title">
+              <a href={popupPromotion.href} className="event-popup-image-link" aria-label="Mở trang Chung sức Liên Quân">
+                <img src={popupPromotion.image} alt="Sự kiện Thập Kỷ Chung Sức trong Liên Quân Mobile" width="1000" height="563" fetchPriority="high" />
+              </a>
+              <div className="event-popup-body">
+                <span className="event-popup-label">LIÊN QUÂN MOBILE · CERTiOS</span>
+                <h3 id="event-popup-title">{popupPromotion.title}</h3>
+                <p>{popupPromotion.description}</p>
+                <div className="event-popup-actions">
+                  <a href={popupPromotion.href} className="btn-get event-popup-cta">{popupPromotion.buttonText}<span aria-hidden="true">↗</span></a>
+                  <button className="event-popup-dismiss" onClick={() => setShowPopup(false)}>Để sau</button>
+                </div>
+              </div>
+            </div>
+          ) : (
           <div className="popup-content glass">
             <h3 style={{ color: 'var(--primary-color)', marginBottom: '10px' }}>Thông Báo</h3>
             <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-color)', marginBottom: '20px', textAlign: 'left' }}>
@@ -216,6 +260,7 @@ function App() {
               </a>
             </div>
           </div>
+          )}
         </div>
       )}
 

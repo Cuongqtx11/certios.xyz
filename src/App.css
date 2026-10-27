@@ -521,6 +521,38 @@
   animation: fadeInUp 0.4s ease-out;
 }
 
+.event-popup {
+  max-width: 470px;
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  padding: 0;
+  background: var(--bg-color);
+  text-align: left;
+  border-color: rgba(187, 160, 255, 0.35);
+}
+
+.event-popup-image-link {
+  display: block;
+  background: #18132b;
+  line-height: 0;
+}
+
+.event-popup-image-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.event-popup-body { padding: 22px; }
+.event-popup-label { color: var(--secondary-text); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; }
+.event-popup h3 { margin: 10px 0; color: var(--text-color); font-size: 25px; line-height: 1.2; letter-spacing: -0.7px; }
+.event-popup p { margin: 0 0 20px; color: var(--secondary-text); font-size: 14px; line-height: 1.65; }
+.event-popup-actions { display: flex; flex-direction: column; gap: 10px; }
+.event-popup .event-popup-cta { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; min-height: 46px; box-sizing: border-box; text-decoration: none; background: linear-gradient(110deg, #b59ae9, #dbc5ff); color: #231633; }
+.event-popup-dismiss { padding: 10px; border: 0; background: transparent; color: var(--secondary-text); font: inherit; font-size: 13px; cursor: pointer; }
+.event-popup a:focus-visible, .event-popup button:focus-visible { outline: 2px solid var(--primary-color); outline-offset: -3px; }
+
 /* Animations */
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
