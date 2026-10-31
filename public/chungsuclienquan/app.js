@@ -50,7 +50,7 @@
         const button=element('button','package');button.type='button';button.dataset.sku=product.sku;
         button.append(element('span','package-radio'));
         const label=element('div','package-label',product.title.match(/[\d.]+/)?.[0]||product.title);label.append(element('span','', ' vé'));button.append(label);
-        button.append(element('div','package-sub',descriptions[product.sku]||product.title),element('div','package-price',money(product.price)));
+        button.append(element('div','package-sub',product.title.includes('Săn SSS')?'Săn SSS · '+product.steps+' lần chạy':descriptions[product.sku]||product.title),element('div','package-price',money(product.price)));
         if(product.sku==='full342')button.append(element('span','package-badge','FULL 3 RƯƠNG'));
         button.addEventListener('click',()=>{if(!busy)selectProduct(product);});$('packages').append(button);
       }
