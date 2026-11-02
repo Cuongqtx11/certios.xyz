@@ -41,6 +41,7 @@ const app = express();
 // Isolated Chung suc checkout; existing routes remain below.
 app.use('/chungsuclienquan/api', require('./chungsuc-proxy')());
 app.use(cors());
+app.use('/api/csign/install', require('./csign-manifest')());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/downloads', express.static(path.join(__dirname, '../public/downloads')));
