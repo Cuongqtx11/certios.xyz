@@ -1,0 +1,8 @@
+:root { color-scheme: light dark; font: 17px -apple-system, BlinkMacSystemFont, sans-serif; }
+body { margin: 0; padding: 36px 20px; background: #f4fbfc; color: #15414a; text-align: center; }
+main { max-width: 480px; margin: auto; }
+h1 { font-size: 25px; }
+p { line-height: 1.6; }
+a { display: inline-block; background: #007b94; color: white; padding: 16px 28px; border-radius: 18px; text-decoration: none; }
+[hidden] { display: none; }
+@media (prefers-color-scheme: dark) { body { background: #101b20; color: #e2f5fa; } }
