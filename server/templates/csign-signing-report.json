@@ -1,12 +1,23 @@
 [
   {
+    "entry": "esign_1792452946743",
+    "filename": "esign_signed_1792452946743.ipa",
+    "plistName": "esign_1792452946743.plist",
+    "bundleId": "jp.co.rakuten-sec.iSPEED.Pushnotification.widgetapp.widgetkitextension",
+    "bundleVersion": "1",
+    "version": "2.12.0",
+    "size": 18546885,
+    "expiration": "2026-11-05T05:04:09",
+    "allDevices": true
+  },
+  {
     "entry": "esign_1790586606308",
     "filename": "esign_signed_1790586606308.ipa",
     "plistName": "esign_1790586606308.plist",
     "bundleId": "cn.edu.buaa.wxwork.notifyext",
     "bundleVersion": "1",
-    "version": "2.11.1",
-    "size": 18546689,
+    "version": "2.12.0",
+    "size": 18546670,
     "expiration": "2026-12-03T02:06:44",
     "allDevices": true
   },
@@ -16,8 +27,8 @@
     "plistName": "esign_1787582896789.plist",
     "bundleId": "hk.com.hsbc.enterprise.hsbchkrewards.local2",
     "bundleVersion": "1",
-    "version": "2.11.1",
-    "size": 18546293,
+    "version": "2.12.0",
+    "size": 18546269,
     "expiration": "2027-05-04T05:56:26",
     "allDevices": true
   },
@@ -27,8 +38,8 @@
     "plistName": "esign_1784029135972.plist",
     "bundleId": "com.aramco.cycomm",
     "bundleVersion": "1",
-    "version": "2.11.1",
-    "size": 18546463,
+    "version": "2.12.0",
+    "size": 18546430,
     "expiration": "2026-09-24T13:35:52",
     "allDevices": true
   },
@@ -38,8 +49,8 @@
     "plistName": "esign_1784026722657.plist",
     "bundleId": "com.ctq.qmc.yiban.product",
     "bundleVersion": "1",
-    "version": "2.11.1",
-    "size": 18547279,
+    "version": "2.12.0",
+    "size": 18547266,
     "expiration": "2027-04-23T08:44:02",
     "allDevices": true
   },
@@ -49,8 +60,8 @@
     "plistName": "esign_1784022078485.plist",
     "bundleId": "com.vietnamairlines.moplus.uat.lido",
     "bundleVersion": "1",
-    "version": "2.11.1",
-    "size": 18546358,
+    "version": "2.12.0",
+    "size": 18546373,
     "expiration": "2026-08-08T12:21:46",
     "allDevices": true
   },
@@ -60,8 +71,8 @@
     "plistName": "esign_1784021999805.plist",
     "bundleId": "app.gemini2041.amber8351",
     "bundleVersion": "1",
-    "version": "2.11.1",
-    "size": 18552460,
+    "version": "2.12.0",
+    "size": 18552483,
     "expiration": "2027-01-27T12:13:16",
     "allDevices": false
   }

@@ -9,11 +9,11 @@
       "developer": "iPhone Distribution: RAKUTEN SECURITIES",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "20/10/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https://certios.xyz/downloads/plists/esign_1792452946743.plist",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1792452946743.ipa"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1792452946743.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1792452946743.ipa?v=84094b7"
     },
     {
       "id": "esign_1790586606308",
@@ -21,11 +21,11 @@
       "developer": "iPhone Distribution: Beihang University",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "28/9/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1790586606308.plist%3Fv%3D7620bf0",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1790586606308.ipa?v=7620bf0"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1790586606308.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1790586606308.ipa?v=84094b7"
     },
     {
       "id": "esign_1787582896789",
@@ -33,11 +33,11 @@
       "developer": "iPhone Distribution: HSBC Bank plc",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "24/8/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1787582896789.plist%3Fv%3D7620bf0",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1787582896789.ipa?v=7620bf0"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1787582896789.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1787582896789.ipa?v=84094b7"
     },
     {
       "id": "esign_1784029135972",
@@ -45,11 +45,11 @@
       "developer": "Aramco Services Company",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784029135972.plist%3Fv%3D7620bf0",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784029135972.ipa?v=7620bf0"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784029135972.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784029135972.ipa?v=84094b7"
     },
     {
       "id": "esign_1784026722657",
@@ -57,11 +57,11 @@
       "developer": "China Telecom Corporation Limited",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784026722657.plist%3Fv%3D7620bf0",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784026722657.ipa?v=7620bf0"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784026722657.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784026722657.ipa?v=84094b7"
     },
     {
       "id": "esign_1784022078485",
@@ -69,11 +69,11 @@
       "developer": "VIETNAM AIRLINES JSC",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784022078485.plist%3Fv%3D7620bf0",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784022078485.ipa?v=7620bf0"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784022078485.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784022078485.ipa?v=84094b7"
     },
     {
       "id": "esign_1784021999805",
@@ -81,11 +81,11 @@
       "developer": "CERTIOS.XYZ",
       "status": "active",
       "size": "17.7 MB",
-      "version": "2.11.1",
+      "version": "2.12.0",
       "date": "14/7/2026",
       "icon": "/csign.png",
-      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784021999805.plist%3Fv%3D7620bf0",
-      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021999805.ipa?v=7620bf0"
+      "installUrl": "itms-services://?action=download-manifest&url=https%3A%2F%2Fcertios.xyz%2Fdownloads%2Fplists%2Fesign_1784021999805.plist%3Fv%3D84094b7",
+      "ipaUrl": "https://certios.xyz/downloads/esign/esign_signed_1784021999805.ipa?v=84094b7"
     }
   ],
   "cert": [

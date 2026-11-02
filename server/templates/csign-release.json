@@ -1,18 +1,19 @@
 {
-  "sourceRepository": "https://github.com/Tomqtx11/CSign",
-  "sourceCommit": "7620bf05352a465f9578618385172d6c7b81fccb",
-  "workflowRun": 38367768397,
-  "artifactId": 11798710403,
-  "sourceIpaSha256": "7cff7fe21f7ef5836ef73b934954371fe4d7fdf87200c5b7a15ef253ae4ecb4f",
+  "version": "2.12.0",
+  "sourceRepository": "https://github.com/Cuongqtx11/CSign",
+  "sourceCommit": "84094b7c6c216ea33219bc88fb7299a60b9b9177",
+  "workflowRun": 41392513940,
+  "artifactId": 13118495476,
+  "sourceIpaSha256": "1c6bc0c5359903ed309696633aa837acf627be7c31ed99768fb3902244866bee",
   "templates": {
-    "CSign_CERTIOS_TEMPLATE.ipa": "fd3e6dcd34551ba8c63507c38801eed65fe4f4f8f48837e4a33a5c2053f60466",
-    "CSign_Personal_TEMPLATE.ipa": "7cff7fe21f7ef5836ef73b934954371fe4d7fdf87200c5b7a15ef253ae4ecb4f"
+    "CSign_CERTIOS_TEMPLATE.ipa": "c692b11b0d1fa7b68c151318ec0eafb84125d8453a7723aa72b05a3dbe77a862",
+    "CSign_Personal_TEMPLATE.ipa": "1c6bc0c5359903ed309696633aa837acf627be7c31ed99768fb3902244866bee"
   },
   "personalBuild": {
-    "sourceCommit": "7620bf05352a465f9578618385172d6c7b81fccb",
-    "workflowRun": 38367768397,
-    "artifactId": 11798710403,
-    "sourceIpaSha256": "7cff7fe21f7ef5836ef73b934954371fe4d7fdf87200c5b7a15ef253ae4ecb4f"
+    "sourceCommit": "84094b7c6c216ea33219bc88fb7299a60b9b9177",
+    "workflowRun": 41392513940,
+    "artifactId": 13118495476,
+    "sourceIpaSha256": "1c6bc0c5359903ed309696633aa837acf627be7c31ed99768fb3902244866bee"
   },
   "defaultSources": [
     "https://is.gd/17AE4t",
