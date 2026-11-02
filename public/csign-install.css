@@ -4,5 +4,14 @@ main { max-width: 480px; margin: auto; }
 h1 { font-size: 25px; }
 p { line-height: 1.6; }
 a { display: inline-block; background: #007b94; color: white; padding: 16px 28px; border-radius: 18px; text-decoration: none; }
+.route-info { margin: 20px 0; padding: 16px; text-align: left; border: 1px solid #008aa64d; border-radius: 16px; }
+h2 { margin: 0 0 14px; font-size: 18px; }
+dl { margin: 0; }
+dt { margin-top: 12px; font-size: 13px; opacity: .75; }
+dd { margin: 4px 0 0; overflow-wrap: anywhere; font-weight: 600; }
+.explanation { margin-bottom: 0; font-size: 13px; }
+details { margin-top: 20px; text-align: left; }
+summary { cursor: pointer; font-size: 14px; }
+code { display: block; margin-top: 12px; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 [hidden] { display: none; }
 @media (prefers-color-scheme: dark) { body { background: #101b20; color: #e2f5fa; } }
