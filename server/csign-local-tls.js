@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const dns = require('dns').promises;
 
 const SUFFIX = 'local.certios.xyz';
+const FIXED_HOST = 'c.sanngon.net';
 const DAY = 86400000;
 const CONFIG = process.env.CSIGN_LOCAL_TLS_CONFIG || path.join(os.homedir(), '.config/csign-local-tls/config.json');
 const STATE = path.join(path.dirname(CONFIG), 'state');
@@ -58,14 +59,16 @@ async function cloudflare(config, resource, method = 'GET', body) {
     }
     return result.result;
 }
-async function zone(config) {
-    if (config.zoneId) {
-        const result = await cloudflare(config, 'zones/' + encodeURIComponent(config.zoneId));
-        if (result.name !== 'certios.xyz') throw new Error('dns_zone');
+async function zone(config, hostname) {
+    const domain = hostname.endsWith('.sanngon.net') ? 'sanngon.net' : 'certios.xyz';
+    const zoneId = domain === 'certios.xyz' ? config.zoneId : config.additionalZones?.[domain];
+    if (zoneId) {
+        const result = await cloudflare(config, 'zones/' + encodeURIComponent(zoneId));
+        if (result.name !== domain) throw new Error('dns_zone');
         return result.id;
     }
-    const result = await cloudflare(config, 'zones?name=certios.xyz');
-    if (result.length !== 1 || result[0].name !== 'certios.xyz') throw new Error('dns_zone');
+    const result = await cloudflare(config, 'zones?name=' + domain);
+    if (result.length !== 1 || result[0].name !== domain) throw new Error('dns_zone');
     return result[0].id;
 }
 async function ensureLoopback(config, zoneId, host) {
@@ -94,14 +97,18 @@ function parseCSR(pem) {
     const requested = require('acme-client').crypto.readCsrDomains(pem);
     const legacyHost = 'd' + sha256(publicDER).slice(0, 32) + '.' + SUFFIX;
     const host = requested.commonName;
-    // A key owns only its deterministic short/legacy hostname. Arbitrary domains/wildcards,
-    // additional SANs and a CSR signed by someone else's key are rejected.
-    if (![legacyHost, shortHostname(publicDER)].includes(host) ||
-        requested.altNames.length !== 1 || requested.altNames[0] !== host) throw new Error('csr');
+    const fixed = host === FIXED_HOST;
+    const domains = fixed ? [FIXED_HOST, 'd' + sha256(publicDER).slice(0, 32) + '.tls.sanngon.net'] : [host];
+    // Accept exactly the supported names derived from this signed CSR's key.
+    if ((!fixed && ![legacyHost, shortHostname(publicDER)].includes(host)) ||
+        requested.altNames.length !== domains.length || new Set(requested.altNames).size !== domains.length ||
+        !domains.every(name => requested.altNames.includes(name))) throw new Error('csr');
     const extensions = csr.getAttribute({ name: 'extensionRequest' })?.extensions || [];
     if (extensions.length !== 1 || extensions[0].name !== 'subjectAltName' ||
-        extensions[0].altNames?.length !== 1 || extensions[0].altNames[0].type !== 2) throw new Error('csr');
-    return { host, publicDER };
+        extensions[0].altNames?.length !== domains.length ||
+        !extensions[0].altNames.every(name => name.type === 2)) throw new Error('csr');
+    const identity = fixed ? 'device-' + sha256(publicDER) : host;
+    return { host, publicDER, domains, identity };
 }
 function usableCertificate(value, publicDER, host) {
     try {
@@ -137,7 +144,7 @@ module.exports = function localTLSRouter() {
     });
 
     router.get('/config', (req, res) => {
-        try { res.json({ enabled: Boolean(configuration()), suffix: SUFFIX, retryAfter: 3600 }); }
+        try { res.json({ enabled: Boolean(configuration()), suffix: SUFFIX, localHostname: FIXED_HOST, retryAfter: 3600 }); }
         catch { res.json({ enabled: false, retryAfter: 3600 }); }
     });
 
@@ -145,12 +152,14 @@ module.exports = function localTLSRouter() {
         const acme = require('acme-client');
         let zoneId;
         try {
-            zoneId = await zone(config);
+            zoneId = await zone(config, job.host);
+            const domains = job.domains || [job.host];
             // Clean only TXT records this job owns, including interrupted jobs.
-            for (const recordId of job.txtRecords || []) {
+            for (const item of job.txtRecords || []) {
+                const recordId = typeof item === 'string' ? item : item.id;
                 try {
                     const record = await cloudflare(config, `zones/${zoneId}/dns_records/${encodeURIComponent(recordId)}`);
-                    if (record.type === 'TXT' && record.name === '_acme-challenge.' + job.host) {
+                    if (record.type === 'TXT' && domains.some(name => record.name === '_acme-challenge.' + name)) {
                         await cloudflare(config, `zones/${zoneId}/dns_records/${record.id}`, 'DELETE');
                     }
                 } catch (error) { if (error.status !== 404) throw error; }
@@ -176,12 +185,12 @@ module.exports = function localTLSRouter() {
                 ...(config.email ? { email: config.email } : {}),
                 challengePriority: ['dns-01'],
                 challengeCreateFn: async (authorization, challenge, value) => {
-                    if (authorization.identifier.value !== job.host || challenge.type !== 'dns-01') throw new Error('dns_challenge');
-                    const name = '_acme-challenge.' + job.host;
+                    if (!domains.includes(authorization.identifier.value) || challenge.type !== 'dns-01') throw new Error('dns_challenge');
+                    const name = '_acme-challenge.' + authorization.identifier.value;
                     const record = await cloudflare(config, `zones/${zoneId}/dns_records`, 'POST', {
                         type: 'TXT', name, content: value, ttl: 120,
                     });
-                    job.txtRecords.push(record.id);
+                    job.txtRecords.push({ id: record.id, name });
                     save(jobFile, job);
                     // DNS propagation runs only in this background worker, never
                     // in an IPA install request or Express's event loop.
@@ -196,10 +205,16 @@ module.exports = function localTLSRouter() {
                     }
                     throw new Error('dns_propagation');
                 },
-                challengeRemoveFn: async () => {
-                    for (const recordId of [...job.txtRecords]) {
-                        await cloudflare(config, `zones/${zoneId}/dns_records/${recordId}`, 'DELETE');
-                        job.txtRecords = job.txtRecords.filter(id => id !== recordId);
+                challengeRemoveFn: async (authorization) => {
+                    const name = '_acme-challenge.' + authorization.identifier.value;
+                    // The two authorizations run concurrently. Each callback
+                    // removes only its own TXT, never the other SAN's challenge.
+                    for (const item of [...job.txtRecords]) {
+                        if (typeof item !== 'string' && item.name !== name) continue;
+                        const recordId = typeof item === 'string' ? item : item.id;
+                        try { await cloudflare(config, `zones/${zoneId}/dns_records/${recordId}`, 'DELETE'); }
+                        catch (error) { if (error.status !== 404) throw error; }
+                        job.txtRecords = job.txtRecords.filter(entry => (typeof entry === 'string' ? entry : entry.id) !== recordId);
                         save(jobFile, job);
                     }
                 },
@@ -217,7 +232,7 @@ module.exports = function localTLSRouter() {
         } finally {
             job.updatedAt = Date.now();
             try { save(jobFile, job); }
-            finally { active = false; running.delete(job.host); }
+            finally { active = false; running.delete(job.identity || job.host); }
         }
     }
 
@@ -231,14 +246,14 @@ module.exports = function localTLSRouter() {
             if (!req.body || Object.keys(req.body).length !== 1 || !('csr' in req.body)) throw new Error('csr');
             parsed = parseCSR(req.body.csr);
         } catch { return res.status(400).json({ status: 'invalid_csr', retryAfter: 86400 }); }
-        const { host, publicDER } = parsed;
-        const jobFile = path.join(STATE, host + '.json');
+        const { host, publicDER, domains, identity } = parsed;
+        const jobFile = path.join(STATE, identity + '.json');
         try {
-            const job = read(jobFile, { host, csr: req.body.csr, status: 'new', txtRecords: [] });
+            const job = read(jobFile, { identity, host, domains, csr: req.body.csr, status: 'new', txtRecords: [] });
             if (job.certificate && usableCertificate(job.certificate, publicDER, host)) {
                 return res.json({ status: 'ready', hostname: host, certificate: job.certificate });
             }
-            if (running.has(host)) return res.status(202).json({ status: 'pending', retryAfter: 5 });
+            if (running.has(identity)) return res.status(202).json({ status: 'pending', retryAfter: 5 });
             if (job.retryAt > Date.now()) return res.status(503).json({ status: 'retry', retryAfter: Math.ceil((job.retryAt - Date.now()) / 1000) });
             if (active) return res.status(503).json({ status: 'busy', retryAfter: 60 });
             const now = Date.now();
@@ -251,20 +266,20 @@ module.exports = function localTLSRouter() {
                 return res.status(429).json({ status: 'quota', retryAfter });
             }
             const recent = ledger.filter(item => item.client === req.localTLSClient && item.at > now - DAY);
-            if (recent.length >= 2 && !recent.some(item => item.host === host)) {
+            if (recent.length >= 2 && !recent.some(item => (item.identity || item.host) === identity)) {
                 return res.status(429).json({ status: 'quota', retryAfter: 86400 });
             }
-            ledger.push({ at: now, client: req.localTLSClient, host });
+            ledger.push({ at: now, client: req.localTLSClient, host, identity });
             save(ledgerFile, ledger); // Reserve before contacting a CA, including failed orders.
             job.status = 'pending';
             job.updatedAt = now;
             save(jobFile, job);
-            running.add(host);
+            running.add(identity);
             active = true;
             // The client receives a resumable job response immediately.
             res.status(202).json({ status: 'pending', retryAfter: 5 });
             void issue(config, job, jobFile, publicDER).catch(() => {
-                active = false; running.delete(host);
+                active = false; running.delete(identity);
                 console.warn('[CSign Local TLS] Worker stopped; retry remains resumable');
             });
         } catch { res.status(503).json({ status: 'unavailable', retryAfter: 3600 }); }
