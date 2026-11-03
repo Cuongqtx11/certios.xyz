@@ -5,30 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
-  <link rel="stylesheet" href="/csign-install.css?v=2123">
-  <script src="/csign-install.js?v=2123" defer></script>
-  <title>Cài ứng dụng từ CSign</title>
+  <link rel="stylesheet" href="/csign-install.css?v=2125">
+  <script src="/csign-install.js?v=2125" defer></script>
+  <title>CSign · Cài đặt</title>
 </head>
 <body>
   <main>
-    <h1>Cài đặt từ CSign</h1>
-    <p id="status">Đang kiểm tra liên kết cài đặt…</p>
-    <section id="route-info" class="route-info" hidden aria-label="Tuyến cài đặt thực tế">
-      <h2 id="route-name">Tuyến cài đặt</h2>
-      <dl>
-        <dt>Trang trung gian đang mở</dt><dd id="page-host"></dd>
-        <dt>Địa chỉ manifest trong liên kết cài</dt><dd id="manifest-host"></dd>
-        <dt>Nguồn tải IPA</dt><dd id="payload-host"></dd>
-      </dl>
-      <p class="explanation">Trang trung gian và máy chủ cấp manifest có thể khác nhau. Nút Cài đặt bên dưới dùng đúng địa chỉ manifest đang hiển thị.</p>
-    </section>
+    <div class="brand" aria-hidden="true">C</div>
+    <p class="wordmark">CSign</p>
+    <h1>Cài đặt ứng dụng</h1>
+    <p id="status" role="status" aria-live="polite">Đang chuẩn bị…</p>
     <a id="install" hidden>Cài đặt</a>
-    <details id="route-details" hidden>
-      <summary>Xem đầy đủ địa chỉ manifest</summary>
-      <code id="manifest-url"></code>
-    </details>
-    <p>Giữ CSign mở trong lúc iPhone tải IPA. Trang này không nhận IPA, chứng chỉ hay mật khẩu của bạn.</p>
-    <p>Nếu iOS chưa hiện xác nhận, quay lại CSign và chọn “Sao chép chẩn đoán” để kiểm tra bước kết nối.</p>
+    <p id="hint" class="hint" hidden>Xác nhận Cài đặt trên iPhone.</p>
   </main>
 </body>
 </html>

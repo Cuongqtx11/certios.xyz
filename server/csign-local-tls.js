@@ -14,6 +14,20 @@ const DAY = 86400000;
 const CONFIG = process.env.CSIGN_LOCAL_TLS_CONFIG || path.join(os.homedir(), '.config/csign-local-tls/config.json');
 const STATE = path.join(path.dirname(CONFIG), 'state');
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
+function shortHostname(publicDER) {
+    const digest = crypto.createHash('sha256').update(publicDER).digest();
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz234567';
+    let buffer = 0, bits = 0, identifier = '';
+    for (const byte of digest.subarray(0, 10)) {
+        buffer = (buffer << 8) | byte;
+        bits += 8;
+        while (bits >= 5) {
+            bits -= 5;
+            identifier += alphabet[(buffer >>> bits) & 31];
+        }
+    }
+    return 'csign-' + identifier + '.certios.xyz';
+}
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function read(file, fallback) {
@@ -77,11 +91,13 @@ function parseCSR(pem) {
     if (csr.publicKey.n.bitLength() !== 2048 || csr.publicKey.e.toString() !== '65537' || !csr.verify()) throw new Error('csr');
     const publicKey = crypto.createPublicKey(forge.pki.publicKeyToPem(csr.publicKey));
     const publicDER = publicKey.export({ type: 'spki', format: 'der' });
-    const host = 'd' + sha256(publicDER).slice(0, 32) + '.' + SUFFIX;
     const requested = require('acme-client').crypto.readCsrDomains(pem);
-    // One key deterministically owns one hostname. Arbitrary domains/wildcards,
+    const legacyHost = 'd' + sha256(publicDER).slice(0, 32) + '.' + SUFFIX;
+    const host = requested.commonName;
+    // A key owns only its deterministic short/legacy hostname. Arbitrary domains/wildcards,
     // additional SANs and a CSR signed by someone else's key are rejected.
-    if (requested.commonName !== host || requested.altNames.length !== 1 || requested.altNames[0] !== host) throw new Error('csr');
+    if (![legacyHost, shortHostname(publicDER)].includes(host) ||
+        requested.altNames.length !== 1 || requested.altNames[0] !== host) throw new Error('csr');
     const extensions = csr.getAttribute({ name: 'extensionRequest' })?.extensions || [];
     if (extensions.length !== 1 || extensions[0].name !== 'subjectAltName' ||
         extensions[0].altNames?.length !== 1 || extensions[0].altNames[0].type !== 2) throw new Error('csr');
