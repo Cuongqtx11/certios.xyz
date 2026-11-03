@@ -37,7 +37,11 @@ async function cloudflare(config, resource, method = 'GET', body) {
         body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(15000),
     });
     const result = await response.json();
-    if (!response.ok || !result.success) throw new Error('dns_provider');
+    if (!response.ok || !result.success) {
+        const error = new Error('dns_provider');
+        error.status = response.status;
+        throw error;
+    }
     return result.result;
 }
 async function zone(config) {
@@ -128,10 +132,12 @@ module.exports = function localTLSRouter() {
             zoneId = await zone(config);
             // Clean only TXT records this job owns, including interrupted jobs.
             for (const recordId of job.txtRecords || []) {
-                const record = await cloudflare(config, `zones/${zoneId}/dns_records/${encodeURIComponent(recordId)}`);
-                if (record.type === 'TXT' && record.name === '_acme-challenge.' + job.host) {
-                    await cloudflare(config, `zones/${zoneId}/dns_records/${record.id}`, 'DELETE');
-                }
+                try {
+                    const record = await cloudflare(config, `zones/${zoneId}/dns_records/${encodeURIComponent(recordId)}`);
+                    if (record.type === 'TXT' && record.name === '_acme-challenge.' + job.host) {
+                        await cloudflare(config, `zones/${zoneId}/dns_records/${record.id}`, 'DELETE');
+                    }
+                } catch (error) { if (error.status !== 404) throw error; }
             }
             job.txtRecords = [];
             save(jobFile, job);
