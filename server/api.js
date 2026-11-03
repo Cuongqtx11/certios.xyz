@@ -42,6 +42,7 @@ const app = express();
 app.use('/chungsuclienquan/api', require('./chungsuc-proxy')());
 app.use(cors());
 app.use('/api/csign/install', require('./csign-manifest')());
+app.use('/api/csign/local-tls', require('./csign-local-tls')());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/downloads', express.static(path.join(__dirname, '../public/downloads')));

@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "cloudflareToken": "ADMIN_CONFIG_ONLY_NOT_IN_GIT",
+  "zoneId": "",
+  "maxOrdersPerWeek": 35,
+  "acmeDirectory": "https://acme-v02.api.letsencrypt.org/directory"
+}
