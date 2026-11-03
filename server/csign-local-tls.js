@@ -10,7 +10,8 @@ const crypto = require('crypto');
 const dns = require('dns').promises;
 
 const SUFFIX = 'local.certios.xyz';
-const FIXED_HOST = 'c.sanngon.net';
+const FIXED_HOST = 'c.certios.xyz';
+const LEGACY_FIXED_HOST = 'c.sanngon.net';
 const DAY = 86400000;
 const CONFIG = process.env.CSIGN_LOCAL_TLS_CONFIG || path.join(os.homedir(), '.config/csign-local-tls/config.json');
 const STATE = path.join(path.dirname(CONFIG), 'state');
@@ -97,8 +98,9 @@ function parseCSR(pem) {
     const requested = require('acme-client').crypto.readCsrDomains(pem);
     const legacyHost = 'd' + sha256(publicDER).slice(0, 32) + '.' + SUFFIX;
     const host = requested.commonName;
-    const fixed = host === FIXED_HOST;
-    const domains = fixed ? [FIXED_HOST, 'd' + sha256(publicDER).slice(0, 32) + '.tls.sanngon.net'] : [host];
+    const fixed = [FIXED_HOST, LEGACY_FIXED_HOST].includes(host);
+    const fixedSuffix = host === FIXED_HOST ? 'certios.xyz' : 'sanngon.net';
+    const domains = fixed ? [host, 'd' + sha256(publicDER).slice(0, 32) + '.tls.' + fixedSuffix] : [host];
     // Accept exactly the supported names derived from this signed CSR's key.
     if ((!fixed && ![legacyHost, shortHostname(publicDER)].includes(host)) ||
         requested.altNames.length !== domains.length || new Set(requested.altNames).size !== domains.length ||
@@ -107,7 +109,10 @@ function parseCSR(pem) {
     if (extensions.length !== 1 || extensions[0].name !== 'subjectAltName' ||
         extensions[0].altNames?.length !== domains.length ||
         !extensions[0].altNames.every(name => name.type === 2)) throw new Error('csr');
-    const identity = fixed ? 'device-' + sha256(publicDER) : host;
+    // A device can keep its key while moving to the new hostname. Use a new
+    // cache namespace so an old CSR/certificate cannot be reused for that move.
+    const identity = host === FIXED_HOST ? 'certios-device-' + sha256(publicDER)
+        : fixed ? 'device-' + sha256(publicDER) : host;
     return { host, publicDER, domains, identity };
 }
 function usableCertificate(value, publicDER, host) {
