@@ -1,0 +1,15 @@
+{
+  "label": "LOCKET GOLD · CERTiOS",
+  "title": "Bot kích hoạt Locket Gold",
+  "description": "Chỉ cần cài một hồ sơ DNS theo hướng dẫn từ bot để bắt đầu trải nghiệm Locket Gold trên iPhone.",
+  "image": "/images/locket-gold-dns-banner.webp",
+  "imageAlt": "Locket Gold DNS với biểu tượng trái tim vàng và những khung ảnh nổi",
+  "buttonText": "Mở bot kích hoạt ngay",
+  "href": "https://t.me/locketcuios_bot",
+  "benefits": [
+    "Không VPN",
+    "Không đăng nhập iCloud",
+    "Không cài thêm ứng dụng hỗ trợ"
+  ],
+  "note": "Bot hướng dẫn cài hồ sơ DNS và tin cậy chứng chỉ trên iPhone."
+}

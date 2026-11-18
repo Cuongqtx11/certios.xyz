@@ -1,12 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import './App.css';
 
 type PopupPromotion = {
+  label: string;
   title: string;
   description: string;
   image: string;
   buttonText: string;
   href: string;
+  imageAlt: string;
+  benefits: string[];
+  note: string;
+};
+
+const locketPromotion: PopupPromotion = {
+  label: 'LOCKET GOLD · CERTiOS',
+  title: 'Bot kích hoạt Locket Gold',
+  description: 'Chỉ cần cài một hồ sơ DNS theo hướng dẫn từ bot để bắt đầu trải nghiệm Locket Gold trên iPhone.',
+  image: '/images/locket-gold-dns-banner.webp',
+  imageAlt: 'Locket Gold DNS với biểu tượng trái tim vàng và những khung ảnh nổi',
+  buttonText: 'Mở bot kích hoạt ngay',
+  href: 'https://t.me/locketcuios_bot',
+  benefits: ['Không VPN', 'Không đăng nhập iCloud', 'Không cài thêm ứng dụng hỗ trợ'],
+  note: 'Bot hướng dẫn cài hồ sơ DNS và tin cậy chứng chỉ trên iPhone.',
 };
 
 // Translations
@@ -86,29 +103,62 @@ const t = {
 function App() {
   const [showPopup, setShowPopup] = useState(true);
   const [popupReady, setPopupReady] = useState(false);
-  const [popupPromotion, setPopupPromotion] = useState<PopupPromotion | null>(null);
+  const [popupPromotion, setPopupPromotion] = useState<PopupPromotion>(locketPromotion);
+  const popupRef = useRef<HTMLDivElement>(null);
   const [esignData, setEsignData] = useState<any[]>([]);
   const [certData, setCertData] = useState<any[]>([]);
   const [modsData, setModsData] = useState<any[]>([]);
   const [certDownloadDisabled, setCertDownloadDisabled] = useState(false);
 
   useEffect(() => {
-    // The original notice below is the fallback when this optional file is removed.
+    // Keep the Locket notice available even when the optional JSON cannot load.
     const controller = new AbortController();
     let mounted = true;
     const timeout = setTimeout(() => controller.abort(), 3000);
-    fetch('/popup-chungsuc.json', { cache: 'no-store', signal: controller.signal })
+    fetch('/popup-locket-gold.json', { cache: 'no-store', signal: controller.signal })
       .then(response => response.ok ? response.json() : null)
       .then(data => {
-        if (mounted && data && ['title', 'description', 'image', 'buttonText', 'href'].every(key => typeof data[key] === 'string' && data[key].trim())
-          && data.href === '/chungsuclienquan/' && data.image === '/images/chung-suc-lien-quan.png') {
+        if (mounted && data && ['label', 'title', 'description', 'image', 'imageAlt', 'buttonText', 'href', 'note'].every(key => typeof data[key] === 'string' && data[key].trim())
+          && data.href === locketPromotion.href && data.image === locketPromotion.image
+          && Array.isArray(data.benefits) && data.benefits.length === 3
+          && data.benefits.every((benefit: unknown) => typeof benefit === 'string' && benefit.trim())) {
           setPopupPromotion(data);
         }
       })
-      .catch(() => { /* A missing or unavailable promotion restores the original notice. */ })
+      .catch(() => { /* The bundled Locket notice remains available. */ })
       .finally(() => { clearTimeout(timeout); if (mounted) setPopupReady(true); });
     return () => { mounted = false; clearTimeout(timeout); controller.abort(); };
   }, []);
+
+  useEffect(() => {
+    if (!showPopup || !popupReady) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    popupRef.current?.querySelector<HTMLButtonElement>('[data-popup-close]')?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowPopup(false);
+      if (event.key !== 'Tab') return;
+      const controls = popupRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!controls?.length) return;
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [showPopup, popupReady]);
 
   useEffect(() => {
     fetch(`/apps.json?t=${Date.now()}`)
@@ -216,53 +266,35 @@ function App() {
 
   return (
     <>
-      {showPopup && popupReady && (
-        <div className="popup-overlay">
-          {popupPromotion ? (
-            <div className="popup-content glass event-popup" role="dialog" aria-modal="true" aria-labelledby="event-popup-title">
-              <a href={popupPromotion.href} className="event-popup-image-link" aria-label="Mở trang Chung sức Liên Quân">
-                <img src={popupPromotion.image} alt="Sự kiện Thập Kỷ Chung Sức trong Liên Quân Mobile" width="1000" height="563" fetchPriority="high" />
-              </a>
+      {showPopup && popupReady && createPortal(
+        <div className="popup-overlay" onClick={event => { if (event.target === event.currentTarget) setShowPopup(false); }}>
+            <div ref={popupRef} className="popup-content glass event-popup locket-popup" role="dialog" aria-modal="true" aria-labelledby="event-popup-title" aria-describedby="event-popup-description">
+              <div className="locket-popup-artwork">
+                <a href={popupPromotion.href} target="_blank" rel="noopener noreferrer" className="event-popup-image-link" aria-label="Mở bot kích hoạt Locket Gold trên Telegram">
+                  <img src={popupPromotion.image} alt={popupPromotion.imageAlt} width="1280" height="720" fetchPriority="high" />
+                </a>
+                <button type="button" className="locket-popup-close" data-popup-close aria-label="Đóng thông báo" onClick={() => setShowPopup(false)}>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+                </button>
+              </div>
               <div className="event-popup-body">
-                <span className="event-popup-label">LIÊN QUÂN MOBILE · CERTiOS</span>
+                <span className="event-popup-label"><span className="locket-popup-dot" aria-hidden="true" />{popupPromotion.label}</span>
                 <h3 id="event-popup-title">{popupPromotion.title}</h3>
-                <p>{popupPromotion.description}</p>
+                <p id="event-popup-description">{popupPromotion.description}</p>
+                <ul className="locket-popup-benefits">
+                  {popupPromotion.benefits.map(benefit => (
+                    <li key={benefit}><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m3 8 3 3 7-7" /></svg>{benefit}</li>
+                  ))}
+                </ul>
                 <div className="event-popup-actions">
-                  <a href={popupPromotion.href} className="btn-get event-popup-cta">{popupPromotion.buttonText}<span aria-hidden="true">↗</span></a>
-                  <button className="event-popup-dismiss" onClick={() => setShowPopup(false)}>Để sau</button>
+                  <a href={popupPromotion.href} target="_blank" rel="noopener noreferrer" className="btn-get event-popup-cta">{popupPromotion.buttonText}<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10" /></svg></a>
+                  <p className="locket-popup-note">{popupPromotion.note}</p>
+                  <button type="button" className="event-popup-dismiss" onClick={() => setShowPopup(false)}>Để sau, tiếp tục xem website</button>
                 </div>
               </div>
             </div>
-          ) : (
-          <div className="popup-content glass">
-            <h3 style={{ color: 'var(--primary-color)', marginBottom: '10px' }}>Thông Báo</h3>
-            <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-color)', marginBottom: '20px', textAlign: 'left' }}>
-              Web ký esign chứng chỉ free, một số thiết bị cài có thể lỗi hoặc thành công vì đây là free (lưu ý cài DNS trước và không dùng VPN), nếu muốn ổn định hãy bấm vào mua ở nút website bán chứng chỉ tự động.
-              <br /><br />
-              Chứng chỉ mua sẽ cài đặt 100% thành công và dùng ổn định hỗ trợ mọi phiên bản ios kể cả sau khi update ios hoặc reset máy. Có thể tham khảo video mua và cài <a href="https://t.me/huongdancaiipa" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-color)', textDecoration: 'underline', fontWeight: 'bold' }}>Tại Đây</a>.
-            </p>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button 
-                className="btn-get" 
-                style={{ background: 'rgba(128, 128, 128, 0.2)', color: 'var(--text-color)' }}
-                onClick={() => setShowPopup(false)}
-              >
-                Đóng
-              </button>
-              <a 
-                href="https://cuios.shop" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn-get" 
-                style={{ textDecoration: 'none' }}
-              >
-                Mua Ngay
-              </a>
-            </div>
-          </div>
-          )}
         </div>
-      )}
+      , document.body)}
 
       {/* Game Transition Curtain */}
       <div className={`transition-curtain ${curtainClass}`}>

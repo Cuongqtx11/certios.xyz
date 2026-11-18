@@ -553,6 +553,58 @@
 .event-popup-dismiss { padding: 10px; border: 0; background: transparent; color: var(--secondary-text); font: inherit; font-size: 13px; cursor: pointer; }
 .event-popup a:focus-visible, .event-popup button:focus-visible { outline: 2px solid var(--primary-color); outline-offset: -3px; }
 
+/* Locket Gold announcement */
+.locket-popup {
+  background: #12120f;
+  border-color: rgba(230, 191, 103, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55), 0 0 55px rgba(214, 169, 73, 0.08);
+}
+
+.locket-popup-artwork { position: relative; }
+.locket-popup .event-popup-image-link { background: #11110e; }
+.locket-popup .event-popup-image-link img { aspect-ratio: 16 / 9; object-fit: cover; }
+.locket-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: #f5efdf;
+  background: rgba(15, 15, 12, 0.72);
+  border: 1px solid rgba(255, 240, 200, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.locket-popup .event-popup-body { padding: 23px 24px 16px; }
+.locket-popup .event-popup-label { display: flex; align-items: center; gap: 7px; color: #d8bd7b; font-size: 10px; letter-spacing: 1.6px; }
+.locket-popup-dot { width: 5px; height: 5px; flex-shrink: 0; border-radius: 50%; background: #ecc973; box-shadow: 0 0 10px #ecc97366; }
+.locket-popup h3 { margin: 12px 0 10px; color: #fff8e9; font-size: clamp(22px, 5.7vw, 27px); line-height: 1.22; letter-spacing: -0.8px; }
+.locket-popup #event-popup-description { margin-bottom: 17px; color: #c0bcae; font-size: 13px; line-height: 1.7; }
+.locket-popup-benefits { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0 0 22px; list-style: none; }
+.locket-popup-benefits li { display: inline-flex; align-items: center; gap: 5px; padding: 7px 9px; border: 1px solid #e6bf671f; border-radius: 8px; background: #e6bf670a; color: #e8dfc7; font-size: 11px; line-height: 1.25; }
+.locket-popup-benefits svg { flex-shrink: 0; color: #edc66c; }
+.locket-popup .event-popup-cta { min-height: 49px; border: 1px solid #f4d88b; border-radius: 12px; background: linear-gradient(110deg, #e8bf61, #fae2a3 55%, #e9c76f); color: #262010; font-size: 14px; font-weight: 750; box-shadow: 0 5px 22px #c3942b1a; }
+.locket-popup .event-popup-cta:hover { background: linear-gradient(110deg, #f0cd7d, #ffedbd 55%, #f3d78f); }
+.locket-popup .locket-popup-note { margin: 0; padding: 0 8px; color: #989586; text-align: center; font-size: 11px; line-height: 1.65; }
+.locket-popup .event-popup-dismiss { padding: 7px 8px; color: #b8b3a5; font-size: 12px; }
+.locket-popup a:focus-visible, .locket-popup button:focus-visible { outline-color: #f2cf7d; }
+
+@media (max-width: 400px) {
+  .popup-overlay { padding: 16px; }
+  .locket-popup .event-popup-body { padding: 20px 18px 13px; }
+  .locket-popup-benefits { gap: 6px; margin-bottom: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup-overlay, .locket-popup { animation: none; }
+}
+
 /* Animations */
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-20px); }
