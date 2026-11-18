@@ -595,10 +595,21 @@
 .locket-popup .event-popup-dismiss { padding: 7px 8px; color: #b8b3a5; font-size: 12px; }
 .locket-popup a:focus-visible, .locket-popup button:focus-visible { outline-color: #f2cf7d; }
 
-@media (max-width: 400px) {
-  .popup-overlay { padding: 16px; }
-  .locket-popup .event-popup-body { padding: 20px 18px 13px; }
-  .locket-popup-benefits { gap: 6px; margin-bottom: 18px; }
+@media (max-width: 600px) {
+  .locket-popup-overlay { padding: 18px; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(2px); }
+  .locket-popup { max-width: 320px; max-height: min(70vh, 420px); max-height: min(70dvh, 420px); border-radius: 18px; }
+  .locket-popup .event-popup-image-link img { height: 126px; aspect-ratio: auto; object-position: center; }
+  .locket-popup-close { top: 8px; right: 8px; }
+  .locket-popup .event-popup-body { padding: 14px 16px 12px; }
+  .locket-popup .event-popup-label { font-size: 9px; letter-spacing: 1.2px; }
+  .locket-popup h3 { margin: 8px 0 12px; font-size: 20px; letter-spacing: -0.5px; }
+  .locket-popup #event-popup-description { display: none; }
+  .locket-popup-benefits { gap: 5px; margin-bottom: 14px; }
+  .locket-popup-benefits li { padding: 4px 6px; border-radius: 6px; }
+  .locket-popup .event-popup-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 9px; }
+  .locket-popup .event-popup-cta { grid-column: 1; grid-row: 1; min-height: 43px; padding: 10px 8px; font-size: 13px; gap: 6px; }
+  .locket-popup .event-popup-dismiss { grid-column: 2; grid-row: 1; padding: 10px 4px; }
+  .locket-popup .locket-popup-note { grid-column: 1 / -1; grid-row: 2; padding: 0; line-height: 1.45; }
 }
 
 @media (prefers-reduced-motion: reduce) {

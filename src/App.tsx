@@ -267,7 +267,7 @@ function App() {
   return (
     <>
       {showPopup && popupReady && createPortal(
-        <div className="popup-overlay" onClick={event => { if (event.target === event.currentTarget) setShowPopup(false); }}>
+        <div className="popup-overlay locket-popup-overlay" onClick={event => { if (event.target === event.currentTarget) setShowPopup(false); }}>
             <div ref={popupRef} className="popup-content glass event-popup locket-popup" role="dialog" aria-modal="true" aria-labelledby="event-popup-title" aria-describedby="event-popup-description">
               <div className="locket-popup-artwork">
                 <a href={popupPromotion.href} target="_blank" rel="noopener noreferrer" className="event-popup-image-link" aria-label="Mở bot kích hoạt Locket Gold trên Telegram">
@@ -289,7 +289,7 @@ function App() {
                 <div className="event-popup-actions">
                   <a href={popupPromotion.href} target="_blank" rel="noopener noreferrer" className="btn-get event-popup-cta">{popupPromotion.buttonText}<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10" /></svg></a>
                   <p className="locket-popup-note">{popupPromotion.note}</p>
-                  <button type="button" className="event-popup-dismiss" onClick={() => setShowPopup(false)}>Để sau, tiếp tục xem website</button>
+                  <button type="button" className="event-popup-dismiss" onClick={() => setShowPopup(false)}>Để sau</button>
                 </div>
               </div>
             </div>
