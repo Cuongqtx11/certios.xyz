@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadCertificateFileName</key>
+			<string>locket-pi-ca.cer</string>
+			<key>PayloadContent</key>
+			<data>
+			MIIDMjCCAhqgAwIBAgIUGNHXgJ4CrbBtJTpq7HX3V4D1eQMwDQYJ
+			KoZIhvcNAQELBQAwHzEdMBsGA1UEAwwUTG9ja2V0IFBpIFByaXZh
+			dGUgQ0EwHhcNMjYxMTA5MDgyNTU3WhcNMzYxMTA2MDgzMDU3WjAf
+			MR0wGwYDVQQDDBRMb2NrZXQgUGkgUHJpdmF0ZSBDQTCCASIwDQYJ
+			KoZIhvcNAQEBBQADggEPADCCAQoCggEBAL3gvKnic4OLAoqlVyr4
+			HrXeRmb5w5IjYnNfhiVIMWnHPe/Yz9O2Z77o7XbWuaYeqGgTq4Ym
+			QH2ym4aMUImoYycfbJpMeq0Qb5uyU5QK0HrO+GcOYLuKC4GJAbiQ
+			Z59Pb8kt1di4C3/kFubpPZfm+gbBuVqU0uYUKpO/h2ab10y7jfER
+			S+kwm2theSio7v3tPAwSuuz6E7IdfL/b/uC8PBh4Ei5JzRXusw/8
+			UMlL9PvPjAcm+ozzesk++Jq2sVLcFAYxi0bjC2WNbQLEwG5GXoWC
+			BbAsSCj/AQRuu1kJ3MrE0rj1NKcv4tZ+CV/+bvZaddI0RPvgzFUC
+			nrMupXeeX3cCAwEAAaNmMGQwEgYDVR0TAQH/BAgwBgEB/wIBADAd
+			BgNVHQ4EFgQUbP9t1EYOOOM9aHn4sue/b6Oa/S0wHwYDVR0jBBgw
+			FoAUbP9t1EYOOOM9aHn4sue/b6Oa/S0wDgYDVR0PAQH/BAQDAgGG
+			MA0GCSqGSIb3DQEBCwUAA4IBAQBBYaMPaV3gF6htxrc328CD1C65
+			q4g0z3NPU15zpnm/wHSSL9n904kkJpI8l/JgTcPhk7e+fy6FpuCY
+			lgPoeNfRQFCAe+G2hjjNAWqRlcQfD31TONo9+/VIp9hbPtwfz2qf
+			zTQkdRZp7isW/LhGFt/TFdDBKX+gq7s3eFfaMx569B4ziXnC9Si5
+			6aqb/YIl71yKlWYt3jH6MiYiHhokygbDAZSo126wzO0HDS1YTi0q
+			pSZuGKVanrYMr+PNwobG9rRQDyhg4p6ZV/lraKjSbh8JsNJBMi+D
+			RlOTmgHN4XAV9MHhzQlUqXlZMQWueREh5rE+h/gftMHyqbxrx3Fw
+			xoBN
+			</data>
+			<key>PayloadDisplayName</key>
+			<string>Locket Pi Private CA</string>
+			<key>PayloadIdentifier</key>
+			<string>private.locketpi.0pOlBiu8vjbdrseTqi6Gu9FWL0f2.ca</string>
+			<key>PayloadType</key>
+			<string>com.apple.security.root</string>
+			<key>PayloadUUID</key>
+			<string>ea24df51-093e-5010-8d60-ce7cd6a1071c</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerURL</key>
+				<string>https://100.127.90.76/dns-query/0pOlBiu8vjbdrseTqi6Gu9FWL0f2/259ad03bd21e6875bbcdc38613803060a29abe4a6f21282a</string>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>api.locketcamera.com</string>
+					<string>api.revenuecat.com</string>
+					<string>firebaseremoteconfig.googleapis.com</string>
+					<string>firebaseremoteconfigrealtime.googleapis.com</string>
+				</array>
+			</dict>
+			<key>PayloadDisplayName</key>
+			<string>Locket Pi DNS</string>
+			<key>PayloadIdentifier</key>
+			<string>private.locketpi.0pOlBiu8vjbdrseTqi6Gu9FWL0f2.dns</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>d933bbec-4b53-57e4-a082-bd70045e4bd9</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Hồ sơ thử nghiệm riêng cho Locket; cần tin cậy CA trong Cài đặt.</string>
+	<key>PayloadDisplayName</key>
+	<string>Locket Pi · nguynhuu</string>
+	<key>PayloadIdentifier</key>
+	<string>private.locketpi.0pOlBiu8vjbdrseTqi6Gu9FWL0f2.profile</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>a39a90a7-6cb2-515f-b8a5-d0208e66c2ac</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

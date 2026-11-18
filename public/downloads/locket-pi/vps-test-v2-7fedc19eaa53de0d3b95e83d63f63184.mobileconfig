@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadCertificateFileName</key>
+			<string>locket-private-ca.cer</string>
+			<key>PayloadContent</key>
+			<data>
+			MIIDLDCCAhSgAwIBAgIUeiHLjopPjkNSBA2oXv6FuhWYVhswDQYJ
+			KoZIhvcNAQELBQAwHDEaMBgGA1UEAwwRTG9ja2V0IFByaXZhdGUg
+			Q0EwHhcNMjYxMTEwMjE0ODA5WhcNMzYxMTA3MjE1MzA5WjAcMRow
+			GAYDVQQDDBFMb2NrZXQgUHJpdmF0ZSBDQTCCASIwDQYJKoZIhvcN
+			AQEBBQADggEPADCCAQoCggEBAOEpbiF2JPgNYuaxxUkrFG4Jzhby
+			1YPzfeytF8DmqS+QIgEw4z1kzPYkN8mFHceduAiMdqzTshtYixQ6
+			jOtu3fq8WPKEXaPhdE7mcMjCNDknilDmSRVvMrCQckXkm7/+9S9+
+			gHf3gwbvsCtTrLzi6aU3MBMFAXic3cm/0O/avUct5yefKYh1wytd
+			e39BKdFuAXGtNKcwJlVnyHBF1ok1DhL0AcYVlhFSf/L6bf2oz1Rr
+			NnLyeMKgygcvOvIuEahADuZx5FrxudfGECY2LWZmAnzaWnpgWICP
+			v0HawzQhDGjdvVhso/WM6KfsLJbg+qjfeQwDC1LwOzQAVbtXtr3B
+			yrMCAwEAAaNmMGQwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4E
+			FgQUUovl+3F+J0Q3gZqt3XgDZ7bJ/iowHwYDVR0jBBgwFoAUUovl
+			+3F+J0Q3gZqt3XgDZ7bJ/iowDgYDVR0PAQH/BAQDAgGGMA0GCSqG
+			SIb3DQEBCwUAA4IBAQC+y90YAU8iOux0Qqfay9hd7ENsuH2ZYMZy
+			kr1FenAs7YNMFTMb49293eNwsr77q6fC5NukirPKRumUSF2MczwL
+			CIuxiDtJ6qMgyUaGaVFaLdzSNeNYgphDsDr1vSDweJVAzCXfv7CU
+			uG0S3ZMNggJdQCN3iC1AEGO08s2l4wyn10+BUUyJSGBFaz842znj
+			gtY3NQY6Y9704fmbGRWuwio9kjmVhnSA5kXx/uvRDixjEtRfAeGw
+			qDNSHBE5B3Q4ESNsmnfdIH8PD/UCGZ/X7bexGQV1gMEU+JcLPCHy
+			vbj2YdMrfSP/RLPfQTBZU1Rk8CMFjJ2ZWoYLXr0P/vsC5ebR
+			</data>
+			<key>PayloadDisplayName</key>
+			<string>Locket Private CA</string>
+			<key>PayloadIdentifier</key>
+			<string>xyz.certios.locket.vps-test.QM5PO5p1uTTw2WHGU8AzSo3Iu832.ca</string>
+			<key>PayloadType</key>
+			<string>com.apple.security.root</string>
+			<key>PayloadUUID</key>
+			<string>967ec592-dcfd-5329-90a2-880938c7ecd1</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerAddresses</key>
+				<array>
+					<string>104.21.60.96</string>
+					<string>172.67.195.130</string>
+				</array>
+				<key>ServerURL</key>
+				<string>https://locket.certios.xyz/pilot-dns/QM5PO5p1uTTw2WHGU8AzSo3Iu832/b3ea9bc1573a005505ee6938e1a624991b9b7eacc9bea2a3</string>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>api.locketcamera.com</string>
+					<string>api.revenuecat.com</string>
+					<string>firebaseremoteconfig.googleapis.com</string>
+					<string>firebaseremoteconfigrealtime.googleapis.com</string>
+				</array>
+			</dict>
+			<key>OnDemandRules</key>
+			<array>
+				<dict>
+					<key>Action</key>
+					<string>Connect</string>
+				</dict>
+			</array>
+			<key>PayloadDisplayName</key>
+			<string>Locket Gold • Test tom11th5</string>
+			<key>PayloadIdentifier</key>
+			<string>xyz.certios.locket.vps-test.QM5PO5p1uTTw2WHGU8AzSo3Iu832.dns</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>4a7916fa-2004-5aed-80e5-bdbc1aa65031</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Bản thử riêng cho tom11th5.</string>
+	<key>PayloadDisplayName</key>
+	<string>Locket Gold • Cưn 🍤 • Test</string>
+	<key>PayloadIdentifier</key>
+	<string>xyz.certios.locket.vps-test.QM5PO5p1uTTw2WHGU8AzSo3Iu832</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>6832c77b-1108-5e01-a234-6a6574afe8d9</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

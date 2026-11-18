@@ -43,8 +43,18 @@ app.use('/chungsuclienquan/api', require('./chungsuc-proxy')());
 app.use(cors());
 app.use('/api/csign/install', require('./csign-manifest')());
 app.use('/api/csign/local-tls', require('./csign-local-tls')());
+app.use('/api/ipa-sync', require('./ipa-license-proxy')());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/downloads/locket-pi', express.static(path.join(__dirname, '../public/downloads/locket-pi'), {
+    setHeaders(res, filePath) {
+        if (path.extname(filePath) === '.mobileconfig') {
+            res.setHeader('Content-Type', 'application/x-apple-aspen-config');
+            res.setHeader('Cache-Control', 'no-store');
+            res.setHeader('Referrer-Policy', 'no-referrer');
+        }
+    }
+}));
 app.use('/downloads', express.static(path.join(__dirname, '../public/downloads')));
 
 const ESIGN_DIR = path.join(__dirname, '../public/downloads/esign');
